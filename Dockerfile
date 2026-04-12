@@ -5,7 +5,8 @@
 FROM node:20-alpine AS base
 
 # Corepack은 Node 16.13+에 번들. pnpm 최신 stable 활성화
-RUN corepack enable && corepack prepare pnpm@latest --activate
+# pnpm 버전을 lockfile 기준(pnpm --version → 10.33.0)으로 고정 — @latest 금지
+RUN corepack enable && corepack prepare pnpm@10.33.0 --activate
 
 # pnpm이 글로벌 저장소를 쓸 경로 (레이어 캐시 최적화)
 ENV PNPM_HOME=/root/.local/share/pnpm

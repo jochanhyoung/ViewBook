@@ -1,0 +1,26 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      # deps 스테이지까지만 빌드 — pnpm build 불필요
+      target: deps
+    ports:
+      - "3000:3000"
+    env_file:
+      - path: .env.local
+        required: false         # 개발 환경에서는 없어도 기동 허용
+    environment:
+      NODE_ENV: development
+      # Docker Desktop(Mac/Win)은 inotify 미지원 → polling 방식으로 핫리로드
+      WATCHPACK_POLLING: "true"
+    volumes:
+      # 소스 전체 마운트 → 파일 변경 즉시 반영 (핫리로드)
+      - .:/app
+      # 호스트 node_modules가 컨테이너 node_modules를 덮어쓰지 않도록 익명 볼륨으로 보호
+      - /app/node_modules
+      # .next 빌드 캐시도 컨테이너 내부에서만 관리
+      - /app/.next
+    # package.json scripts.dev = "next dev --webpack"
+    command: pnpm dev
+    restart: "no"               # 개발 중 의도치 않은 재시작 방지

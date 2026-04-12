@@ -1,40 +1,56 @@
-<<<<<<< HEAD
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ViewBook
+
+수학 디지털 교과서 — Next.js 15 App Router + TypeScript
 
 ## Getting Started
 
-First, run the development server:
+개발 서버 실행:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+[http://localhost:3000](http://localhost:3000) 에서 결과를 확인하세요.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+`app/page.tsx` 를 수정하면 페이지가 자동으로 업데이트됩니다.
 
 ## Learn More
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Learn Next.js](https://nextjs.org/learn)
 
 ## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+[Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) 을 통해 배포하거나, 아래 Docker 가이드를 참고하세요.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-=======
-# ViewBook
->>>>>>> 2f0674291522f22745c18dc64f63e62e68a0f2ad
+---
+
+## 🐳 Docker로 실행하기
+
+### 사전 준비
+
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) 설치
+- `.env.local` 파일 세팅 (`.env.example` 참고)
+
+```bash
+cp .env.example .env.local
+# .env.local 열고 GEMMA_API_KEY 등 실제 값으로 교체
+```
+
+### 프로덕션 실행
+
+```bash
+docker compose up --build
+```
+
+### 개발 환경 실행 (핫리로드)
+
+```bash
+docker compose -f docker-compose.dev.yml up --build
+```
+
+### 종료
+
+```bash
+docker compose down
+```
