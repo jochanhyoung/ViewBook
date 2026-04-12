@@ -20,14 +20,14 @@ export function StepText({ latex, markdown }: StepTextProps) {
       {markdown && (
         <div
           className="ko-text"
-          style={{ fontSize: '15px', lineHeight: 1.8, color: '#b8b8c0', maxWidth: '400px' }}
+          style={{ fontSize: '15px', lineHeight: 1.8, color: 'var(--color-text-dim)', maxWidth: '400px' }}
         >
           <ReactMarkdown
             remarkPlugins={[remarkMath]}
             rehypePlugins={[rehypeKatex]}
             components={{
               p: ({ children }) => <p style={{ margin: '0 0 8px' }}>{children}</p>,
-              strong: ({ children }) => <strong style={{ color: '#ececef' }}>{children}</strong>,
+              strong: ({ children }) => <strong style={{ color: 'var(--color-text)' }}>{children}</strong>,
             }}
           >
             {markdown}

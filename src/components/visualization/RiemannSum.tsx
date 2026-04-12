@@ -13,7 +13,6 @@ interface RiemannSumProps {
 const N_STEPS = [4, 8, 16, 32, 64, 128];
 
 export function RiemannSum({ fn, a, b, n: initN, method: initMethod }: RiemannSumProps) {
-  // Find closest step index to initN
   const initIdx = N_STEPS.reduce((best, val, i) =>
     Math.abs(val - initN) < Math.abs(N_STEPS[best] - initN) ? i : best, 0);
 
@@ -52,7 +51,6 @@ export function RiemannSum({ fn, a, b, n: initN, method: initMethod }: RiemannSu
     return `${toX(x)},${toY(evalFn(x))}`;
   }).join(' ');
 
-  // Limit rendered rects for performance
   const maxVisible = Math.min(n, 128);
   const step = Math.ceil(n / maxVisible);
 
@@ -67,17 +65,17 @@ export function RiemannSum({ fn, a, b, n: initN, method: initMethod }: RiemannSu
             y={toY(r.y + r.h)}
             width={Math.max(1, toX(a + dx) - toX(a))}
             height={toH(r.h)}
-            fill={riemannSum >= 0 ? 'rgba(138, 168, 45, 0.25)' : 'rgba(212, 79, 79, 0.2)'}
-            stroke="#8aa82d" strokeWidth="0.5" strokeOpacity="0.5"
+            fill={riemannSum >= 0 ? 'var(--color-vis-rect-pos)' : 'var(--color-vis-rect-neg)'}
+            stroke="var(--color-accent-dim)" strokeWidth="0.5" strokeOpacity="0.5"
           />
         ))}
-        <line x1={0} y1={toY(0)} x2={W} y2={toY(0)} stroke="#3a3a44" strokeWidth="1" />
-        <polyline points={curvePoints} fill="none" stroke="#ececef" strokeWidth="2" />
+        <line x1={0} y1={toY(0)} x2={W} y2={toY(0)} stroke="var(--color-text-ghost)" strokeWidth="1" />
+        <polyline points={curvePoints} fill="none" stroke="var(--color-text)" strokeWidth="2" />
       </svg>
 
       {/* 이산 n 버튼 */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', width: '100%', maxWidth: '380px' }}>
-        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#5a5a66', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
           분할 수 n
         </span>
         <div style={{ display: 'flex', gap: '5px' }}>
@@ -87,14 +85,14 @@ export function RiemannSum({ fn, a, b, n: initN, method: initMethod }: RiemannSu
               onClick={() => setNIdx(i)}
               style={{
                 flex: 1,
-                background: nIdx === i ? '#d4ff4f' : 'none',
+                background: nIdx === i ? 'var(--color-accent)' : 'none',
                 border: '1px solid',
-                borderColor: nIdx === i ? '#d4ff4f' : '#26262d',
+                borderColor: nIdx === i ? 'var(--color-accent)' : 'var(--color-border)',
                 borderRadius: '3px',
                 cursor: 'pointer',
                 fontFamily: 'var(--font-mono)',
                 fontSize: '11px',
-                color: nIdx === i ? '#0a0a0b' : '#8a8a96',
+                color: nIdx === i ? 'var(--color-accent-fg)' : 'var(--color-text-subtle)',
                 padding: '5px 0',
               }}
             >
@@ -111,14 +109,14 @@ export function RiemannSum({ fn, a, b, n: initN, method: initMethod }: RiemannSu
             key={m}
             onClick={() => setMethod(m)}
             style={{
-              background: method === m ? 'rgba(212,255,79,0.15)' : 'none',
+              background: method === m ? 'var(--color-accent-bg)' : 'none',
               border: '1px solid',
-              borderColor: method === m ? '#d4ff4f' : '#26262d',
+              borderColor: method === m ? 'var(--color-accent)' : 'var(--color-border)',
               borderRadius: '3px',
               cursor: 'pointer',
               fontFamily: 'var(--font-mono)',
               fontSize: '10px',
-              color: method === m ? '#d4ff4f' : '#8a8a96',
+              color: method === m ? 'var(--color-accent)' : 'var(--color-text-subtle)',
               padding: '4px 14px',
               letterSpacing: '0.06em',
             }}
@@ -129,14 +127,14 @@ export function RiemannSum({ fn, a, b, n: initN, method: initMethod }: RiemannSu
       </div>
 
       {/* 합계 */}
-      <div style={{ background: '#1a1a1f', border: '1px solid #26262d', borderRadius: '6px', padding: '10px 24px', display: 'flex', gap: '28px' }}>
+      <div style={{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)', borderRadius: '6px', padding: '10px 24px', display: 'flex', gap: '28px' }}>
         <div>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#5a5a66', margin: '0 0 2px' }}>R({n})</p>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '15px', color: '#d4ff4f', margin: 0 }}>{riemannSum.toFixed(4)}</p>
+          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)', margin: '0 0 2px' }}>R({n})</p>
+          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '15px', color: 'var(--color-accent)', margin: 0 }}>{riemannSum.toFixed(4)}</p>
         </div>
         <div>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#5a5a66', margin: '0 0 2px' }}>Δx</p>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '15px', color: '#b8b8c0', margin: 0 }}>{dx.toFixed(4)}</p>
+          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)', margin: '0 0 2px' }}>Δx</p>
+          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '15px', color: 'var(--color-text-dim)', margin: 0 }}>{dx.toFixed(4)}</p>
         </div>
       </div>
     </div>

@@ -9,15 +9,8 @@ interface LeadBlockProps {
 
 export function LeadBlock({ markdown }: LeadBlockProps) {
   return (
-    <div
-      className="ko-text"
-      style={{
-        fontSize: '16px',
-        lineHeight: 1.9,
-        color: '#d8d8dd',
-        marginBottom: '28px',
-      }}
-    >
+    <div className="ko-text" style={{ fontSize: '16px', lineHeight: 1.9, color: 'var(--color-text-dim)', marginBottom: '28px' }}>
+      {/* 드롭캡 색상도 CSS 변수 사용 */}
       <style>{`
         .lead-block > p:first-of-type::first-letter {
           font-family: var(--font-display);
@@ -26,7 +19,7 @@ export function LeadBlock({ markdown }: LeadBlockProps) {
           margin-right: 8px;
           margin-top: 4px;
           line-height: 0.85;
-          color: #d4ff4f;
+          color: var(--color-accent);
         }
       `}</style>
       <div className="lead-block">
@@ -34,12 +27,8 @@ export function LeadBlock({ markdown }: LeadBlockProps) {
           remarkPlugins={[remarkMath]}
           rehypePlugins={[rehypeKatex]}
           components={{
-            p: ({ children }) => (
-              <p style={{ margin: 0, marginBottom: '16px' }}>{children}</p>
-            ),
-            strong: ({ children }) => (
-              <strong style={{ color: '#ececef', fontWeight: 600 }}>{children}</strong>
-            ),
+            p: ({ children }) => <p style={{ margin: 0, marginBottom: '16px' }}>{children}</p>,
+            strong: ({ children }) => <strong style={{ color: 'var(--color-text)', fontWeight: 600 }}>{children}</strong>,
           }}
         >
           {markdown}

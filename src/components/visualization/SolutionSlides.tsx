@@ -21,7 +21,7 @@ export function SolutionSlides({ steps, subStep = 0 }: SolutionSlidesProps) {
       justifyContent: 'center',
       padding: '40px 24px',
       gap: '20px',
-      background: '#0c0d11',
+      background: 'var(--color-bg)',
       overflowY: 'auto',
     }}>
       {/* Progress dots */}
@@ -33,7 +33,11 @@ export function SolutionSlides({ steps, subStep = 0 }: SolutionSlidesProps) {
               width: i === idx ? '18px' : '6px',
               height: '6px',
               borderRadius: '3px',
-              background: i < idx ? '#3a3a44' : i === idx ? '#d4ff4f' : '#26262d',
+              background: i < idx
+                ? 'var(--color-text-ghost)'
+                : i === idx
+                  ? 'var(--color-accent)'
+                  : 'var(--color-border)',
               transition: 'all 250ms ease',
             }}
           />
@@ -45,7 +49,7 @@ export function SolutionSlides({ steps, subStep = 0 }: SolutionSlidesProps) {
         fontFamily: 'var(--font-mono)',
         fontSize: '10px',
         letterSpacing: '0.2em',
-        color: '#3a3a44',
+        color: 'var(--color-text-ghost)',
         textTransform: 'uppercase',
       }}>
         lim&#x2009;h&#x2009;→&#x2009;0
@@ -55,11 +59,11 @@ export function SolutionSlides({ steps, subStep = 0 }: SolutionSlidesProps) {
       <div style={{
         maxWidth: '540px',
         width: '100%',
-        background: '#111114',
-        border: `1px solid ${isFinal ? '#d4ff4f' : '#1e1e25'}`,
+        background: 'var(--color-bg-elevated)',
+        border: `1px solid ${isFinal ? 'var(--color-accent)' : 'var(--color-bg-subtle)'}`,
         borderRadius: '10px',
         padding: '32px 36px',
-        boxShadow: isFinal ? '0 0 28px rgba(212,255,79,0.18)' : 'none',
+        boxShadow: isFinal ? '0 0 28px var(--color-accent-bg)' : 'none',
         transition: 'border-color 300ms ease, box-shadow 300ms ease',
       }}>
         {/* Step label */}
@@ -68,7 +72,7 @@ export function SolutionSlides({ steps, subStep = 0 }: SolutionSlidesProps) {
           fontSize: '10px',
           letterSpacing: '0.15em',
           textTransform: 'uppercase',
-          color: isFinal ? '#d4ff4f' : '#5a5a66',
+          color: isFinal ? 'var(--color-accent)' : 'var(--color-text-muted)',
           marginBottom: '20px',
           transition: 'color 300ms ease',
         }}>
@@ -79,7 +83,7 @@ export function SolutionSlides({ steps, subStep = 0 }: SolutionSlidesProps) {
         <div style={{
           textAlign: 'center',
           fontSize: '1.5rem',
-          color: isFinal ? '#d4ff4f' : '#ececef',
+          color: isFinal ? 'var(--color-accent)' : 'var(--color-text)',
           overflowX: 'auto',
         }}>
           <BlockMath math={step.tex} />
@@ -90,14 +94,14 @@ export function SolutionSlides({ steps, subStep = 0 }: SolutionSlidesProps) {
           <div style={{
             marginTop: '20px',
             padding: '10px 14px',
-            background: '#0a0a0b',
-            borderLeft: '2px solid #26262d',
+            background: 'var(--color-bg)',
+            borderLeft: '2px solid var(--color-border)',
             borderRadius: '0 4px 4px 0',
           }}>
             <span style={{
               fontFamily: 'var(--font-mono)',
               fontSize: '11px',
-              color: '#5a5a66',
+              color: 'var(--color-text-muted)',
               lineHeight: 1.65,
             }}>
               {step.hint}
@@ -110,7 +114,7 @@ export function SolutionSlides({ steps, subStep = 0 }: SolutionSlidesProps) {
       <div style={{
         fontFamily: 'var(--font-mono)',
         fontSize: '10px',
-        color: '#3a3a44',
+        color: 'var(--color-text-ghost)',
         letterSpacing: '0.1em',
       }}>
         {idx + 1} / {steps.length}

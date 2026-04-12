@@ -24,16 +24,11 @@ export function PowerRule({ coefficient, exponent }: PowerRuleProps) {
   const newCoef = userCoef * userExp;
   const newExp = userExp - 1;
 
-  useEffect(() => {
-    setStep(0);
-  }, [userCoef, userExp]);
+  useEffect(() => { setStep(0); }, [userCoef, userExp]);
 
   useEffect(() => {
     if (!playing) return;
-    if (step >= 4) {
-      setPlaying(false);
-      return;
-    }
+    if (step >= 4) { setPlaying(false); return; }
     const timer = setTimeout(() => setStep((s) => s + 1), step === 0 ? 800 : 1200);
     return () => clearTimeout(timer);
   }, [playing, step]);
@@ -46,20 +41,10 @@ export function PowerRule({ coefficient, exponent }: PowerRuleProps) {
   }
 
   return (
-    <div
-      style={{
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '32px',
-        gap: '32px',
-      }}
-    >
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '32px', gap: '32px' }}>
       {/* 조작 패널 */}
       <div style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
-        <label style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#5a5a66', display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'center' }}>
+        <label style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-muted)', display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'center' }}>
           계수
           <input
             type="number"
@@ -67,10 +52,10 @@ export function PowerRule({ coefficient, exponent }: PowerRuleProps) {
             onChange={(e) => setUserCoef(Number(e.target.value))}
             style={{
               width: '56px',
-              background: '#1a1a1f',
-              border: '1px solid #26262d',
+              background: 'var(--color-bg-surface)',
+              border: '1px solid var(--color-border)',
               borderRadius: '4px',
-              color: '#ececef',
+              color: 'var(--color-text)',
               fontFamily: 'var(--font-mono)',
               fontSize: '14px',
               padding: '4px 8px',
@@ -78,7 +63,7 @@ export function PowerRule({ coefficient, exponent }: PowerRuleProps) {
             }}
           />
         </label>
-        <label style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#5a5a66', display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'center' }}>
+        <label style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-muted)', display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'center' }}>
           지수
           <input
             type="number"
@@ -86,10 +71,10 @@ export function PowerRule({ coefficient, exponent }: PowerRuleProps) {
             onChange={(e) => setUserExp(Number(e.target.value))}
             style={{
               width: '56px',
-              background: '#1a1a1f',
-              border: '1px solid #26262d',
+              background: 'var(--color-bg-surface)',
+              border: '1px solid var(--color-border)',
               borderRadius: '4px',
-              color: '#ececef',
+              color: 'var(--color-text)',
               fontFamily: 'var(--font-mono)',
               fontSize: '14px',
               padding: '4px 8px',
@@ -102,20 +87,12 @@ export function PowerRule({ coefficient, exponent }: PowerRuleProps) {
       {/* 메인 수식 영역 */}
       <div style={{ position: 'relative', minHeight: '120px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         {step === 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            style={{ textAlign: 'center' }}
-          >
-            <div style={{ fontSize: '3rem', color: '#ececef', fontFamily: 'var(--font-display)' }}>
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: '3rem', color: 'var(--color-text)', fontFamily: 'var(--font-display)' }}>
               <InlineMath math={formatLatex(userCoef, userExp)} />
             </div>
-            <motion.div
-              animate={{ opacity: [0.4, 1, 0.4] }}
-              transition={{ duration: 2, repeat: Infinity }}
-              style={{ marginTop: '12px' }}
-            >
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#d4ff4f', letterSpacing: '0.15em' }}>
+            <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: 2, repeat: Infinity }} style={{ marginTop: '12px' }}>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-accent)', letterSpacing: '0.15em' }}>
                 지수 {userExp} 주목
               </span>
             </motion.div>
@@ -123,36 +100,28 @@ export function PowerRule({ coefficient, exponent }: PowerRuleProps) {
         )}
 
         {step === 1 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            style={{ textAlign: 'center' }}
-          >
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontSize: '2.4rem', color: '#ececef', justifyContent: 'center' }}>
-              <span style={{ color: '#b8b8c0' }}><InlineMath math={String(userCoef)} /></span>
-              <span style={{ color: '#8a8a96' }}>·</span>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ textAlign: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontSize: '2.4rem', color: 'var(--color-text)', justifyContent: 'center' }}>
+              <span style={{ color: 'var(--color-text-dim)' }}><InlineMath math={String(userCoef)} /></span>
+              <span style={{ color: 'var(--color-text-subtle)' }}>·</span>
               <motion.span
-                style={{ color: '#d4ff4f' }}
+                style={{ color: 'var(--color-accent)' }}
                 initial={{ y: -30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ type: 'spring', stiffness: 220, damping: 26 }}
               >
                 <InlineMath math={String(userExp)} />
               </motion.span>
-              <span style={{ color: '#b8b8c0' }}><InlineMath math={`x^{${userExp - 1}}`} /></span>
+              <span style={{ color: 'var(--color-text-dim)' }}><InlineMath math={`x^{${userExp - 1}}`} /></span>
             </div>
           </motion.div>
         )}
 
         {step === 2 && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            style={{ textAlign: 'center' }}
-          >
-            <div style={{ fontSize: '2.4rem', color: '#ececef' }}>
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: '2.4rem', color: 'var(--color-text)' }}>
               <motion.span
-                style={{ color: '#d4ff4f', display: 'inline-block' }}
+                style={{ color: 'var(--color-accent)', display: 'inline-block' }}
                 animate={{ scale: [1, 1.2, 1] }}
                 transition={{ duration: 0.4 }}
               >
@@ -160,19 +129,15 @@ export function PowerRule({ coefficient, exponent }: PowerRuleProps) {
               </motion.span>
               <InlineMath math={`x^{${newExp}}`} />
             </div>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#8aa82d', marginTop: '8px' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-accent-dim)', marginTop: '8px' }}>
               {userCoef} × {userExp} = {newCoef}
             </p>
           </motion.div>
         )}
 
         {step >= 3 && (
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            style={{ textAlign: 'center' }}
-          >
-            <div style={{ fontSize: '2.8rem', color: '#ececef' }}>
+          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: '2.8rem', color: 'var(--color-text)' }}>
               <InlineMath math={`\\left(${formatLatex(userCoef, userExp)}\\right)' = ${formatLatex(newCoef, newExp)}`} />
             </div>
             <motion.div
@@ -181,20 +146,17 @@ export function PowerRule({ coefficient, exponent }: PowerRuleProps) {
               transition={{ delay: 0.3 }}
               style={{ marginTop: '16px', display: 'flex', gap: '8px', justifyContent: 'center' }}
             >
-              {[
-                `계수: ${userCoef} × ${userExp} = ${newCoef}`,
-                `지수: ${userExp} → ${newExp}`,
-              ].map((t, i) => (
+              {[`계수: ${userCoef} × ${userExp} = ${newCoef}`, `지수: ${userExp} → ${newExp}`].map((t, i) => (
                 <span
                   key={i}
                   style={{
                     fontFamily: 'var(--font-mono)',
                     fontSize: '10px',
-                    color: '#5a5a66',
-                    background: '#1a1a1f',
+                    color: 'var(--color-text-muted)',
+                    background: 'var(--color-bg-surface)',
                     padding: '4px 10px',
                     borderRadius: '3px',
-                    border: '1px solid #26262d',
+                    border: '1px solid var(--color-border)',
                   }}
                 >
                   {t}
@@ -214,12 +176,7 @@ export function PowerRule({ coefficient, exponent }: PowerRuleProps) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.3 }}
-            style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: '12px',
-              color: '#5a5a66',
-              letterSpacing: '0.05em',
-            }}
+            style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--color-text-muted)', letterSpacing: '0.05em' }}
             className="ko-text"
           >
             {STEPS[step]}
@@ -232,13 +189,13 @@ export function PowerRule({ coefficient, exponent }: PowerRuleProps) {
         <button
           onClick={() => { setStep(0); setPlaying(true); }}
           style={{
-            background: '#d4ff4f',
+            background: 'var(--color-accent)',
             border: 'none',
             borderRadius: '4px',
             cursor: 'pointer',
             fontFamily: 'var(--font-mono)',
             fontSize: '11px',
-            color: '#0a0a0b',
+            color: 'var(--color-accent-fg)',
             padding: '7px 16px',
             letterSpacing: '0.08em',
           }}
@@ -249,12 +206,12 @@ export function PowerRule({ coefficient, exponent }: PowerRuleProps) {
           onClick={() => { setStep(0); setPlaying(false); }}
           style={{
             background: 'none',
-            border: '1px solid #26262d',
+            border: '1px solid var(--color-border)',
             borderRadius: '4px',
             cursor: 'pointer',
             fontFamily: 'var(--font-mono)',
             fontSize: '11px',
-            color: '#8a8a96',
+            color: 'var(--color-text-subtle)',
             padding: '7px 16px',
           }}
         >

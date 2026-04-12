@@ -45,35 +45,30 @@ export function TangentLine({ fn, x0, domain }: TangentLineProps) {
       <svg width={W} height={H} style={{ overflow: 'visible' }}>
         {/* 축 */}
         {yMin <= 0 && yMax >= 0 && (
-          <line x1={0} y1={toY(0)} x2={W} y2={toY(0)} stroke="#26262d" strokeWidth="1" />
+          <line x1={0} y1={toY(0)} x2={W} y2={toY(0)} stroke="var(--color-border)" strokeWidth="1" />
         )}
         {xMin <= 0 && xMax >= 0 && (
-          <line x1={toX(0)} y1={0} x2={toX(0)} y2={H} stroke="#26262d" strokeWidth="1" />
+          <line x1={toX(0)} y1={0} x2={toX(0)} y2={H} stroke="var(--color-border)" strokeWidth="1" />
         )}
-
         {/* 곡선 */}
-        <polyline points={curvePoints} fill="none" stroke="#ececef" strokeWidth="2" />
-
+        <polyline points={curvePoints} fill="none" stroke="var(--color-text)" strokeWidth="2" />
         {/* 접선 */}
         <line
           x1={toX(xMin)} y1={toY(f0 + slope * (xMin - x0))}
           x2={toX(xMax)} y2={toY(f0 + slope * (xMax - x0))}
-          stroke="#d4ff4f"
+          stroke="var(--color-accent)"
           strokeWidth="1.5"
         />
-
         {/* 접점 */}
-        <circle cx={toX(x0)} cy={toY(f0)} r="5" fill="#d4ff4f" />
-        <circle cx={toX(x0)} cy={toY(f0)} r="8" fill="none" stroke="#d4ff4f" strokeWidth="1" strokeOpacity="0.4" />
-
+        <circle cx={toX(x0)} cy={toY(f0)} r="5" fill="var(--color-accent)" />
+        <circle cx={toX(x0)} cy={toY(f0)} r="8" fill="none" stroke="var(--color-accent)" strokeWidth="1" strokeOpacity="0.4" />
         {/* 수직 보조선 */}
-        <line x1={toX(x0)} y1={toY(f0)} x2={toX(x0)} y2={H} stroke="#3a3a44" strokeWidth="1" strokeDasharray="3 3" />
-
+        <line x1={toX(x0)} y1={toY(f0)} x2={toX(x0)} y2={H} stroke="var(--color-text-ghost)" strokeWidth="1" strokeDasharray="3 3" />
         {/* 기울기 레이블 */}
         <text
           x={toX(xMax) - 10}
           y={toY(f0 + slope * (xMax - x0)) - 8}
-          fill="#d4ff4f"
+          fill="var(--color-accent)"
           fontSize="11"
           textAnchor="end"
           fontFamily="JetBrains Mono, monospace"
@@ -84,20 +79,20 @@ export function TangentLine({ fn, x0, domain }: TangentLineProps) {
 
       <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', justifyContent: 'center' }}>
         <div style={{ textAlign: 'center' }}>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#5a5a66', marginBottom: '4px' }}>접점</p>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#ececef' }}>
+          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)', marginBottom: '4px' }}>접점</p>
+          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--color-text)' }}>
             ({x0}, {f0.toFixed(3)})
           </p>
         </div>
         <div style={{ textAlign: 'center' }}>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#5a5a66', marginBottom: '4px' }}>기울기</p>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#d4ff4f' }}>
+          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)', marginBottom: '4px' }}>기울기</p>
+          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--color-accent)' }}>
             {slope.toFixed(4)}
           </p>
         </div>
         <div style={{ textAlign: 'center' }}>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#5a5a66', marginBottom: '4px' }}>접선</p>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: '#8aa82d' }}>
+          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)', marginBottom: '4px' }}>접선</p>
+          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--color-accent-dim)' }}>
             y = {slope.toFixed(2)}(x - {x0}) + {f0.toFixed(2)}
           </p>
         </div>

@@ -17,8 +17,8 @@ export function PageChrome({ currentIndex, total, onPrev, onNext, pages }: PageC
     <div
       style={{
         height: '48px',
-        background: '#111114',
-        borderTop: '1px solid #1a1a1f',
+        background: 'var(--color-bg-elevated)',
+        borderTop: '1px solid var(--color-bg-surface)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -34,7 +34,7 @@ export function PageChrome({ currentIndex, total, onPrev, onNext, pages }: PageC
           background: 'none',
           border: 'none',
           cursor: currentIndex === 0 ? 'default' : 'pointer',
-          color: currentIndex === 0 ? '#26262d' : '#8a8a96',
+          color: currentIndex === 0 ? 'var(--color-border)' : 'var(--color-text-subtle)',
           fontFamily: 'var(--font-mono)',
           fontSize: '12px',
           display: 'flex',
@@ -58,7 +58,7 @@ export function PageChrome({ currentIndex, total, onPrev, onNext, pages }: PageC
             style={{
               width: i === currentIndex ? '20px' : '6px',
               height: '4px',
-              background: i === currentIndex ? '#d4ff4f' : '#26262d',
+              background: i === currentIndex ? 'var(--color-accent)' : 'var(--color-border)',
               border: 'none',
               borderRadius: '2px',
               cursor: 'pointer',
@@ -77,7 +77,7 @@ export function PageChrome({ currentIndex, total, onPrev, onNext, pages }: PageC
           background: 'none',
           border: 'none',
           cursor: currentIndex === total - 1 ? 'default' : 'pointer',
-          color: currentIndex === total - 1 ? '#26262d' : '#8a8a96',
+          color: currentIndex === total - 1 ? 'var(--color-border)' : 'var(--color-text-subtle)',
           fontFamily: 'var(--font-mono)',
           fontSize: '12px',
           display: 'flex',

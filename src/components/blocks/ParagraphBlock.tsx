@@ -9,33 +9,21 @@ interface ParagraphBlockProps {
 
 export function ParagraphBlock({ markdown }: ParagraphBlockProps) {
   return (
-    <div
-      className="ko-text"
-      style={{
-        fontSize: '15.5px',
-        lineHeight: 1.85,
-        color: '#b8b8c0',
-        marginBottom: '18px',
-      }}
-    >
+    <div className="ko-text" style={{ fontSize: '15.5px', lineHeight: 1.85, color: 'var(--color-text-dim)', marginBottom: '18px' }}>
       <ReactMarkdown
         remarkPlugins={[remarkMath]}
         rehypePlugins={[rehypeKatex]}
         components={{
           p: ({ children }) => <p style={{ margin: 0 }}>{children}</p>,
-          strong: ({ children }) => (
-            <strong style={{ color: '#ececef', fontWeight: 600 }}>{children}</strong>
-          ),
-          em: ({ children }) => (
-            <em style={{ color: '#d8d8dd', fontStyle: 'italic' }}>{children}</em>
-          ),
+          strong: ({ children }) => <strong style={{ color: 'var(--color-text)', fontWeight: 600 }}>{children}</strong>,
+          em: ({ children }) => <em style={{ color: 'var(--color-text-dim)', fontStyle: 'italic' }}>{children}</em>,
           a: ({ href, children }) => (
             <a
               href={href}
               style={{
-                color: '#d8d8dd',
+                color: 'var(--color-text-dim)',
                 textDecoration: 'underline',
-                textDecorationColor: '#d4ff4f',
+                textDecorationColor: 'var(--color-accent)',
                 textUnderlineOffset: '4px',
               }}
             >

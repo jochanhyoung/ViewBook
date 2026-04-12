@@ -14,52 +14,26 @@ const LABELS: Record<NoteBlockProps['variant'], string> = {
   tip: 'TIP',
 };
 
+/* CSS 변수를 문자열로 사용 — 브라우저가 var() 를 정확히 해석함 */
 const COLORS: Record<NoteBlockProps['variant'], string> = {
-  info: '#5a5a66',
-  history: '#8a8a96',
-  tip: '#8aa82d',
+  info:    'var(--color-text-muted)',
+  history: 'var(--color-text-subtle)',
+  tip:     'var(--color-accent-dim)',
 };
 
 export function NoteBlock({ variant, markdown }: NoteBlockProps) {
   return (
-    <div
-      style={{
-        background: 'rgba(26,26,31,0.4)',
-        border: '1px solid #1a1a1f',
-        borderRadius: '4px',
-        padding: '16px 20px',
-        marginTop: '20px',
-        marginBottom: '20px',
-      }}
-    >
-      <p
-        style={{
-          fontFamily: 'var(--font-mono)',
-          fontSize: '10px',
-          letterSpacing: '0.2em',
-          textTransform: 'uppercase',
-          color: COLORS[variant],
-          marginBottom: '8px',
-        }}
-      >
+    <div style={{ background: 'var(--color-overlay-soft)', border: '1px solid var(--color-bg-surface)', borderRadius: '4px', padding: '16px 20px', marginTop: '20px', marginBottom: '20px' }}>
+      <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', letterSpacing: '0.2em', textTransform: 'uppercase', color: COLORS[variant], marginBottom: '8px' }}>
         {LABELS[variant]}
       </p>
-      <div
-        className="ko-text"
-        style={{
-          fontSize: '13.5px',
-          lineHeight: 1.75,
-          color: '#8a8a96',
-        }}
-      >
+      <div className="ko-text" style={{ fontSize: '13.5px', lineHeight: 1.75, color: 'var(--color-text-subtle)' }}>
         <ReactMarkdown
           remarkPlugins={[remarkMath]}
           rehypePlugins={[rehypeKatex]}
           components={{
             p: ({ children }) => <p style={{ margin: '0 0 8px' }}>{children}</p>,
-            strong: ({ children }) => (
-              <strong style={{ color: '#b8b8c0', fontWeight: 600 }}>{children}</strong>
-            ),
+            strong: ({ children }) => <strong style={{ color: 'var(--color-text-dim)', fontWeight: 600 }}>{children}</strong>,
           }}
         >
           {markdown}

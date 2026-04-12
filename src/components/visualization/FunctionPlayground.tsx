@@ -436,7 +436,7 @@ export function FunctionPlayground({ initialFn, domain }: FunctionPlaygroundProp
       {/* 입력창 */}
       <div style={{ display: 'flex', gap: '8px', width: '100%', maxWidth: '420px' }}>
         <div style={{ flex: 1, position: 'relative' }}>
-          <span style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#5a5a66' }}>f(x) =</span>
+          <span style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--color-text-muted)' }}>f(x) =</span>
           <input
             type="text"
             value={inputVal}
@@ -448,10 +448,10 @@ export function FunctionPlayground({ initialFn, domain }: FunctionPlaygroundProp
               paddingRight: '12px',
               paddingTop: '8px',
               paddingBottom: '8px',
-              background: '#111114',
-              border: `1px solid ${error ? '#ff6b6b' : '#26262d'}`,
+              background: 'var(--color-bg-elevated)',
+              border: `1px solid ${error ? '#ff6b6b' : 'var(--color-border)'}`,
               borderRadius: '4px',
-              color: '#ececef',
+              color: 'var(--color-text)',
               fontFamily: 'var(--font-mono)',
               fontSize: '13px',
               outline: 'none',
@@ -462,13 +462,13 @@ export function FunctionPlayground({ initialFn, domain }: FunctionPlaygroundProp
         <button
           onClick={handleApply}
           style={{
-            background: '#d4ff4f',
+            background: 'var(--color-accent)',
             border: 'none',
             borderRadius: '4px',
             cursor: 'pointer',
             fontFamily: 'var(--font-mono)',
             fontSize: '11px',
-            color: '#0a0a0b',
+            color: 'var(--color-accent-fg)',
             padding: '0 16px',
             letterSpacing: '0.06em',
             flexShrink: 0,
@@ -485,11 +485,11 @@ export function FunctionPlayground({ initialFn, domain }: FunctionPlaygroundProp
           maxWidth: '420px',
           minHeight: '24px',
           padding: '6px 12px',
-          background: '#111114',
-          border: '1px solid #1a1a1f',
+          background: 'var(--color-bg-elevated)',
+          border: '1px solid var(--color-bg-surface)',
           borderRadius: '4px',
           fontSize: '14px',
-          color: '#8a8a96',
+          color: 'var(--color-text-subtle)',
           overflow: 'hidden',
         }}>
           <LatexPreview raw={inputVal} />
@@ -507,21 +507,21 @@ export function FunctionPlayground({ initialFn, domain }: FunctionPlaygroundProp
                 fontSize: '11px',
                 padding: '3px 10px',
                 borderRadius: '12px',
-                background: '#1a1a1f',
-                color: '#8a8a96',
-                border: '1px solid #26262d',
+                background: 'var(--color-bg-surface)',
+                color: 'var(--color-text-subtle)',
+                border: '1px solid var(--color-border)',
                 cursor: 'pointer',
                 fontFamily: 'var(--font-mono)',
                 transition: 'all 150ms',
                 whiteSpace: 'nowrap',
               }}
               onMouseEnter={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.background = '#26262d';
-                (e.currentTarget as HTMLButtonElement).style.color = '#ececef';
+                (e.currentTarget as HTMLButtonElement).style.background = 'var(--color-border)';
+                (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-text)';
               }}
               onMouseLeave={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.background = '#1a1a1f';
-                (e.currentTarget as HTMLButtonElement).style.color = '#8a8a96';
+                (e.currentTarget as HTMLButtonElement).style.background = 'var(--color-bg-surface)';
+                (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-text-subtle)';
               }}
             >
               {h}
@@ -544,7 +544,7 @@ export function FunctionPlayground({ initialFn, domain }: FunctionPlaygroundProp
         {error ? (
           <text
             x={W / 2} y={H_SVG / 2}
-            fill="#d4ff4f" fontFamily="var(--font-mono)" fontSize="14px"
+            fill="var(--color-accent)" fontFamily="var(--font-mono)" fontSize="14px"
             textAnchor="middle" dominantBaseline="middle"
           >
             {error}
@@ -568,16 +568,16 @@ export function FunctionPlayground({ initialFn, domain }: FunctionPlaygroundProp
             ))}
 
             {/* 2. 축 */}
-            <line x1={0} y1={zeroY} x2={W} y2={zeroY} stroke="#2a2a30" strokeWidth="1" />
-            <line x1={toX(0)} y1={0} x2={toX(0)} y2={H_SVG} stroke="#2a2a30" strokeWidth="1" />
+            <line x1={0} y1={zeroY} x2={W} y2={zeroY} stroke="var(--color-vis-axis)" strokeWidth="1" />
+            <line x1={toX(0)} y1={0} x2={toX(0)} y2={H_SVG} stroke="var(--color-vis-axis)" strokeWidth="1" />
 
             {/* 3. 도함수 */}
             {showDerivative && derivPoints.length > 1 && (
-              <polyline points={derivPoints.join(' ')} fill="none" stroke="#6a8fff" strokeWidth="1.5" strokeDasharray="5 3" strokeOpacity="0.75" />
+              <polyline points={derivPoints.join(' ')} fill="none" stroke="var(--color-vis-deriv)" strokeWidth="1.5" strokeDasharray="5 3" strokeOpacity="0.75" />
             )}
 
             {/* 4. 함수 곡선 */}
-            <path d={fnPath} fill="none" stroke="#ececef" strokeWidth="2" />
+            <path d={fnPath} fill="none" stroke="var(--color-text)" strokeWidth="2" />
 
             {/* 5. 근 강조 표시 + 레이블 */}
             {roots.map((rx, idx) => {
@@ -591,7 +591,7 @@ export function FunctionPlayground({ initialFn, domain }: FunctionPlaygroundProp
               const isHovered = hoveredRoot === rx;
               return (
                 <g key={`root-${idx}`}>
-                  <circle cx={cx} cy={cy} r={isHovered ? 5 : 3.5} fill="#d4ff4f" />
+                  <circle cx={cx} cy={cy} r={isHovered ? 5 : 3.5} fill="var(--color-accent)" />
                   <rect
                     x={cx - label.length * 3.5 - 6}
                     y={labelY - 10}
@@ -604,7 +604,7 @@ export function FunctionPlayground({ initialFn, domain }: FunctionPlaygroundProp
                   />
                   <text
                     x={cx} y={labelY + 3}
-                    fill="#d4ff4f" fontSize="11" fontFamily="var(--font-mono)" fontWeight={600} textAnchor="middle"
+                    fill="var(--color-accent)" fontSize="11" fontFamily="var(--font-mono)" fontWeight={600} textAnchor="middle"
                   >
                     {label}
                   </text>
@@ -621,13 +621,13 @@ export function FunctionPlayground({ initialFn, domain }: FunctionPlaygroundProp
               const cy = toY(p.y);
               const isMax = p.type === 'max';
               const isHov = hoveredCritical !== null && Math.abs(hoveredCritical.x - p.x) < 0.001;
-              const dotColor = isMax ? '#38bdf8' : '#fb7185';
+              const dotColor = isMax ? 'var(--color-vis-max)' : 'var(--color-vis-min)';
               const leadStroke = isMax ? 'rgba(56,189,248,0.5)' : 'rgba(251,113,133,0.5)';
-              const borderColor = isMax ? '#38bdf8' : '#fb7185';
+              const borderColor = isMax ? 'var(--color-vis-max)' : 'var(--color-vis-min)';
               // Task 3: 완전 불투명 배경, 호버 시에만 tint
               const bgFill = isHov
                 ? (isMax ? 'rgba(56,189,248,0.18)' : 'rgba(251,113,133,0.18)')
-                : '#0c0d11';
+                : 'var(--color-bg)';
 
               const line1 = isMax ? '극대' : '극소';
               const line2 = `x = ${formatCriticalLabel(p.x)}`;
@@ -688,12 +688,12 @@ export function FunctionPlayground({ initialFn, domain }: FunctionPlaygroundProp
 
             {/* 7. 접선 */}
             {tangentPoints && (
-              <polyline points={tangentPoints} fill="none" stroke="#d4ff4f" strokeWidth="1.5" strokeDasharray="4 3" />
+              <polyline points={tangentPoints} fill="none" stroke="var(--color-accent)" strokeWidth="1.5" strokeDasharray="4 3" />
             )}
 
             {/* 8. 접점 */}
             {tangentX !== null && tangentY !== null && isFinite(tangentY) && (
-              <circle cx={toX(tangentX)} cy={toY(tangentY)} r="4" fill="#d4ff4f" />
+              <circle cx={toX(tangentX)} cy={toY(tangentY)} r="4" fill="var(--color-accent)" />
             )}
 
             {/* 9. x값 조회 강조점 (최상단) */}
@@ -704,7 +704,7 @@ export function FunctionPlayground({ initialFn, domain }: FunctionPlaygroundProp
                   x2={toX(queryResult.xNum)} y2={toY(0)}
                   stroke="rgba(212,255,79,0.3)" strokeWidth="1" strokeDasharray="4 4"
                 />
-                <circle cx={toX(queryResult.xNum)} cy={toY(queryResult.yNum)} r="5" fill="#d4ff4f" />
+                <circle cx={toX(queryResult.xNum)} cy={toY(queryResult.yNum)} r="5" fill="var(--color-accent)" />
                 <text
                   x={toX(queryResult.xNum)} y={toY(queryResult.yNum) - 12}
                   fill="rgba(236,236,239,0.8)" fontSize="11" fontFamily="var(--font-mono)" textAnchor="middle"
@@ -724,12 +724,12 @@ export function FunctionPlayground({ initialFn, domain }: FunctionPlaygroundProp
           style={{
             background: showDerivative ? 'rgba(106,143,255,0.15)' : 'none',
             border: '1px solid',
-            borderColor: showDerivative ? '#6a8fff' : '#26262d',
+            borderColor: showDerivative ? 'var(--color-vis-deriv)' : 'var(--color-border)',
             borderRadius: '4px',
             cursor: 'pointer',
             fontFamily: 'var(--font-mono)',
             fontSize: '11px',
-            color: showDerivative ? '#6a8fff' : '#8a8a96',
+            color: showDerivative ? 'var(--color-vis-deriv)' : 'var(--color-text-subtle)',
             padding: '5px 14px',
           }}
         >
@@ -737,20 +737,20 @@ export function FunctionPlayground({ initialFn, domain }: FunctionPlaygroundProp
         </button>
 
         {tangentX !== null && tangentY !== null && isFinite(tangentY) && tangentSlope !== null && (
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#5a5a66', lineHeight: 1.7 }}>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-muted)', lineHeight: 1.7 }}>
             <div>
               접점&nbsp;
-              <span style={{ color: '#ececef' }}>
+              <span style={{ color: 'var(--color-text)' }}>
                 ({tangentX.toFixed(2)}, {formatNum(tangentY)})
               </span>
             </div>
             <div>
               기울기&nbsp;
-              <span style={{ color: '#d4ff4f' }}>{tangentSlope.toFixed(4)}</span>
+              <span style={{ color: 'var(--color-accent)' }}>{tangentSlope.toFixed(4)}</span>
             </div>
             <div>
               y&nbsp;=&nbsp;
-              <span style={{ color: '#d4ff4f' }}>{tangentSlope.toFixed(2)}</span>
+              <span style={{ color: 'var(--color-accent)' }}>{tangentSlope.toFixed(2)}</span>
               (x&nbsp;&minus;&nbsp;{tangentX.toFixed(2)})&nbsp;+&nbsp;{formatNum(tangentY)}
             </div>
           </div>
@@ -761,12 +761,12 @@ export function FunctionPlayground({ initialFn, domain }: FunctionPlaygroundProp
             onClick={() => setTangentX(null)}
             style={{
               background: 'none',
-              border: '1px solid #26262d',
+              border: '1px solid var(--color-border)',
               borderRadius: '4px',
               cursor: 'pointer',
               fontFamily: 'var(--font-mono)',
               fontSize: '11px',
-              color: '#5a5a66',
+              color: 'var(--color-text-muted)',
               padding: '5px 12px',
             }}
           >
@@ -776,7 +776,7 @@ export function FunctionPlayground({ initialFn, domain }: FunctionPlaygroundProp
 
         {/* x값 조회 */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginLeft: 'auto' }}>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#5a5a66' }}>x =</span>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-muted)' }}>x =</span>
           <input
             type="number"
             step="any"
@@ -785,11 +785,11 @@ export function FunctionPlayground({ initialFn, domain }: FunctionPlaygroundProp
             placeholder="값"
             style={{
               width: '72px',
-              background: '#111114',
-              border: '1px solid #26262d',
+              background: 'var(--color-bg-elevated)',
+              border: '1px solid var(--color-border)',
               borderRadius: '4px',
               padding: '4px 8px',
-              color: '#ececef',
+              color: 'var(--color-text)',
               fontFamily: 'var(--font-mono)',
               fontSize: '12px',
               textAlign: 'center',
@@ -805,24 +805,24 @@ export function FunctionPlayground({ initialFn, domain }: FunctionPlaygroundProp
           display: 'flex',
           gap: '24px',
           padding: '8px 16px',
-          background: '#1a1a1f',
-          border: '1px solid #26262d',
+          background: 'var(--color-bg-surface)',
+          border: '1px solid var(--color-border)',
           borderRadius: '8px',
           width: '100%',
           maxWidth: '420px',
           fontFamily: 'var(--font-mono)',
           fontSize: '12px',
         }}>
-          <span style={{ color: '#5a5a66' }}>
-            f(<span style={{ color: '#ececef' }}>{queryX}</span>)
+          <span style={{ color: 'var(--color-text-muted)' }}>
+            f(<span style={{ color: 'var(--color-text)' }}>{queryX}</span>)
             {' = '}
-            <span style={{ color: '#d4ff4f', fontWeight: 600 }}>{queryResult.y}</span>
+            <span style={{ color: 'var(--color-accent)', fontWeight: 600 }}>{queryResult.y}</span>
           </span>
           {showDerivative && (
-            <span style={{ color: '#5a5a66' }}>
-              f′(<span style={{ color: '#ececef' }}>{queryX}</span>)
+            <span style={{ color: 'var(--color-text-muted)' }}>
+              f′(<span style={{ color: 'var(--color-text)' }}>{queryX}</span>)
               {' = '}
-              <span style={{ color: '#6a8fff', fontWeight: 600 }}>{queryResult.dy}</span>
+              <span style={{ color: 'var(--color-vis-deriv)', fontWeight: 600 }}>{queryResult.dy}</span>
             </span>
           )}
         </div>
@@ -848,7 +848,7 @@ export function FunctionPlayground({ initialFn, domain }: FunctionPlaygroundProp
                   cursor: 'pointer',
                   border: `1px solid ${isMax ? 'rgba(56,189,248,0.4)' : 'rgba(251,113,133,0.4)'}`,
                   background: isMax ? 'rgba(56,189,248,0.1)' : 'rgba(251,113,133,0.1)',
-                  color: isMax ? '#38bdf8' : '#fb7185',
+                  color: isMax ? 'var(--color-vis-max)' : 'var(--color-vis-min)',
                   transition: 'background 150ms',
                 }}
                 onMouseEnter={(e) => {
@@ -870,7 +870,7 @@ export function FunctionPlayground({ initialFn, domain }: FunctionPlaygroundProp
         </div>
       )}
 
-      <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#3a3a44', margin: 0 }}>
+      <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-ghost)', margin: 0 }}>
         그래프를 클릭하면 해당 점의 접선이 그려집니다
       </p>
     </div>
@@ -914,6 +914,6 @@ function LatexPreview({ raw }: { raw: string }) {
   try {
     return <InlineMath math={latex} />;
   } catch {
-    return <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: '#5a5a66' }}>{raw}</span>;
+    return <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--color-text-muted)' }}>{raw}</span>;
   }
 }

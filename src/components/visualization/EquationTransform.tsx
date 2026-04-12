@@ -19,17 +19,28 @@ export function EquationTransform({ steps, subStepIndex }: EquationTransformProp
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '24px', width: '100%', maxWidth: '600px' }}>
         {visibleSteps.map((s, i) => {
           const isCurrent = i === visibleSteps.length - 1;
-          const bg = s.highlight ? 'rgba(212, 255, 79, 0.2)' : isCurrent ? '#1a1a1f' : '#111114';
-          const border = s.highlight ? '1px solid #d4ff4f' : isCurrent ? '1px solid #3a3a44' : '1px solid #26262d';
-          const color = s.highlight ? '#d4ff4f' : isCurrent ? '#ececef' : '#8a8a96';
-          
+          const bg = s.highlight
+            ? 'var(--color-accent-bg-hi)'
+            : isCurrent
+              ? 'var(--color-bg-surface)'
+              : 'var(--color-bg-elevated)';
+          const border = s.highlight
+            ? '1px solid var(--color-accent)'
+            : isCurrent
+              ? '1px solid var(--color-text-ghost)'
+              : '1px solid var(--color-border)';
+          const color = s.highlight
+            ? 'var(--color-accent)'
+            : isCurrent
+              ? 'var(--color-text)'
+              : 'var(--color-text-subtle)';
+
           return (
             <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', width: '100%' }}>
               {/* 레이블 */}
-              <span style={{ fontSize: '11px', letterSpacing: '0.15em', color: '#5a5a66', textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>
+              <span style={{ fontSize: '11px', letterSpacing: '0.15em', color: 'var(--color-text-muted)', textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>
                 {s.label}
               </span>
-
               {/* 수식 박스 */}
               <div
                 style={{
@@ -48,15 +59,13 @@ export function EquationTransform({ steps, subStepIndex }: EquationTransformProp
               >
                 <BlockMath math={s.latex} />
               </div>
-
               {/* 설명 텍스트 */}
               {s.description && isCurrent && (
-                <p style={{ fontSize: '13px', color: '#8a8a96', marginTop: '4px', textAlign: 'center' }}>{s.description}</p>
+                <p style={{ fontSize: '13px', color: 'var(--color-text-subtle)', marginTop: '4px', textAlign: 'center' }}>{s.description}</p>
               )}
-
               {/* 단계 간 화살표 */}
               {i < visibleSteps.length - 1 && (
-                <span style={{ color: '#5a5a66', fontSize: '20px', marginTop: '8px' }}>↓</span>
+                <span style={{ color: 'var(--color-text-muted)', fontSize: '20px', marginTop: '8px' }}>↓</span>
               )}
             </div>
           );
