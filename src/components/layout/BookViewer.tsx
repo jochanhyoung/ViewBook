@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect, useCallback, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
+import { LatexTextRenderer } from '@/components/inline/LatexTextRenderer';
 import { AnimatePresence, motion } from 'framer-motion';
 import { paginate } from '@/lib/paginate';
 import type { Page, Block, Exercise, KeyTerm } from '@/types/content';
@@ -274,7 +275,7 @@ function IntroSheet({ page }: { page: Page }) {
           {page.learningObjectives.map((obj) => (
             <li key={obj.id} style={{ fontSize: '13.5px', color: 'var(--color-text-subtle)', lineHeight: 1.65, display: 'flex', gap: '10px' }}>
               <span style={{ color: 'var(--color-accent)', flexShrink: 0 }}>—</span>
-              <span className="ko-text">{obj.text}</span>
+              <LatexTextRenderer text={obj.text} className="ko-text" />
             </li>
           ))}
         </ul>
@@ -318,9 +319,11 @@ function TermsSheet({ keyTerms }: { keyTerms: KeyTerm[] }) {
             <span style={{ fontFamily: 'var(--font-display)', fontSize: '14px', color: 'var(--color-text)', minWidth: '110px', flexShrink: 0 }}>
               {term.term}
             </span>
-            <span style={{ fontSize: '13px', color: 'var(--color-text-subtle)', lineHeight: 1.6 }} className="ko-text">
-              {term.short}
-            </span>
+            <LatexTextRenderer
+              text={term.short}
+              className="ko-text"
+              style={{ fontSize: '13px', color: 'var(--color-text-subtle)', lineHeight: 1.6 }}
+            />
           </div>
         ))}
       </div>

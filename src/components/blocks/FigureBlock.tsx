@@ -2,6 +2,7 @@
 import type { VisualizationStep } from '@/types/visualization';
 import { SolutionPlayer } from '@/components/solution/SolutionPlayer';
 import { useTextbookStore } from '@/store/textbook-store';
+import { LatexTextRenderer } from '@/components/inline/LatexTextRenderer';
 
 interface FigureBlockProps {
   visualization: VisualizationStep;
@@ -26,9 +27,11 @@ export function FigureBlock({ visualization, caption }: FigureBlockProps) {
         />
       </div>
       <div style={{ padding: '10px 16px', borderTop: '1px solid var(--color-bg-surface)', background: 'var(--color-bg)' }}>
-        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)', margin: 0, lineHeight: 1.6 }} className="ko-text">
-          {caption}
-        </p>
+        <LatexTextRenderer
+          text={caption}
+          className="ko-text"
+          style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)', lineHeight: 1.6, display: 'block' }}
+        />
       </div>
     </div>
   );
