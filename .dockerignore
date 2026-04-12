@@ -1,0 +1,32 @@
+# ---- 의존성 ----
+# 컨테이너 내부에서 pnpm install로 재설치하므로 호스트 node_modules 제외
+node_modules/
+
+# ---- 빌드 산출물 ----
+# builder 스테이지에서 새로 빌드하므로 로컬 캐시 불필요
+.next/
+
+# ---- 버전 관리 ----
+# 불필요한 git 메타 정보 제외 (이미지 크기 + 보안)
+.git/
+.gitignore
+
+# ---- 환경 변수 (보안 민감) ----
+# 런타임 시크릿은 컨테이너 실행 시점에 주입할 것
+.env
+.env.*
+
+# ---- 빌드 메타 파일 ----
+Dockerfile
+.dockerignore
+
+# ---- 문서 · 로그 ----
+*.md
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ---- 기타 ----
+.DS_Store
+coverage/

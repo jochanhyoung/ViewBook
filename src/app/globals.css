@@ -1,0 +1,87 @@
+@import "tailwindcss";
+@import "katex/dist/katex.min.css";
+
+@theme {
+  /* Ink scale — 다크 모드 기본 */
+  --color-ink-950: #0a0a0b;
+  --color-ink-900: #111114;
+  --color-ink-800: #1a1a1f;
+  --color-ink-700: #26262d;
+  --color-ink-600: #3a3a44;
+  --color-ink-500: #5a5a66;
+  --color-ink-400: #8a8a96;
+  --color-ink-300: #b8b8c0;
+  --color-ink-200: #d8d8dd;
+  --color-ink-100: #ececef;
+
+  /* Paper scale */
+  --color-paper-50: #faf8f3;
+  --color-paper-100: #f3f0e8;
+
+  /* Accent */
+  --color-accent: #d4ff4f;
+  --color-accent-dim: #8aa82d;
+
+  /* Fonts */
+  --font-display: "Instrument Serif", "Noto Serif KR", Georgia, serif;
+  --font-body: "Inter", "Pretendard", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #0a0a0b;
+  color: #ececef;
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* KaTeX */
+.katex {
+  color: inherit;
+  font-size: 1.05em;
+}
+
+.katex-display {
+  margin: 0 !important;
+}
+
+/* 스크롤바 */
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #3a3a44;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #5a5a66;
+}
+
+/* 한글 단어 줄바꿈 */
+.ko-text {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+/* prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

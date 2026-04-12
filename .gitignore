@@ -1,0 +1,94 @@
+# ── Security: Key and Certificate files ──
+*.key
+*.p12
+*.pfx
+*.pem
+
+# ── Dependencies ──
+node_modules/
+jspm_packages/
+bower_components/
+web_modules/
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# ── Build outputs ──
+/.next/
+/out/
+/build
+/dist
+.next
+out
+
+# ── Testing & Coverage ──
+/coverage
+*.lcov
+.nyc_output
+lib-cov
+
+# ── Env files — NEVER commit secrets ──
+.env
+.env.*
+!.env.example
+
+# ── Logs ──
+*.log
+logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+yarn-integrity
+.pnpm-debug.log*
+lerna-debug.log*
+
+# ── TypeScript ──
+*.tsbuildinfo
+next-env.d.ts
+
+# ── Misc ──
+.DS_Store
+.vercel
+.cache
+.parcel-cache
+.temp
+.fusebox/
+.dynamodb/
+.serverless/
+.firebase/
+.grunt
+.lock-wscroll
+.tern-port
+.vscode-test
+
+# ── Diagnostic & Runtime ──
+pids
+*.pid
+*.seed
+*.pid.lock
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# ── Optional caches ──
+.npm
+.eslintcache
+.stylelintcache
+.node_repl_history
+
+# ── Pack / tarballs ──
+*.tgz
+
+# ── Nuxt / Vue / Svelte / Vitepress / Docusaurus ──
+.nuxt
+.svelte-kit/
+**/.vitepress/dist
+**/.vitepress/cache
+.docusaurus
+
+# ── Vite ──
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
