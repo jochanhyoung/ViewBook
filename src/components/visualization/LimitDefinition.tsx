@@ -66,94 +66,118 @@ export function LimitDefinition({ fn, x0, subStep = 0, isPlaying = false }: Limi
   const tangY1 = f0 + trueSlopeApprox * (xMin - x0);
   const tangY2 = f0 + trueSlopeApprox * (xMax - x0);
 
-  const borderColor = inputError ? '#ff6b6b' : '#26262d';
+  const borderColor = inputError ? '#ff6b6b' : 'var(--color-border)';
 
   return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px', gap: '16px' }}>
-      {/* SVG graph */}
-      <svg width={W} height={H_SVG} style={{ overflow: 'visible' }}>
-        {/* tangent (limit) */}
-        <line
-          x1={toSvgX(xMin)} y1={toSvgY(tangY1)}
-          x2={toSvgX(xMax)} y2={toSvgY(tangY2)}
-          stroke="#d4ff4f" strokeWidth="1"
-          strokeOpacity={Math.max(0, 1 - Math.abs(h) * 3)}
-          strokeDasharray="4 4"
-        />
-        {/* secant */}
-        <line
-          x1={toSvgX(xMin)} y1={toSvgY(secantY1)}
-          x2={toSvgX(xMax)} y2={toSvgY(secantY2)}
-          stroke="#8aa82d" strokeWidth="1.5" strokeOpacity="0.85"
-        />
-        {/* curve */}
-        <polyline points={curvePoints.join(' ')} fill="none" stroke="#ececef" strokeWidth="2" />
-        {/* points */}
-        <circle cx={toSvgX(x0)} cy={toSvgY(f0)} r="4" fill="#d4ff4f" />
-        <circle cx={toSvgX(x0 + h)} cy={toSvgY(fh)} r="3" fill="#8aa82d" />
-        {/* h bracket (always visible) */}
-        <line x1={toSvgX(x0)} y1={toSvgY(f0) + 22} x2={toSvgX(x0 + h)} y2={toSvgY(f0) + 22} stroke="#3a3a44" strokeWidth="1" />
-        <text x={(toSvgX(x0) + toSvgX(x0 + h)) / 2} y={toSvgY(f0) + 36}
-          fill="#5a5a66" fontSize="10" textAnchor="middle" fontFamily="JetBrains Mono, monospace">
-          h = {Number.isInteger(h) ? h : h.toPrecision(4)}
-        </text>
-        <text x={toSvgX(x0)} y={toSvgY(f0) - 12}
-          fill="#d4ff4f" fontSize="11" textAnchor="middle" fontFamily="JetBrains Mono, monospace">
-          ({x0}, {f0.toFixed(2)})
-        </text>
+    /*
+     * ── 레이아웃 버그 수정 ──
+     * 기존: height: '100%' → 부모 overflow:hidden 환경에서 하단 패널 잘림
+     * 수정: minHeight: '100%' + overflowY: 'auto' → 내용이 넘치면 스크롤 허용
+     * flexDirection: 'column' 유지하여 SVG → 컨트롤 → stats 순서 보장
+     */
+    <div
+      style={{
+        minHeight: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        overflowY: 'auto',
+        padding: '20px',
+        gap: '16px',
+      }}
+    >
+      {/*
+       * SVG 래퍼에 paddingBottom 추가
+       * — h 브라켓 레이블(y = toSvgY(f0)+36)이 SVG 하단 밖으로 나가는 문제 해결
+       * — overflow: 'visible' 이므로 SVG 자체는 클리핑 안 되지만
+       *   래퍼의 패딩이 레이아웃 공간을 확보해 줘야 함
+       */}
+      <div style={{ paddingBottom: '44px', flexShrink: 0 }}>
+        <svg width={W} height={H_SVG} style={{ overflow: 'visible' }}>
+          {/* tangent (limit) */}
+          <line
+            x1={toSvgX(xMin)} y1={toSvgY(tangY1)}
+            x2={toSvgX(xMax)} y2={toSvgY(tangY2)}
+            stroke="var(--color-accent)" strokeWidth="1"
+            strokeOpacity={Math.max(0, 1 - Math.abs(h) * 3)}
+            strokeDasharray="4 4"
+          />
+          {/* secant */}
+          <line
+            x1={toSvgX(xMin)} y1={toSvgY(secantY1)}
+            x2={toSvgX(xMax)} y2={toSvgY(secantY2)}
+            stroke="var(--color-accent-dim)" strokeWidth="1.5" strokeOpacity="0.85"
+          />
+          {/* curve */}
+          <polyline points={curvePoints.join(' ')} fill="none" stroke="var(--color-text)" strokeWidth="2" />
+          {/* points */}
+          <circle cx={toSvgX(x0)} cy={toSvgY(f0)} r="4" fill="var(--color-accent)" />
+          <circle cx={toSvgX(x0 + h)} cy={toSvgY(fh)} r="3" fill="var(--color-accent-dim)" />
+          {/* h bracket (always visible) */}
+          <line x1={toSvgX(x0)} y1={toSvgY(f0) + 22} x2={toSvgX(x0 + h)} y2={toSvgY(f0) + 22} stroke="var(--color-border)" strokeWidth="1" />
+          <text x={(toSvgX(x0) + toSvgX(x0 + h)) / 2} y={toSvgY(f0) + 36}
+            fill="var(--color-text-muted)" fontSize="10" textAnchor="middle" fontFamily="JetBrains Mono, monospace">
+            h = {Number.isInteger(h) ? h : h.toPrecision(4)}
+          </text>
+          <text x={toSvgX(x0)} y={toSvgY(f0) - 12}
+            fill="var(--color-accent)" fontSize="11" textAnchor="middle" fontFamily="JetBrains Mono, monospace">
+            ({x0}, {f0.toFixed(2)})
+          </text>
 
-        {/* Δx / Δy annotations — h가 충분히 클 때만 표시 */}
-        {Math.abs(h) > 0.05 && (() => {
-          const ax = toSvgX(x0);
-          const bx = toSvgX(x0 + h);
-          const ay = toSvgY(f0);
-          const by = toSvgY(fh);
-          const midX = (ax + bx) / 2;
-          const midY = (ay + by) / 2;
-          // Δy 수직 보조선: B의 x좌표에서 A의 y → B의 y
-          const cornerX = bx;
-          // opacity: h가 작아질수록 페이드아웃
-          const opacity = Math.min(1, (Math.abs(h) - 0.05) / 0.15);
-          return (
-            <g opacity={opacity}>
-              {/* Δx 수평 보조선 (A의 y 높이) */}
-              <line x1={ax} y1={ay} x2={cornerX} y2={ay}
-                stroke="rgba(212,255,79,0.4)" strokeWidth="1" strokeDasharray="4 3" />
-              {/* Δy 수직 보조선 (B의 x 위치) */}
-              <line x1={cornerX} y1={ay} x2={cornerX} y2={by}
-                stroke="rgba(138,168,45,0.4)" strokeWidth="1" strokeDasharray="4 3" />
-              {/* Δx 레이블 */}
-              <text x={midX} y={ay + 14}
-                fill="rgba(212,255,79,0.7)" fontSize="10" textAnchor="middle"
-                fontFamily="JetBrains Mono, monospace">
-                Δx = h
-              </text>
-              {/* Δy 레이블 */}
-              <text x={cornerX + 8} y={midY}
-                fill="rgba(138,168,45,0.85)" fontSize="10" textAnchor="start"
-                fontFamily="JetBrains Mono, monospace" dominantBaseline="middle">
-                Δy
-              </text>
-            </g>
-          );
-        })()}
-      </svg>
+          {/* Δx / Δy annotations — h가 충분히 클 때만 표시 */}
+          {Math.abs(h) > 0.05 && (() => {
+            const ax = toSvgX(x0);
+            const bx = toSvgX(x0 + h);
+            const ay = toSvgY(f0);
+            const by = toSvgY(fh);
+            const midX = (ax + bx) / 2;
+            const midY = (ay + by) / 2;
+            // Δy 수직 보조선: B의 x좌표에서 A의 y → B의 y
+            const cornerX = bx;
+            // opacity: h가 작아질수록 페이드아웃
+            const opacity = Math.min(1, (Math.abs(h) - 0.05) / 0.15);
+            return (
+              <g opacity={opacity}>
+                {/* Δx 수평 보조선 (A의 y 높이) */}
+                <line x1={ax} y1={ay} x2={cornerX} y2={ay}
+                  stroke="var(--color-vis-delta-x)" strokeWidth="1" strokeDasharray="4 3" />
+                {/* Δy 수직 보조선 (B의 x 위치) */}
+                <line x1={cornerX} y1={ay} x2={cornerX} y2={by}
+                  stroke="var(--color-vis-delta-y)" strokeWidth="1" strokeDasharray="4 3" />
+                {/* Δx 레이블 */}
+                <text x={midX} y={ay + 14}
+                  fill="var(--color-vis-delta-x-lb)" fontSize="10" textAnchor="middle"
+                  fontFamily="JetBrains Mono, monospace">
+                  Δx = h
+                </text>
+                {/* Δy 레이블 */}
+                <text x={cornerX + 8} y={midY}
+                  fill="var(--color-vis-delta-y-lb)" fontSize="10" textAnchor="start"
+                  fontFamily="JetBrains Mono, monospace" dominantBaseline="middle">
+                  Δy
+                </text>
+              </g>
+            );
+          })()}
+        </svg>
+      </div>
 
       {/* Playing mode: preset buttons only */}
       {isPlaying && (
-        <div style={{ display: 'flex', gap: '6px' }}>
+        <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }}>
           {PRESETS.map((p, i) => (
             <div
               key={p}
               style={{
                 padding: '4px 10px',
                 border: '1px solid',
-                borderColor: i === Math.min(subStep, PRESETS.length - 1) ? '#d4ff4f' : '#26262d',
+                borderColor: i === Math.min(subStep, PRESETS.length - 1) ? 'var(--color-accent)' : 'var(--color-border)',
                 borderRadius: '3px',
-                background: i === Math.min(subStep, PRESETS.length - 1) ? 'rgba(212,255,79,0.12)' : 'none',
+                background: i === Math.min(subStep, PRESETS.length - 1) ? 'var(--color-accent-bg)' : 'none',
                 fontFamily: 'var(--font-mono)',
                 fontSize: '11px',
-                color: i === Math.min(subStep, PRESETS.length - 1) ? '#d4ff4f' : '#3a3a44',
+                color: i === Math.min(subStep, PRESETS.length - 1) ? 'var(--color-accent)' : 'var(--color-text-ghost)',
               }}
             >
               {p}
@@ -164,10 +188,10 @@ export function LimitDefinition({ fn, x0, subStep = 0, isPlaying = false }: Limi
 
       {/* Paused mode: free input + preset shortcuts */}
       {!isPlaying && (
-        <div style={{ width: '100%', maxWidth: '420px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        <div style={{ width: '100%', maxWidth: '420px', display: 'flex', flexDirection: 'column', gap: '10px', flexShrink: 0 }}>
           {/* Preset buttons */}
           <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#5a5a66', letterSpacing: '0.1em', textTransform: 'uppercase', flexShrink: 0 }}>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)', letterSpacing: '0.1em', textTransform: 'uppercase', flexShrink: 0 }}>
               프리셋
             </span>
             {PRESETS.map((p) => (
@@ -176,14 +200,14 @@ export function LimitDefinition({ fn, x0, subStep = 0, isPlaying = false }: Limi
                 onClick={() => { setManualH(p); setTextInput(String(p)); setInputError(false); }}
                 style={{
                   flex: 1,
-                  background: manualH === p ? 'rgba(212,255,79,0.12)' : 'none',
+                  background: manualH === p ? 'var(--color-accent-bg)' : 'none',
                   border: '1px solid',
-                  borderColor: manualH === p ? '#d4ff4f' : '#26262d',
+                  borderColor: manualH === p ? 'var(--color-accent)' : 'var(--color-border)',
                   borderRadius: '3px',
                   cursor: 'pointer',
                   fontFamily: 'var(--font-mono)',
                   fontSize: '11px',
-                  color: manualH === p ? '#d4ff4f' : '#8a8a96',
+                  color: manualH === p ? 'var(--color-accent)' : 'var(--color-text-subtle)',
                   padding: '4px 0',
                 }}
               >
@@ -194,7 +218,7 @@ export function LimitDefinition({ fn, x0, subStep = 0, isPlaying = false }: Limi
 
           {/* Free input row */}
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#5a5a66', letterSpacing: '0.1em', textTransform: 'uppercase', flexShrink: 0 }}>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)', letterSpacing: '0.1em', textTransform: 'uppercase', flexShrink: 0 }}>
               h =
             </span>
             <input
@@ -207,10 +231,10 @@ export function LimitDefinition({ fn, x0, subStep = 0, isPlaying = false }: Limi
               style={{
                 flex: 1,
                 padding: '5px 10px',
-                background: '#111114',
+                background: 'var(--color-bg-elevated)',
                 border: `1px solid ${borderColor}`,
                 borderRadius: '3px',
-                color: '#ececef',
+                color: 'var(--color-text)',
                 fontFamily: 'var(--font-mono)',
                 fontSize: '12px',
                 outline: 'none',
@@ -220,12 +244,12 @@ export function LimitDefinition({ fn, x0, subStep = 0, isPlaying = false }: Limi
               onClick={applyText}
               style={{
                 background: 'none',
-                border: '1px solid #d4ff4f',
+                border: '1px solid var(--color-accent)',
                 borderRadius: '3px',
                 cursor: 'pointer',
                 fontFamily: 'var(--font-mono)',
                 fontSize: '11px',
-                color: '#d4ff4f',
+                color: 'var(--color-accent)',
                 padding: '5px 12px',
                 flexShrink: 0,
               }}
@@ -247,34 +271,47 @@ export function LimitDefinition({ fn, x0, subStep = 0, isPlaying = false }: Limi
               setTextInput(String(v));
               setInputError(false);
             }}
-            style={{ width: '100%', accentColor: '#d4ff4f' }}
+            style={{ width: '100%', accentColor: 'var(--color-accent)' }}
           />
         </div>
       )}
 
       {/* Stats */}
-      <div style={{ background: '#111114', border: '1px solid #1e1e25', borderRadius: '8px', padding: '14px 20px', width: '100%', maxWidth: '420px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+      <div
+        style={{
+          background: 'var(--color-bg-elevated)',
+          border: '1px solid var(--color-bg-subtle)',
+          borderRadius: '8px',
+          padding: '14px 20px',
+          width: '100%',
+          maxWidth: '420px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '10px',
+          flexShrink: 0,
+        }}
+      >
         {/* Large slope display */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#5a5a66', letterSpacing: '0.1em' }}>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)', letterSpacing: '0.1em' }}>
             할선의 기울기
           </span>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '24px', color: '#d4ff4f', fontWeight: 'bold', lineHeight: 1 }}>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '24px', color: 'var(--color-accent)', fontWeight: 'bold', lineHeight: 1 }}>
             {slope.toFixed(4)}
           </span>
         </div>
 
         {/* Computation formula */}
-        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#3a3a44', textAlign: 'right' }}>
+        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-ghost)', textAlign: 'right' }}>
           = ({fh.toFixed(4)} − {f0.toFixed(4)}) / {Number.isInteger(h) ? h : h.toPrecision(3)}
         </div>
 
         {/* Convergence guide */}
-        <div style={{ borderTop: '1px solid #1e1e25', paddingTop: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#3a3a44' }}>
+        <div style={{ borderTop: '1px solid var(--color-bg-subtle)', paddingTop: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-ghost)' }}>
             h → 0 이면
           </span>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: '#8aa82d' }}>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--color-accent-dim)' }}>
             f′({x0}) ≈ {trueSlopeApprox.toFixed(4)}
           </span>
         </div>

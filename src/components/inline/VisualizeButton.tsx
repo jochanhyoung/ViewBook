@@ -16,21 +16,14 @@ export function VisualizeButton({ steps, label = '시각화로 보기' }: Visual
 
   const handleClick = () => {
     if (steps.length === 0) return;
-
-    // Store the full current URL (pathname + ?sheet=N) so the visualize page
-    // can return to exactly the same sheet.
     try {
       const returnUrl = window.location.pathname + window.location.search + window.location.hash;
-
       const VALID_PREFIXES = ['/read/', '/chapters/', '/book/', '/teacher/'];
       const isValidOrigin = VALID_PREFIXES.some(p => returnUrl.startsWith(p));
-      if (isValidOrigin) {
-        sessionStorage.setItem(RETURN_KEY, returnUrl);
-      }
+      if (isValidOrigin) sessionStorage.setItem(RETURN_KEY, returnUrl);
     } catch (e) {
       console.error('[VisualizeButton] Storage access error:', e);
     }
-
     const payload = encodeVizPayload({ steps, returnTo: pathname ?? '/' });
     router.push(`/visualize/${payload}`);
   };
@@ -41,13 +34,13 @@ export function VisualizeButton({ steps, label = '시각화로 보기' }: Visual
     <button
       onClick={handleClick}
       style={{
-        background: 'rgba(212, 255, 79, 0.1)',
-        border: '1px solid rgba(212, 255, 79, 0.3)',
+        background: 'var(--color-accent-bg)',
+        border: '1px solid var(--color-accent-bg-hi)',
         borderRadius: '4px',
         cursor: 'pointer',
         fontFamily: 'var(--font-mono)',
         fontSize: '11px',
-        color: '#d4ff4f',
+        color: 'var(--color-accent)',
         padding: '6px 14px',
         display: 'inline-flex',
         alignItems: 'center',
@@ -56,10 +49,10 @@ export function VisualizeButton({ steps, label = '시각화로 보기' }: Visual
         letterSpacing: '0.05em',
       }}
       onMouseEnter={(e) => {
-        (e.currentTarget as HTMLButtonElement).style.background = 'rgba(212, 255, 79, 0.18)';
+        (e.currentTarget as HTMLButtonElement).style.background = 'var(--color-accent-bg-hi)';
       }}
       onMouseLeave={(e) => {
-        (e.currentTarget as HTMLButtonElement).style.background = 'rgba(212, 255, 79, 0.1)';
+        (e.currentTarget as HTMLButtonElement).style.background = 'var(--color-accent-bg)';
       }}
     >
       ▶ {label}

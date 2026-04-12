@@ -11,8 +11,8 @@ export function EquationBlock({ latex, caption }: EquationBlockProps) {
   return (
     <div
       style={{
-        borderTop: '1px solid #1a1a1f',
-        borderBottom: '1px solid #1a1a1f',
+        borderTop: '1px solid var(--color-bg-surface)',
+        borderBottom: '1px solid var(--color-bg-surface)',
         paddingTop: '24px',
         paddingBottom: '24px',
         marginTop: '24px',
@@ -32,7 +32,7 @@ export function EquationBlock({ latex, caption }: EquationBlockProps) {
           style={{
             fontFamily: 'var(--font-mono)',
             fontSize: '10px',
-            color: '#5a5a66',
+            color: 'var(--color-text-muted)',
             maxWidth: '120px',
             lineHeight: 1.5,
             flexShrink: 0,

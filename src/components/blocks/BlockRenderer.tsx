@@ -52,9 +52,9 @@ function BlockItem({ block }: { block: Block }) {
       if (block.component === 'functionPlayground') {
         const { initialFn = 'x^2', domain = [-3, 3] } = block.props as { initialFn?: string; domain?: [number, number] };
         return (
-          <div style={{ marginTop: '24px', marginBottom: '24px', border: '1px solid #1a1a1f', borderRadius: '6px', overflow: 'hidden', minHeight: '420px' }}>
-            <div style={{ background: '#111114', borderBottom: '1px solid #1a1a1f', padding: '8px 16px' }}>
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#6a8fff' }}>
+          <div style={{ marginTop: '24px', marginBottom: '24px', border: '1px solid var(--color-bg-surface)', borderRadius: '6px', overflow: 'hidden', minHeight: '420px' }}>
+            <div style={{ background: 'var(--color-bg-elevated)', borderBottom: '1px solid var(--color-bg-surface)', padding: '8px 16px' }}>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--color-vis-deriv)' }}>
                 함수 탐구
               </span>
             </div>

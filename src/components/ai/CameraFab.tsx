@@ -16,13 +16,13 @@ export function CameraFab() {
         width: '48px',
         height: '48px',
         borderRadius: '50%',
-        background: '#d4ff4f',
+        background: 'var(--color-accent)',
         border: 'none',
         cursor: 'pointer',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        boxShadow: '0 4px 20px rgba(212, 255, 79, 0.3)',
+        boxShadow: '0 4px 20px var(--color-accent-bg)',
         zIndex: 50,
         transition: 'all 150ms',
       }}
@@ -38,14 +38,14 @@ export function CameraFab() {
           style={{
             width: '20px',
             height: '20px',
-            border: '2px solid #0a0a0b',
+            border: '2px solid var(--color-accent-fg)',
             borderTopColor: 'transparent',
             borderRadius: '50%',
             animation: 'spin 0.8s linear infinite',
           }}
         />
       ) : (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0a0a0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-fg)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
           <circle cx="12" cy="13" r="4" />
         </svg>

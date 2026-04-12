@@ -13,14 +13,14 @@ export function RightStage() {
     <div
       className="relative flex flex-col items-center justify-center h-full overflow-hidden"
       style={{
-        background: 'radial-gradient(ellipse at 50% 30%, #1a1a1f, #0a0a0b)',
-        boxShadow: 'inset 0 0 1px #26262d',
+        background: 'var(--color-stage-bg)',
+        boxShadow: 'inset 0 0 1px var(--color-border)',
       }}
     >
       {/* SVG 노이즈 오버레이 */}
       <svg
         className="absolute inset-0 w-full h-full pointer-events-none"
-        style={{ opacity: 0.04 }}
+        style={{ opacity: 'var(--color-vis-noise)' } as React.CSSProperties}
         xmlns="http://www.w3.org/2000/svg"
       >
         <filter id="noise">
@@ -51,10 +51,13 @@ function EmptyStage() {
   return (
     <div className="flex flex-col items-center justify-center h-full gap-4 px-8 text-center">
       <div
-        className="w-16 h-16 rounded-full border border-[#26262d] flex items-center justify-center"
-        style={{ background: 'rgba(26,26,31,0.8)' }}
+        className="w-16 h-16 rounded-full border flex items-center justify-center"
+        style={{
+          borderColor: 'var(--color-border)',
+          background: 'var(--color-overlay-soft)',
+        }}
       >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#5a5a66" strokeWidth="1.5">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" strokeWidth="1.5">
           <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
         </svg>
       </div>
@@ -64,12 +67,12 @@ function EmptyStage() {
           fontSize: '10px',
           letterSpacing: '0.2em',
           textTransform: 'uppercase',
-          color: '#5a5a66',
+          color: 'var(--color-text-muted)',
         }}
       >
         시각화 무대
       </p>
-      <p style={{ fontSize: '13px', color: '#3a3a44', maxWidth: '200px', lineHeight: 1.6 }}>
+      <p style={{ fontSize: '13px', color: 'var(--color-text-ghost)', maxWidth: '200px', lineHeight: 1.6 }}>
         예제 또는 연습문제에서 &quot;시각화로 보기&quot;를 클릭하면 여기에 재생됩니다.
       </p>
     </div>

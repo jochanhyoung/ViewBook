@@ -30,7 +30,6 @@ export function DerivativeGraph({ fn, domain }: DerivativeGraphProps) {
   const W = 380, H = 130;
   const [xMin, xMax] = domain;
 
-  // 값 범위 계산
   const yVals = Array.from({ length: 100 }, (_, i) => evalFn(xMin + (i / 99) * (xMax - xMin)));
   const dVals = Array.from({ length: 100 }, (_, i) => evalDeriv(xMin + (i / 99) * (xMax - xMin)));
   const yMin = Math.min(...yVals) - 0.5, yMax = Math.max(...yVals) + 0.5;
@@ -54,7 +53,7 @@ export function DerivativeGraph({ fn, domain }: DerivativeGraphProps) {
   const cy_d = toY(evalDeriv(cursor), dMin, dMax);
   const slope = evalDeriv(cursor);
 
-  function handleMouseMove(e: React.MouseEvent<SVGSVGElement>, which: 'top' | 'bottom') {
+  function handleMouseMove(e: React.MouseEvent<SVGSVGElement>) {
     if (!svgRef.current) return;
     const rect = svgRef.current.getBoundingClientRect();
     const svgX = (e.clientX - rect.left) * (W / rect.width);
@@ -64,59 +63,58 @@ export function DerivativeGraph({ fn, domain }: DerivativeGraphProps) {
 
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px', gap: '8px' }}>
-      <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#5a5a66', letterSpacing: '0.1em', alignSelf: 'flex-start' }}>
+      <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)', letterSpacing: '0.1em', alignSelf: 'flex-start' }}>
         f(x) — 원함수
       </p>
       <svg
         ref={svgRef}
         width={W}
         height={H}
-        onMouseMove={(e) => handleMouseMove(e, 'top')}
+        onMouseMove={handleMouseMove}
         style={{ cursor: 'crosshair', overflow: 'visible' }}
       >
-        {/* x축 */}
         {yMin <= 0 && yMax >= 0 && (
-          <line x1={0} y1={toY(0, yMin, yMax)} x2={W} y2={toY(0, yMin, yMax)} stroke="#26262d" strokeWidth="1" />
+          <line x1={0} y1={toY(0, yMin, yMax)} x2={W} y2={toY(0, yMin, yMax)} stroke="var(--color-border)" strokeWidth="1" />
         )}
-        <polyline points={fPoints} fill="none" stroke="#ececef" strokeWidth="2" />
+        <polyline points={fPoints} fill="none" stroke="var(--color-text)" strokeWidth="2" />
         {/* 접선 */}
         <line
           x1={toX(xMin)} y1={toY(evalFn(cursor) + slope * (xMin - cursor), yMin, yMax)}
           x2={toX(xMax)} y2={toY(evalFn(cursor) + slope * (xMax - cursor), yMin, yMax)}
-          stroke="#d4ff4f" strokeWidth="1" strokeOpacity="0.5" strokeDasharray="4 3"
+          stroke="var(--color-accent)" strokeWidth="1" strokeOpacity="0.5" strokeDasharray="4 3"
         />
         {/* 수직선 */}
-        <line x1={cx} y1={0} x2={cx} y2={H} stroke="#3a3a44" strokeWidth="1" strokeDasharray="2 2" />
+        <line x1={cx} y1={0} x2={cx} y2={H} stroke="var(--color-text-ghost)" strokeWidth="1" strokeDasharray="2 2" />
         {/* 접점 */}
-        <circle cx={cx} cy={cy_f} r="4" fill="#d4ff4f" />
+        <circle cx={cx} cy={cy_f} r="4" fill="var(--color-accent)" />
       </svg>
 
-      <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#5a5a66', letterSpacing: '0.1em', alignSelf: 'flex-start', marginTop: '8px' }}>
+      <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)', letterSpacing: '0.1em', alignSelf: 'flex-start', marginTop: '8px' }}>
         f′(x) — 도함수
       </p>
       <svg
         width={W}
         height={H}
-        onMouseMove={(e) => handleMouseMove(e, 'bottom')}
+        onMouseMove={handleMouseMove}
         style={{ cursor: 'crosshair', overflow: 'visible' }}
       >
         {dMin <= 0 && dMax >= 0 && (
-          <line x1={0} y1={toY(0, dMin, dMax)} x2={W} y2={toY(0, dMin, dMax)} stroke="#26262d" strokeWidth="1" />
+          <line x1={0} y1={toY(0, dMin, dMax)} x2={W} y2={toY(0, dMin, dMax)} stroke="var(--color-border)" strokeWidth="1" />
         )}
-        <polyline points={dPoints} fill="none" stroke="#8aa82d" strokeWidth="2" />
-        <line x1={cx} y1={0} x2={cx} y2={H} stroke="#3a3a44" strokeWidth="1" strokeDasharray="2 2" />
-        <circle cx={cx} cy={cy_d} r="4" fill="#8aa82d" />
+        <polyline points={dPoints} fill="none" stroke="var(--color-accent-dim)" strokeWidth="2" />
+        <line x1={cx} y1={0} x2={cx} y2={H} stroke="var(--color-text-ghost)" strokeWidth="1" strokeDasharray="2 2" />
+        <circle cx={cx} cy={cy_d} r="4" fill="var(--color-accent-dim)" />
       </svg>
 
       {/* 수치 표시 */}
       <div style={{ display: 'flex', gap: '24px', marginTop: '8px' }}>
-        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#5a5a66' }}>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-muted)' }}>
           x = {cursor.toFixed(3)}
         </span>
-        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#ececef' }}>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text)' }}>
           f(x) = {evalFn(cursor).toFixed(3)}
         </span>
-        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#d4ff4f' }}>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-accent)' }}>
           f′(x) = {slope.toFixed(3)}
         </span>
       </div>

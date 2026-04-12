@@ -57,46 +57,41 @@ export function DefiniteIntegral({ fn, a, b }: DefiniteIntegralProps) {
         {/* 채워진 영역 */}
         <polygon
           points={fillPoints.join(' ')}
-          fill="rgba(138, 168, 45, 0.2)"
+          fill="var(--color-vis-rect-pos)"
           stroke="none"
         />
-
         {/* x축 */}
-        <line x1={0} y1={toY(0)} x2={W} y2={toY(0)} stroke="#3a3a44" strokeWidth="1" />
-
+        <line x1={0} y1={toY(0)} x2={W} y2={toY(0)} stroke="var(--color-text-ghost)" strokeWidth="1" />
         {/* 경계선 */}
-        <line x1={toX(a)} y1={0} x2={toX(a)} y2={H} stroke="#5a5a66" strokeWidth="1" strokeDasharray="3 3" />
-        <line x1={toX(b)} y1={0} x2={toX(b)} y2={H} stroke="#5a5a66" strokeWidth="1" strokeDasharray="3 3" />
-
+        <line x1={toX(a)} y1={0} x2={toX(a)} y2={H} stroke="var(--color-text-muted)" strokeWidth="1" strokeDasharray="3 3" />
+        <line x1={toX(b)} y1={0} x2={toX(b)} y2={H} stroke="var(--color-text-muted)" strokeWidth="1" strokeDasharray="3 3" />
         {/* 라벨 */}
-        <text x={toX(a)} y={H + 16} fill="#5a5a66" fontSize="11" textAnchor="middle" fontFamily="JetBrains Mono, monospace">a={a}</text>
-        <text x={toX(b)} y={H + 16} fill="#5a5a66" fontSize="11" textAnchor="middle" fontFamily="JetBrains Mono, monospace">b={b}</text>
-
+        <text x={toX(a)} y={H + 16} fill="var(--color-text-muted)" fontSize="11" textAnchor="middle" fontFamily="JetBrains Mono, monospace">a={a}</text>
+        <text x={toX(b)} y={H + 16} fill="var(--color-text-muted)" fontSize="11" textAnchor="middle" fontFamily="JetBrains Mono, monospace">b={b}</text>
         {/* 적분값 표시 */}
         <text
           x={(toX(a) + toX(b)) / 2}
           y={toY((Math.max(...yVals) + yMax) / 2)}
-          fill="#8aa82d"
+          fill="var(--color-accent-dim)"
           fontSize="13"
           textAnchor="middle"
           fontFamily="JetBrains Mono, monospace"
         >
           {integral.toFixed(4)}
         </text>
-
         {/* 곡선 */}
-        <polyline points={curvePoints} fill="none" stroke="#ececef" strokeWidth="2.5" />
+        <polyline points={curvePoints} fill="none" stroke="var(--color-text)" strokeWidth="2.5" />
       </svg>
 
       {/* 결과 */}
-      <div style={{ background: '#1a1a1f', border: '1px solid #26262d', borderRadius: '6px', padding: '14px 24px', textAlign: 'center' }}>
-        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#5a5a66', marginBottom: '6px', letterSpacing: '0.1em' }}>
+      <div style={{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)', borderRadius: '6px', padding: '14px 24px', textAlign: 'center' }}>
+        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)', marginBottom: '6px', letterSpacing: '0.1em' }}>
           ∫ₐᵇ f(x) dx
         </p>
-        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '24px', color: '#d4ff4f', margin: 0 }}>
+        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '24px', color: 'var(--color-accent)', margin: 0 }}>
           ≈ {integral.toFixed(6)}
         </p>
-        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#3a3a44', marginTop: '4px' }}>
+        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-ghost)', marginTop: '4px' }}>
           (수치 적분, 심프슨 법칙)
         </p>
       </div>

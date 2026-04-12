@@ -11,6 +11,7 @@ import { CameraFab } from '@/components/ai/CameraFab';
 import { CameraModal } from '@/components/ai/CameraModal';
 import { useTextbookStore } from '@/store/textbook-store';
 import { pages } from '@/content/index';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 interface BookViewerProps {
   page: Page;
@@ -117,51 +118,56 @@ function BookViewerInner({ page }: BookViewerProps) {
   }, [navigate, setSheet, sheets.length]);
 
   return (
-    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', background: '#0a0a0b' }}>
+    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', background: 'var(--color-bg)' }}>
       {/* 스크린리더 공지 */}
       <div aria-live="polite" style={{ position: 'absolute', width: '1px', height: '1px', overflow: 'hidden', clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap' }}>
         {`${page.title} — ${sheetIdx + 1}페이지 / 전체 ${sheets.length}페이지`}
       </div>
 
       {/* Top progress bar */}
-      <div style={{ height: '2px', background: '#1a1a1f', flexShrink: 0, position: 'relative' }}>
-        <div style={{ height: '100%', width: `${((sheetIdx + 1) / sheets.length) * 100}%`, background: '#d4ff4f', transition: 'width 350ms ease' }} />
+      <div style={{ height: '2px', background: 'var(--color-bg-surface)', flexShrink: 0, position: 'relative' }}>
+        <div style={{ height: '100%', width: `${((sheetIdx + 1) / sheets.length) * 100}%`, background: 'var(--color-accent)', transition: 'width 350ms ease' }} />
       </div>
 
       {/* Header bar */}
-      <div style={{ height: '44px', borderBottom: '1px solid #1a1a1f', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 20px', flexShrink: 0 }}>
+      <div style={{ height: '44px', borderBottom: '1px solid var(--color-bg-surface)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 20px', flexShrink: 0 }}>
         {/* Page nav */}
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
           {pageIdx > 0 && (
-            <a href={`/read/${pages[pageIdx - 1].slug}`} style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#5a5a66', textDecoration: 'none' }}>
+            <a href={`/read/${pages[pageIdx - 1].slug}`} style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-muted)', textDecoration: 'none' }}>
               ← {pages[pageIdx - 1].number}
             </a>
           )}
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#8a8a96' }}>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-subtle)' }}>
             {page.number}&ensp;{page.title}
           </span>
           {pageIdx < pages.length - 1 && (
-            <a href={`/read/${pages[pageIdx + 1].slug}`} style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#5a5a66', textDecoration: 'none' }}>
+            <a href={`/read/${pages[pageIdx + 1].slug}`} style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-muted)', textDecoration: 'none' }}>
               {pages[pageIdx + 1].number} →
             </a>
           )}
         </div>
 
-        {/* Sheet indicator dots */}
-        <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
-          {sheets.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setSheet(i)}
-              style={{
-                width: i === sheetIdx ? '16px' : '4px',
-                height: '4px',
-                background: i === sheetIdx ? '#d4ff4f' : '#26262d',
-                borderRadius: '2px', border: 'none', cursor: 'pointer',
-                transition: 'all 250ms ease', padding: 0,
-              }}
-            />
-          ))}
+        {/* 우측: 다크/라이트 토글 + 시트 인디케이터 도트 */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <ThemeToggle />
+
+          {/* Sheet indicator dots */}
+          <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+            {sheets.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setSheet(i)}
+                style={{
+                  width: i === sheetIdx ? '16px' : '4px',
+                  height: '4px',
+                  background: i === sheetIdx ? 'var(--color-accent)' : 'var(--color-border)',
+                  borderRadius: '2px', border: 'none', cursor: 'pointer',
+                  transition: 'all 250ms ease', padding: 0,
+                }}
+              />
+            ))}
+          </div>
         </div>
       </div>
 
@@ -184,23 +190,23 @@ function BookViewerInner({ page }: BookViewerProps) {
       </div>
 
       {/* Bottom nav */}
-      <div style={{ height: '52px', borderTop: '1px solid #1a1a1f', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 20px', flexShrink: 0 }}>
+      <div style={{ height: '52px', borderTop: '1px solid var(--color-bg-surface)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 20px', flexShrink: 0 }}>
         <button
           onClick={() => navigate(-1)}
           disabled={sheetIdx === 0}
-          style={{ background: 'none', border: 'none', cursor: sheetIdx === 0 ? 'default' : 'pointer', fontFamily: 'var(--font-mono)', fontSize: '12px', color: sheetIdx === 0 ? '#26262d' : '#8a8a96', padding: '4px 8px' }}
+          style={{ background: 'none', border: 'none', cursor: sheetIdx === 0 ? 'default' : 'pointer', fontFamily: 'var(--font-mono)', fontSize: '12px', color: sheetIdx === 0 ? 'var(--color-border)' : 'var(--color-text-subtle)', padding: '4px 8px' }}
         >
           ← 이전
         </button>
 
-        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#3a3a44', letterSpacing: '0.1em' }}>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-ghost)', letterSpacing: '0.1em' }}>
           {sheetIdx + 1} / {sheets.length}
         </span>
 
         <button
           onClick={() => navigate(1)}
           disabled={sheetIdx >= sheets.length - 1}
-          style={{ background: 'none', border: 'none', cursor: sheetIdx >= sheets.length - 1 ? 'default' : 'pointer', fontFamily: 'var(--font-mono)', fontSize: '12px', color: sheetIdx >= sheets.length - 1 ? '#26262d' : '#8a8a96', padding: '4px 8px' }}
+          style={{ background: 'none', border: 'none', cursor: sheetIdx >= sheets.length - 1 ? 'default' : 'pointer', fontFamily: 'var(--font-mono)', fontSize: '12px', color: sheetIdx >= sheets.length - 1 ? 'var(--color-border)' : 'var(--color-text-subtle)', padding: '4px 8px' }}
         >
           다음 →
         </button>
@@ -217,7 +223,7 @@ function BookViewerInner({ page }: BookViewerProps) {
 //    generateStaticParams 페이지의 SSG를 보호 ─────────────────────
 export function BookViewer({ page }: BookViewerProps) {
   return (
-    <Suspense fallback={<div style={{ background: '#0a0a0b', height: '100vh' }} />}>
+    <Suspense fallback={<div style={{ background: 'var(--color-bg)', height: '100vh' }} />}>
       <BookViewerInner page={page} />
     </Suspense>
   );
@@ -246,28 +252,28 @@ function SheetWrap({ children }: { children: React.ReactNode }) {
 function IntroSheet({ page }: { page: Page }) {
   return (
     <SheetWrap>
-      <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#5a5a66', marginBottom: '4px' }}>
+      <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--color-text-muted)', marginBottom: '4px' }}>
         {page.chapter}
       </p>
-      <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#3a3a44', marginBottom: '32px' }}>
+      <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-ghost)', marginBottom: '32px' }}>
         {page.section}
       </p>
-      <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', color: '#ececef', fontWeight: 600, lineHeight: 1.2, marginBottom: '8px' }}>
+      <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', color: 'var(--color-text)', fontWeight: 600, lineHeight: 1.2, marginBottom: '8px' }}>
         {page.title}
       </h1>
       {page.subtitle && (
-        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#8a8a96', marginBottom: '40px' }}>
+        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--color-text-subtle)', marginBottom: '40px' }}>
           {page.subtitle}
         </p>
       )}
-      <div style={{ borderLeft: '2px solid #26262d', paddingLeft: '20px' }}>
-        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#5a5a66', marginBottom: '12px' }}>
+      <div style={{ borderLeft: '2px solid var(--color-border)', paddingLeft: '20px' }}>
+        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--color-text-muted)', marginBottom: '12px' }}>
           학습 목표
         </p>
         <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {page.learningObjectives.map((obj) => (
-            <li key={obj.id} style={{ fontSize: '13.5px', color: '#8a8a96', lineHeight: 1.65, display: 'flex', gap: '10px' }}>
-              <span style={{ color: '#d4ff4f', flexShrink: 0 }}>—</span>
+            <li key={obj.id} style={{ fontSize: '13.5px', color: 'var(--color-text-subtle)', lineHeight: 1.65, display: 'flex', gap: '10px' }}>
+              <span style={{ color: 'var(--color-accent)', flexShrink: 0 }}>—</span>
               <span className="ko-text">{obj.text}</span>
             </li>
           ))}
@@ -288,7 +294,7 @@ function ContentSheet({ blocks }: { blocks: Block[] }) {
 function ExercisesSheet({ exercises }: { exercises: Exercise[] }) {
   return (
     <SheetWrap>
-      <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#5a5a66', marginBottom: '24px', borderBottom: '1px solid #1a1a1f', paddingBottom: '16px' }}>
+      <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--color-text-muted)', marginBottom: '24px', borderBottom: '1px solid var(--color-bg-surface)', paddingBottom: '16px' }}>
         연습문제
       </p>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
@@ -303,16 +309,16 @@ function ExercisesSheet({ exercises }: { exercises: Exercise[] }) {
 function TermsSheet({ keyTerms }: { keyTerms: KeyTerm[] }) {
   return (
     <SheetWrap>
-      <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#5a5a66', marginBottom: '24px', borderBottom: '1px solid #1a1a1f', paddingBottom: '16px' }}>
+      <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--color-text-muted)', marginBottom: '24px', borderBottom: '1px solid var(--color-bg-surface)', paddingBottom: '16px' }}>
         핵심 용어
       </p>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
         {keyTerms.map((term) => (
           <div key={term.term} style={{ display: 'flex', gap: '20px' }}>
-            <span style={{ fontFamily: 'var(--font-display)', fontSize: '14px', color: '#ececef', minWidth: '110px', flexShrink: 0 }}>
+            <span style={{ fontFamily: 'var(--font-display)', fontSize: '14px', color: 'var(--color-text)', minWidth: '110px', flexShrink: 0 }}>
               {term.term}
             </span>
-            <span style={{ fontSize: '13px', color: '#8a8a96', lineHeight: 1.6 }} className="ko-text">
+            <span style={{ fontSize: '13px', color: 'var(--color-text-subtle)', lineHeight: 1.6 }} className="ko-text">
               {term.short}
             </span>
           </div>
