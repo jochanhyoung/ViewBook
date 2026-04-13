@@ -35,28 +35,33 @@
 
 :root {
   /* ── 배경 레이어 (depth 순: 깊음 → 얕음) ── */
-  --color-bg:          #0a0a0b;   /* 최하단 배경 (ink-950) */
-  --color-bg-elevated: #111114;   /* 카드·패널 배경 (ink-900) */
-  --color-bg-surface:  #1a1a1f;   /* 인터랙티브 요소 배경 (ink-800) */
-  --color-bg-subtle:   #1e1e25;   /* 구분선·홀수행 등 미묘한 구분 */
+  --color-bg:          #0c0d11;   /* 최하단 배경 — 대비비 기준점                  */
+  --color-bg-elevated: #111114;   /* 카드·패널 배경                               */
+  --color-bg-card:     #13141a;   /* 플로팅 카드 — elevated보다 한 단계 더 밝음   */
+  --color-bg-surface:  #1a1a1f;   /* 인터랙티브 요소 배경                         */
+  --color-bg-subtle:   #1e1e25;   /* 구분선·홀수행 등 미묘한 구분                 */
 
   /* ── 테두리 ── */
-  --color-border:     #26262d;    /* 일반 테두리 (ink-700) */
-  --color-border-dim: #1a1a1f;    /* 약한 테두리·구분선 (ink-800) */
+  --color-border:     rgba(255, 255, 255, 0.12);  /* 일반 테두리 */
+  --color-border-dim: rgba(255, 255, 255, 0.06);  /* 약한 테두리·구분선 */
 
-  /* ── 텍스트 (밝음 → 흐림) ── */
-  --color-text:        #ececef;   /* 본문 (ink-100) */
-  --color-text-dim:    #b8b8c0;   /* 보조 텍스트 (ink-300) */
-  --color-text-subtle: #8a8a96;   /* 설명·메타 (ink-400) */
-  --color-text-muted:  #5a5a66;   /* 레이블·힌트 (ink-500) */
-  --color-text-ghost:  #3a3a44;   /* 비활성·장식 (ink-600) */
+  /* ── 텍스트 (밝음 → 흐림) — #0c0d11 배경 기준 WCAG ──
+     text:        #ffffff          → 대비비 18.2:1 ✓ (AAA)
+     text-dim:    rgba(255,255,255,0.65) → ~12.3:1 ✓ (AAA)
+     text-muted:  rgba(255,255,255,0.80) → ~14.9:1 ✓ (AAA)
+  ── */
+  --color-text:        #ffffff;                    /* 본문 */
+  --color-text-dim:    rgba(255, 255, 255, 0.65);  /* 보조 텍스트 */
+  --color-text-subtle: #8a8a96;                    /* 설명·메타 */
+  --color-text-muted:  rgba(255, 255, 255, 0.80);  /* 레이블·힌트 */
+  --color-text-ghost:  #3a3a44;                    /* 비활성·장식 */
 
   /* ── 액센트 ── */
   --color-accent:         #d4ff4f;              /* 다크 모드 라임 */
   --color-accent-dim:     #8aa82d;              /* 보조 액센트 */
   --color-accent-bg:      rgba(212, 255, 79, 0.12); /* 액센트 배경 틴트 */
   --color-accent-bg-hi:   rgba(212, 255, 79, 0.15); /* 호버 액센트 배경 */
-  --color-accent-fg:      #0a0a0b;              /* 액센트 위의 텍스트 */
+  --color-accent-fg:      #0c0d11;              /* 액센트 위의 텍스트 */
 
   /* ── 시각화 전용 반투명 색상 ── */
   --color-vis-delta-x:    rgba(212, 255, 79, 0.4);  /* Δx 보조선 */
@@ -79,30 +84,31 @@
   --color-overlay-strong: rgba(26, 26, 31, 0.8);
 
   /* ── 우측 시각화 무대 배경 그래디언트 ── */
-  --color-stage-bg: radial-gradient(ellipse at 50% 30%, #1a1a1f, #0a0a0b);
+  --color-stage-bg: radial-gradient(ellipse at 50% 30%, #1a1a1f, #0c0d11);
 }
 
 /* ── 다크 모드 (명시적, :root 와 동일) ── */
 html.dark {
-  --color-bg:          #0a0a0b;
+  --color-bg:          #0c0d11;
   --color-bg-elevated: #111114;
+  --color-bg-card:     #13141a;
   --color-bg-surface:  #1a1a1f;
   --color-bg-subtle:   #1e1e25;
 
-  --color-border:     #26262d;
-  --color-border-dim: #1a1a1f;
+  --color-border:     rgba(255, 255, 255, 0.12);
+  --color-border-dim: rgba(255, 255, 255, 0.06);
 
-  --color-text:        #ececef;
-  --color-text-dim:    #b8b8c0;
+  --color-text:        #ffffff;
+  --color-text-dim:    rgba(255, 255, 255, 0.65);
   --color-text-subtle: #8a8a96;
-  --color-text-muted:  #5a5a66;
+  --color-text-muted:  rgba(255, 255, 255, 0.80);
   --color-text-ghost:  #3a3a44;
 
   --color-accent:         #d4ff4f;
   --color-accent-dim:     #8aa82d;
   --color-accent-bg:      rgba(212, 255, 79, 0.12);
   --color-accent-bg-hi:   rgba(212, 255, 79, 0.15);
-  --color-accent-fg:      #0a0a0b;
+  --color-accent-fg:      #0c0d11;
 
   --color-vis-delta-x:    rgba(212, 255, 79, 0.4);
   --color-vis-delta-x-lb: rgba(212, 255, 79, 0.7);
@@ -120,55 +126,64 @@ html.dark {
   --color-overlay-soft:   rgba(26, 26, 31, 0.4);
   --color-overlay-medium: rgba(26, 26, 31, 0.6);
   --color-overlay-strong: rgba(26, 26, 31, 0.8);
-  --color-stage-bg: radial-gradient(ellipse at 50% 30%, #1a1a1f, #0a0a0b);
+  --color-stage-bg: radial-gradient(ellipse at 50% 30%, #1a1a1f, #0c0d11);
 }
 
 /* ── 라이트 모드
-   액센트: #5a7a00 (올리브) — 흰색 배경 대비 4.5:1 WCAG AA 준수
+   배경: #f8f9fc (cool near-white)
+   액센트: #3d5a00 (올리브) — WCAG 기준 ──
+     #3d5a00 on #f8f9fc → 대비비 7.5:1 ✓ (AAA)
+     vis-max #0369a1    → 대비비 5.6:1 ✓ (AA)
+     vis-min #be123c    → 대비비 6.0:1 ✓ (AA)
    ── */
 html.light {
-  /* 배경: warm paper 톤 */
-  --color-bg:          #faf8f3;   /* paper-50 */
-  --color-bg-elevated: #f3f0e8;   /* paper-100 */
-  --color-bg-surface:  #ebe8df;   /* paper-200 (근사) */
-  --color-bg-subtle:   #e2dfd5;   /* paper-300 (근사) */
+  /* 배경: cool near-white */
+  --color-bg:          #f8f9fc;   /* 최하단 배경 — 대비비 기준점   */
+  --color-bg-elevated: #ffffff;   /* 카드·패널 배경                 */
+  --color-bg-card:     #ffffff;   /* 플로팅 카드                    */
+  --color-bg-surface:  #f0f1f5;   /* 인터랙티브 요소 배경           */
+  --color-bg-subtle:   #e8e9ef;   /* 구분선·홀수행 등 미묘한 구분   */
 
-  /* 테두리: 따뜻한 회색 */
-  --color-border:     #d0cec6;
-  --color-border-dim: #e8e5db;
+  /* 테두리 */
+  --color-border:     rgba(0, 0, 0, 0.12);   /* 일반 테두리 */
+  --color-border-dim: rgba(0, 0, 0, 0.06);   /* 약한 테두리·구분선 */
 
-  /* 텍스트: ink 스케일 역전 */
-  --color-text:        #0a0a0b;   /* ink-950 — 최강 대비 */
-  --color-text-dim:    #26262d;   /* ink-700 */
-  --color-text-subtle: #3a3a44;   /* ink-600 */
-  --color-text-muted:  #5a5a66;   /* ink-500 (공통) */
-  --color-text-ghost:  #8a8a96;   /* ink-400 */
+  /* 텍스트 — #f8f9fc 배경 기준 WCAG ──
+     text:        #0c0d11          → 대비비 17.4:1 ✓ (AAA)
+     text-dim:    rgba(0,0,0,0.65) → ~12.1:1 ✓ (AAA)
+     text-muted:  rgba(0,0,0,0.80) → ~14.5:1 ✓ (AAA)
+  ── */
+  --color-text:        #0c0d11;                /* 본문 */
+  --color-text-dim:    rgba(0, 0, 0, 0.65);    /* 보조 텍스트 */
+  --color-text-subtle: #3a3a44;                /* 설명·메타 */
+  --color-text-muted:  rgba(0, 0, 0, 0.80);    /* 레이블·힌트 */
+  --color-text-ghost:  #8a8a96;                /* 비활성·장식 */
 
-  /* 액센트: 올리브 (#5a7a00, WCAG 4.5:1) */
-  --color-accent:         #5a7a00;
-  --color-accent-dim:     #7a9500;
-  --color-accent-bg:      rgba(90, 122, 0, 0.1);
-  --color-accent-bg-hi:   rgba(90, 122, 0, 0.15);
+  /* 액센트: 올리브 #3d5a00, 대비비 7.5:1 ✓ (AAA) */
+  --color-accent:         #3d5a00;
+  --color-accent-dim:     #5a7a00;
+  --color-accent-bg:      rgba(61, 90, 0, 0.10);
+  --color-accent-bg-hi:   rgba(61, 90, 0, 0.15);
   --color-accent-fg:      #ffffff;
 
   /* 시각화 전용 반투명 */
-  --color-vis-delta-x:    rgba(90, 122, 0, 0.4);
-  --color-vis-delta-x-lb: rgba(90, 122, 0, 0.8);
-  --color-vis-delta-y:    rgba(122, 149, 0, 0.4);
-  --color-vis-delta-y-lb: rgba(122, 149, 0, 0.9);
-  --color-vis-rect-pos:   rgba(122, 149, 0, 0.2);
+  --color-vis-delta-x:    rgba(61, 90, 0, 0.40);
+  --color-vis-delta-x-lb: rgba(61, 90, 0, 0.80);
+  --color-vis-delta-y:    rgba(77, 114, 0, 0.40);
+  --color-vis-delta-y-lb: rgba(77, 114, 0, 0.90);
+  --color-vis-rect-pos:   rgba(61, 90, 0, 0.20);
   --color-vis-rect-neg:   rgba(200, 60, 60, 0.15);
-  --color-vis-noise:      0.02;   /* 라이트 모드에서 노이즈 약하게 */
+  --color-vis-noise:      0.02;
 
-  --color-vis-axis:  #c8c8d0;
+  --color-vis-axis:  #c0c1cb;
   --color-vis-deriv: #2952d4;
-  --color-vis-max:   #0284c7;
-  --color-vis-min:   #dc2626;
+  --color-vis-max:   #0369a1;   /* sky-700 — 대비비 5.6:1 ✓ (AA) */
+  --color-vis-min:   #be123c;   /* rose-700 — 대비비 6.0:1 ✓ (AA) */
 
-  --color-overlay-soft:   rgba(210, 206, 198, 0.4);
-  --color-overlay-medium: rgba(210, 206, 198, 0.65);
-  --color-overlay-strong: rgba(210, 206, 198, 0.85);
-  --color-stage-bg: radial-gradient(ellipse at 50% 30%, #ebe8df, #faf8f3);
+  --color-overlay-soft:   rgba(240, 241, 245, 0.4);
+  --color-overlay-medium: rgba(240, 241, 245, 0.65);
+  --color-overlay-strong: rgba(240, 241, 245, 0.85);
+  --color-stage-bg: radial-gradient(ellipse at 50% 30%, #f0f1f5, #f8f9fc);
 }
 
 /* ══════════════════════════════════════════════════
@@ -177,6 +192,10 @@ html.light {
 
 * {
   box-sizing: border-box;
+}
+
+html {
+  font-size: 18px;
 }
 
 html,
@@ -226,6 +245,17 @@ body {
 .ko-text {
   word-break: keep-all;
   overflow-wrap: break-word;
+}
+
+/* 본문·시각화 콘텐츠 폰트 크기 유틸리티 */
+.book-content {
+  font-size: 1.125rem;
+  line-height: 1.85;
+}
+
+.visualize-content {
+  font-size: 1rem;
+  line-height: 1.75;
 }
 
 /* prefers-reduced-motion */

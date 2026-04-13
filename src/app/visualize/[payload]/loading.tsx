@@ -4,7 +4,7 @@ export default function VisualizeLoading() {
       style={{
         width: '100vw',
         height: '100vh',
-        background: '#0a0a0b',
+        background: 'var(--color-bg)',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -17,7 +17,7 @@ export default function VisualizeLoading() {
           width: '256px',
           height: '128px',
           borderRadius: '12px',
-          background: '#1a1a1f',
+          background: 'var(--color-bg-surface)',
           animation: 'pulse 1.5s ease-in-out infinite',
         }}
       />
@@ -26,7 +26,7 @@ export default function VisualizeLoading() {
           width: '160px',
           height: '16px',
           borderRadius: '8px',
-          background: '#1a1a1f',
+          background: 'var(--color-bg-surface)',
           animation: 'pulse 1.5s ease-in-out infinite',
           animationDelay: '0.3s',
         }}

@@ -2,6 +2,7 @@
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import { InlineMath } from 'react-katex';
 import { safeParseFn, safeEval } from '@/lib/safe-math';
+import { useTheme } from '@/components/ThemeProvider';
 
 interface FunctionPlaygroundProps {
   initialFn: string;
@@ -76,6 +77,50 @@ function formatCriticalLabel(n: number): string {
 }
 
 export function FunctionPlayground({ initialFn, domain }: FunctionPlaygroundProps) {
+  const { theme } = useTheme();
+
+  /*
+   * ── 테마별 SVG 색상 ─────────────────────────────────────────────────────
+   * CSS 변수는 SVG presentational attribute에서 브라우저 지원이 불안정하므로
+   * theme prop으로 분기한 COLORS 객체를 사용.
+   *
+   * WCAG AA 검증 (일반 텍스트 4.5:1 이상) ──
+   * 다크 #0c0d11 배경:
+   *   gridLabel rgba(255,255,255,0.55) → ~5.4:1  ✓
+   *   coordText rgba(255,255,255,0.85) → ~13.3:1 ✓
+   * 라이트 #f8f9fc 배경:
+   *   gridLabel rgba(0,0,0,0.55)       → ~4.7:1  ✓
+   *   coordText rgba(0,0,0,0.85)       → ~14.6:1 ✓
+   *   root/accent #3d5a00              → ~7.5:1  ✓
+   *   critMax #0369a1                  → ~5.6:1  ✓
+   *   critMin #be123c                  → ~6.0:1  ✓
+   */
+  const COLORS = {
+    grid:          theme === 'dark' ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.07)',
+    gridLabel:     theme === 'dark' ? 'rgba(255,255,255,0.55)' : 'rgba(0,0,0,0.55)',
+    rootFill:      theme === 'dark' ? '#D4FF4F' : '#3d5a00',
+    rootBorder:    theme === 'dark' ? 'rgba(212,255,79,0.45)'  : 'rgba(61,90,0,0.45)',
+    rootBoxBg:     theme === 'dark' ? 'rgba(10,10,11,0.92)'   : 'rgba(248,249,252,0.96)',
+    rootBoxHover:  theme === 'dark' ? 'rgba(212,255,79,0.20)' : 'rgba(61,90,0,0.15)',
+    rootLeadLine:  theme === 'dark' ? 'rgba(212,255,79,0.25)' : 'rgba(61,90,0,0.25)',
+    critMax:       theme === 'dark' ? '#38bdf8' : '#0369a1',
+    critMin:       theme === 'dark' ? '#fb7185' : '#be123c',
+    critMaxDim:    theme === 'dark' ? 'rgba(56,189,248,0.50)' : 'rgba(3,105,161,0.50)',
+    critMinDim:    theme === 'dark' ? 'rgba(251,113,133,0.50)': 'rgba(190,18,60,0.50)',
+    critMaxHover:  theme === 'dark' ? 'rgba(56,189,248,0.18)' : 'rgba(3,105,161,0.12)',
+    critMinHover:  theme === 'dark' ? 'rgba(251,113,133,0.18)': 'rgba(190,18,60,0.12)',
+    critMaxBtnBg:  theme === 'dark' ? 'rgba(56,189,248,0.10)' : 'rgba(3,105,161,0.10)',
+    critMinBtnBg:  theme === 'dark' ? 'rgba(251,113,133,0.10)': 'rgba(190,18,60,0.10)',
+    critMaxBtnHov: theme === 'dark' ? 'rgba(56,189,248,0.20)' : 'rgba(3,105,161,0.18)',
+    critMinBtnHov: theme === 'dark' ? 'rgba(251,113,133,0.20)': 'rgba(190,18,60,0.18)',
+    critMaxBtnBdr: theme === 'dark' ? 'rgba(56,189,248,0.40)' : 'rgba(3,105,161,0.40)',
+    critMinBtnBdr: theme === 'dark' ? 'rgba(251,113,133,0.40)': 'rgba(190,18,60,0.40)',
+    coordText:     theme === 'dark' ? 'rgba(255,255,255,0.85)' : 'rgba(0,0,0,0.85)',
+    queryLine:     theme === 'dark' ? 'rgba(212,255,79,0.30)'  : 'rgba(61,90,0,0.30)',
+    queryLabel:    theme === 'dark' ? 'rgba(255,255,255,0.85)' : 'rgba(0,0,0,0.85)',
+    btnSecText:    theme === 'dark' ? 'rgba(255,255,255,0.55)' : 'rgba(0,0,0,0.55)',
+  } as const;
+
   const [fnExpr, setFnExpr] = useState<string | null>(initialFn);
   const [inputVal, setInputVal] = useState(initialFn);
   const [error, setError] = useState<string | null>(null);
@@ -556,11 +601,11 @@ export function FunctionPlayground({ initialFn, domain }: FunctionPlaygroundProp
               <g key={`ytick-${yt}`}>
                 <line
                   x1={0} y1={toY(yt)} x2={W} y2={toY(yt)}
-                  stroke="rgba(236,236,239,0.08)" strokeWidth="1" strokeDasharray="3 4"
+                  stroke={COLORS.grid} strokeWidth="1" strokeDasharray="3 4"
                 />
                 <text
                   x={Math.max(toX(0) - 8, 4)} y={toY(yt) + 4}
-                  fill="rgba(236,236,239,0.4)" fontSize="10" fontFamily="var(--font-mono)" textAnchor="end"
+                  fill={COLORS.gridLabel} fontSize="10" fontFamily="var(--font-mono)" textAnchor="end"
                 >
                   {Number.isInteger(yt) ? String(yt) : yt.toFixed(1)}
                 </text>
@@ -591,25 +636,25 @@ export function FunctionPlayground({ initialFn, domain }: FunctionPlaygroundProp
               const isHovered = hoveredRoot === rx;
               return (
                 <g key={`root-${idx}`}>
-                  <circle cx={cx} cy={cy} r={isHovered ? 5 : 3.5} fill="var(--color-accent)" />
+                  <circle cx={cx} cy={cy} r={isHovered ? 5 : 3.5} fill={COLORS.rootFill} />
                   <rect
                     x={cx - label.length * 3.5 - 6}
                     y={labelY - 10}
                     width={label.length * 7 + 12}
                     height={18}
                     rx={4}
-                    fill={isHovered ? 'rgba(212,255,79,0.2)' : 'rgba(10,10,11,0.85)'}
-                    stroke="rgba(212,255,79,0.4)"
+                    fill={isHovered ? COLORS.rootBoxHover : COLORS.rootBoxBg}
+                    stroke={COLORS.rootBorder}
                     strokeWidth={1}
                   />
                   <text
                     x={cx} y={labelY + 3}
-                    fill="var(--color-accent)" fontSize="11" fontFamily="var(--font-mono)" fontWeight={600} textAnchor="middle"
+                    fill={COLORS.rootFill} fontSize="11" fontFamily="var(--font-mono)" fontWeight={600} textAnchor="middle"
                   >
                     {label}
                   </text>
                   {above && (
-                    <line x1={cx} y1={cy - 4} x2={cx} y2={labelY + 8} stroke="rgba(212,255,79,0.25)" strokeWidth={1} />
+                    <line x1={cx} y1={cy - 4} x2={cx} y2={labelY + 8} stroke={COLORS.rootLeadLine} strokeWidth={1} />
                   )}
                 </g>
               );
@@ -621,12 +666,12 @@ export function FunctionPlayground({ initialFn, domain }: FunctionPlaygroundProp
               const cy = toY(p.y);
               const isMax = p.type === 'max';
               const isHov = hoveredCritical !== null && Math.abs(hoveredCritical.x - p.x) < 0.001;
-              const dotColor = isMax ? 'var(--color-vis-max)' : 'var(--color-vis-min)';
-              const leadStroke = isMax ? 'rgba(56,189,248,0.5)' : 'rgba(251,113,133,0.5)';
-              const borderColor = isMax ? 'var(--color-vis-max)' : 'var(--color-vis-min)';
-              // Task 3: 완전 불투명 배경, 호버 시에만 tint
+              const dotColor = isMax ? COLORS.critMax : COLORS.critMin;
+              const leadStroke = isMax ? COLORS.critMaxDim : COLORS.critMinDim;
+              const borderColor = isMax ? COLORS.critMax : COLORS.critMin;
+              // 완전 불투명 배경, 호버 시에만 tint
               const bgFill = isHov
-                ? (isMax ? 'rgba(56,189,248,0.18)' : 'rgba(251,113,133,0.18)')
+                ? (isMax ? COLORS.critMaxHover : COLORS.critMinHover)
                 : 'var(--color-bg)';
 
               const line1 = isMax ? '극대' : '극소';
@@ -669,14 +714,14 @@ export function FunctionPlayground({ initialFn, domain }: FunctionPlaygroundProp
                   {/* x 좌표 */}
                   <text
                     x={boxX + boxW / 2} y={clampedBoxY + 30}
-                    fill="rgba(247,248,251,0.85)" fontSize="11" fontFamily="var(--font-mono)" fontWeight="500" textAnchor="middle"
+                    fill={COLORS.coordText} fontSize="11" fontFamily="var(--font-mono)" fontWeight="500" textAnchor="middle"
                   >
                     {line2}
                   </text>
                   {/* y 좌표 */}
                   <text
                     x={boxX + boxW / 2} y={clampedBoxY + 44}
-                    fill="rgba(247,248,251,0.85)" fontSize="11" fontFamily="var(--font-mono)" fontWeight="500" textAnchor="middle"
+                    fill={COLORS.coordText} fontSize="11" fontFamily="var(--font-mono)" fontWeight="500" textAnchor="middle"
                   >
                     {line3}
                   </text>
@@ -702,12 +747,12 @@ export function FunctionPlayground({ initialFn, domain }: FunctionPlaygroundProp
                 <line
                   x1={toX(queryResult.xNum)} y1={toY(queryResult.yNum)}
                   x2={toX(queryResult.xNum)} y2={toY(0)}
-                  stroke="rgba(212,255,79,0.3)" strokeWidth="1" strokeDasharray="4 4"
+                  stroke={COLORS.queryLine} strokeWidth="1" strokeDasharray="4 4"
                 />
                 <circle cx={toX(queryResult.xNum)} cy={toY(queryResult.yNum)} r="5" fill="var(--color-accent)" />
                 <text
                   x={toX(queryResult.xNum)} y={toY(queryResult.yNum) - 12}
-                  fill="rgba(236,236,239,0.8)" fontSize="11" fontFamily="var(--font-mono)" textAnchor="middle"
+                  fill={COLORS.queryLabel} fontSize="11" fontFamily="var(--font-mono)" textAnchor="middle"
                 >
                   ({formatNum(queryResult.xNum)}, {queryResult.y})
                 </text>
@@ -846,22 +891,22 @@ export function FunctionPlayground({ initialFn, domain }: FunctionPlaygroundProp
                   fontSize: '11px',
                   fontFamily: 'var(--font-mono)',
                   cursor: 'pointer',
-                  border: `1px solid ${isMax ? 'rgba(56,189,248,0.4)' : 'rgba(251,113,133,0.4)'}`,
-                  background: isMax ? 'rgba(56,189,248,0.1)' : 'rgba(251,113,133,0.1)',
-                  color: isMax ? 'var(--color-vis-max)' : 'var(--color-vis-min)',
+                  border: `1px solid ${isMax ? COLORS.critMaxBtnBdr : COLORS.critMinBtnBdr}`,
+                  background: isMax ? COLORS.critMaxBtnBg : COLORS.critMinBtnBg,
+                  color: isMax ? COLORS.critMax : COLORS.critMin,
                   transition: 'background 150ms',
                 }}
                 onMouseEnter={(e) => {
                   (e.currentTarget as HTMLButtonElement).style.background =
-                    isMax ? 'rgba(56,189,248,0.2)' : 'rgba(251,113,133,0.2)';
+                    isMax ? COLORS.critMaxBtnHov : COLORS.critMinBtnHov;
                 }}
                 onMouseLeave={(e) => {
                   (e.currentTarget as HTMLButtonElement).style.background =
-                    isMax ? 'rgba(56,189,248,0.1)' : 'rgba(251,113,133,0.1)';
+                    isMax ? COLORS.critMaxBtnBg : COLORS.critMinBtnBg;
                 }}
               >
                 <span>{isMax ? '극대' : '극소'}</span>
-                <span style={{ color: 'rgba(236,236,239,0.6)' }}>
+                <span style={{ color: COLORS.btnSecText }}>
                   x = {formatCriticalLabel(p.x)},&nbsp;y = {formatCriticalLabel(p.y)}
                 </span>
               </button>

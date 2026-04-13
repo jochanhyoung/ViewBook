@@ -1,0 +1,298 @@
+'use client';
+// 조각함수 미분가능성 시각화 — 좌/우미분 토글 인터랙티브 그래프
+// pieces: 구간별 함수 배열 / x0: 미분가능성 확인 지점
+import { useState, useCallback } from 'react';
+import { safeEval } from '@/lib/safe-math';
+
+interface Piece {
+  fn: string;
+  fnLatex: string;
+  condition: string;
+  domain: [number, number];
+}
+
+interface PiecewiseGraphProps {
+  pieces: Piece[];
+  x0: number;
+}
+
+const H_PRESETS = [0.5, 0.25, 0.1, 0.05, 0.01] as const;
+const H_MIN = 0.001;
+const H_MAX = 1;
+
+export function PiecewiseGraph({ pieces, x0 }: PiecewiseGraphProps) {
+  const [h, setH] = useState(0.5);
+  const [side, setSide] = useState<'right' | 'left'>('right');
+
+  // x에 해당하는 조각 선택 후 평가
+  const evalAt = useCallback((x: number): number => {
+    for (const piece of pieces) {
+      const [lo, hi] = piece.domain;
+      if (x >= lo && x <= hi) {
+        try { return safeEval(piece.fn, { x }); } catch { return NaN; }
+      }
+    }
+    return NaN;
+  }, [pieces]);
+
+  const fa   = evalAt(x0);
+  const hSigned = side === 'right' ? h : -h;
+  const fah  = evalAt(x0 + hSigned);
+  const secantSlope = isFinite(fa) && isFinite(fah) ? (fah - fa) / hSigned : 0;
+
+  // 수치 미분으로 좌/우 극한 근사
+  const eps = 0.00005;
+  const rightLimit = (evalAt(x0 + eps) - evalAt(x0)) / eps;
+  const leftLimit  = (evalAt(x0) - evalAt(x0 - eps)) / eps;
+  const currentLimit = side === 'right' ? rightLimit : leftLimit;
+
+  const accentColor = side === 'right' ? '#d4ff4f' : '#f87171';
+
+  const W = 380, H_SVG = 220;
+  // 전체 도메인: pieces의 domain 합집합 + 여백
+  const allDomains = pieces.flatMap(p => p.domain);
+  const xMin = Math.min(...allDomains) - 0.3;
+  const xMax = Math.max(...allDomains) + 0.3;
+
+  // y 범위: 각 조각을 샘플링해서 결정
+  const ySamples: number[] = [];
+  for (const piece of pieces) {
+    for (let i = 0; i <= 30; i++) {
+      const x = piece.domain[0] + (i / 30) * (piece.domain[1] - piece.domain[0]);
+      const y = evalAt(x);
+      if (isFinite(y)) ySamples.push(y);
+    }
+  }
+  const yPad = 1.2;
+  const rawYMin = Math.min(...ySamples, fa, fah);
+  const rawYMax = Math.max(...ySamples, fa, fah);
+  const yMin = rawYMin - yPad;
+  const yMax = rawYMax + yPad;
+
+  function toX(x: number) { return ((x - xMin) / (xMax - xMin)) * W; }
+  function toY(y: number) { return H_SVG - ((y - yMin) / (yMax - yMin)) * H_SVG; }
+
+  // 각 조각별 polyline 포인트 생성
+  const piecePoints = pieces.map(piece => {
+    const pts: string[] = [];
+    for (let i = 0; i <= 80; i++) {
+      const x = piece.domain[0] + (i / 80) * (piece.domain[1] - piece.domain[0]);
+      const y = evalAt(x);
+      if (isFinite(y)) pts.push(`${toX(x).toFixed(1)},${toY(y).toFixed(1)}`);
+    }
+    return pts;
+  });
+
+  const ax = toX(x0),          ay = toY(fa);
+  const bx = toX(x0 + hSigned), by = toY(fah);
+
+  // 할선 끝점 (SVG 범위 내로 확장)
+  const secY1 = fa + secantSlope * (xMin - x0);
+  const secY2 = fa + secantSlope * (xMax - x0);
+
+  // 극한 접선 (h→0 에 가까울수록 나타남)
+  const tanY1 = fa + currentLimit * (xMin - x0);
+  const tanY2 = fa + currentLimit * (xMax - x0);
+
+  const ox = toX(0), oy = toY(0);
+
+  // x0에서 연속 여부 (양방향 극한이 f(x0)에 가까운지)
+  const limAtX0Right = evalAt(x0 + eps);
+  const limAtX0Left  = evalAt(x0 - eps);
+  const isContinuous = Math.abs(limAtX0Right - fa) < 0.01 && Math.abs(limAtX0Left - fa) < 0.01;
+  const isDifferentiable = Math.abs(rightLimit - leftLimit) < 0.01;
+
+  return (
+    <div style={{
+      minHeight: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+      padding: '20px',
+      gap: '14px',
+      overflowY: 'auto',
+    }}>
+
+      {/* 좌/우미분 토글 */}
+      <div style={{ display: 'flex', gap: '6px' }}>
+        {([
+          ['right', '우미분 (h → 0⁺)', '#d4ff4f'] as const,
+          ['left',  '좌미분 (h → 0⁻)', '#f87171'] as const,
+        ]).map(([s, label, color]) => (
+          <button
+            key={s}
+            onClick={() => setSide(s)}
+            style={{
+              padding: '6px 16px',
+              border: `1px solid ${side === s ? color : '#26262d'}`,
+              borderRadius: '4px',
+              background: side === s ? `${color}20` : 'none',
+              cursor: 'pointer',
+              fontFamily: 'var(--font-mono)',
+              fontSize: '11px',
+              color: side === s ? color : '#5a5a66',
+              transition: 'all 150ms',
+            }}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {/* SVG 그래프 */}
+      <div style={{ flexShrink: 0 }}>
+        <svg width={W} height={H_SVG} style={{ overflow: 'visible', display: 'block' }}>
+          {/* x축, y축 */}
+          <line x1={toX(xMin)} y1={oy} x2={toX(xMax)} y2={oy} stroke="var(--color-border)" strokeWidth="1" />
+          <line x1={ox} y1={0}  x2={ox} y2={H_SVG}     stroke="var(--color-border)" strokeWidth="1" />
+
+          {/* 극한 접선 (h→0 페이드인) */}
+          {isFinite(tanY1) && isFinite(tanY2) && (
+            <line
+              x1={toX(xMin)} y1={toY(tanY1)}
+              x2={toX(xMax)} y2={toY(tanY2)}
+              stroke={accentColor} strokeWidth="1" strokeDasharray="5 4"
+              strokeOpacity={Math.max(0, 1 - h * 5)}
+            />
+          )}
+
+          {/* 할선 */}
+          {isFinite(secY1) && isFinite(secY2) && (
+            <line
+              x1={toX(xMin)} y1={toY(secY1)}
+              x2={toX(xMax)} y2={toY(secY2)}
+              stroke={side === 'right' ? '#8aa82d' : '#f87171'} strokeWidth="1.6" strokeOpacity="0.85"
+            />
+          )}
+
+          {/* 각 조각 곡선 */}
+          {piecePoints.map((pts, i) => (
+            pts.length > 0 && (
+              <polyline key={i} points={pts.join(' ')} fill="none" stroke="var(--color-text)" strokeWidth="2" />
+            )
+          ))}
+
+          {/* x0 에서 불연속 표시 (열린/닫힌 원) */}
+          {!isContinuous && (
+            <circle cx={toX(x0)} cy={toY(limAtX0Left)} r="4"
+              fill="var(--color-bg)" stroke="var(--color-text)" strokeWidth="1.5" />
+          )}
+          {/* x0 의 실제 함수값 */}
+          {isFinite(fa) && (
+            <circle cx={ax} cy={ay} r="5" fill="var(--color-accent)" />
+          )}
+          <text x={ax + 8} y={ay - 8}
+            fill="var(--color-accent)" fontSize="10" fontFamily="JetBrains Mono, monospace">
+            ({x0}, {isFinite(fa) ? fa.toFixed(2) : 'undef'})
+          </text>
+
+          {/* 점 B */}
+          {isFinite(fah) && (
+            <>
+              <circle cx={bx} cy={by} r="4" fill={accentColor} />
+              <text
+                x={side === 'right' ? bx + 6 : bx - 6}
+                y={by - 8}
+                fill={accentColor} fontSize="10"
+                textAnchor={side === 'right' ? 'start' : 'end'}
+                fontFamily="JetBrains Mono, monospace"
+              >
+                B
+              </text>
+            </>
+          )}
+        </svg>
+      </div>
+
+      {/* |h| 프리셋 + 슬라이더 */}
+      <div style={{ flexShrink: 0, width: '100%', maxWidth: '380px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)', flexShrink: 0 }}>|h| =</span>
+          {H_PRESETS.map((p) => {
+            const active = Math.abs(h - p) < 0.0001;
+            return (
+              <button
+                key={p}
+                onClick={() => setH(p)}
+                style={{
+                  flex: 1,
+                  background: active ? `${accentColor}20` : 'none',
+                  border: `1px solid ${active ? accentColor : '#26262d'}`,
+                  borderRadius: '3px',
+                  cursor: 'pointer',
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '11px',
+                  color: active ? accentColor : '#8a8a96',
+                  padding: '4px 0',
+                }}
+              >
+                {p}
+              </button>
+            );
+          })}
+        </div>
+        <input
+          type="range"
+          min={Math.log10(H_MIN)}
+          max={Math.log10(H_MAX)}
+          step={0.01}
+          value={Math.log10(h || H_MIN)}
+          onChange={(e) => setH(parseFloat(Math.pow(10, Number(e.target.value)).toPrecision(3)))}
+          style={{ width: '100%', accentColor }}
+        />
+      </div>
+
+      {/* 수렴값 패널 */}
+      <div style={{
+        flexShrink: 0,
+        background: 'var(--color-bg-elevated)',
+        border: '1px solid var(--color-bg-subtle)',
+        borderRadius: '8px',
+        padding: '14px 20px',
+        width: '100%',
+        maxWidth: '380px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '10px',
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          <div>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+              {side === 'right' ? '우미분 극한' : '좌미분 극한'}
+            </div>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '22px', color: accentColor, fontWeight: 'bold', lineHeight: 1, marginTop: '4px' }}>
+              {secantSlope.toFixed(4)}
+            </div>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)', marginTop: '4px' }}>
+              ({isFinite(fah) ? fah.toFixed(4) : 'N/A'} − {fa.toFixed(4)}) / {hSigned > 0 ? h.toPrecision(3) : `(−${h.toPrecision(3)})`}
+            </div>
+          </div>
+          <div style={{ textAlign: 'right' }}>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+              수렴값
+            </div>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '22px', color: accentColor, fontWeight: 'bold', lineHeight: 1, marginTop: '4px' }}>
+              {isFinite(currentLimit) ? currentLimit.toFixed(4) : 'N/A'}
+            </div>
+          </div>
+        </div>
+
+        {/* 결론 */}
+        <div style={{
+          borderTop: '1px solid var(--color-bg-subtle)',
+          paddingTop: '10px',
+          fontFamily: 'var(--font-mono)',
+          fontSize: '11px',
+          color: isDifferentiable ? '#d4ff4f' : '#f87171',
+          textAlign: 'center',
+          letterSpacing: '0.04em',
+        }}>
+          {isDifferentiable
+            ? `우미분 = 좌미분 = ${rightLimit.toFixed(4)} → x=${x0} 에서 미분가능`
+            : `우미분(${rightLimit.toFixed(4)}) ≠ 좌미분(${leftLimit.toFixed(4)}) → x=${x0} 에서 미분불가능`}
+        </div>
+      </div>
+    </div>
+  );
+}

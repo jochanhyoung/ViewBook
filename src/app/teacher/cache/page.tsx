@@ -68,9 +68,9 @@ export default function TeacherCachePage() {
 
   if (!authed) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0a0a0b' }}>
-        <div style={{ background: '#111114', border: '1px solid #26262d', borderRadius: '12px', padding: '40px', width: '320px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', color: '#ececef', fontWeight: 400, margin: 0 }}>
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--color-bg)' }}>
+        <div style={{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)', borderRadius: '12px', padding: '40px', width: '320px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', color: 'var(--color-text)', fontWeight: 400, margin: 0 }}>
             교사용 캐시 관리
           </h1>
           <input
@@ -79,11 +79,11 @@ export default function TeacherCachePage() {
             value={pw}
             onChange={(e) => setPw(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter' && pw === GATE_PASSWORD) setAuthed(true); }}
-            style={{ background: '#1a1a1f', border: '1px solid #26262d', borderRadius: '4px', color: '#ececef', fontFamily: 'var(--font-mono)', fontSize: '13px', padding: '10px 12px' }}
+            style={{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)', borderRadius: '4px', color: 'var(--color-text)', fontFamily: 'var(--font-mono)', fontSize: '13px', padding: '10px 12px' }}
           />
           <button
             onClick={() => { if (pw === GATE_PASSWORD) setAuthed(true); else alert('비밀번호가 틀렸습니다.'); }}
-            style={{ background: '#d4ff4f', border: 'none', borderRadius: '4px', cursor: 'pointer', fontFamily: 'var(--font-mono)', fontSize: '12px', color: '#0a0a0b', padding: '10px' }}
+            style={{ background: 'var(--color-accent)', border: 'none', borderRadius: '4px', cursor: 'pointer', fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--color-accent-fg)', padding: '10px' }}
           >
             입장
           </button>
@@ -93,19 +93,19 @@ export default function TeacherCachePage() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0a0a0b', padding: '40px' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--color-bg)', padding: '40px' }}>
       <div style={{ maxWidth: '900px', margin: '0 auto' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
           <div>
             <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#d4ff4f', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '4px' }}>
               교사용
             </p>
-            <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '1.8rem', color: '#ececef', fontWeight: 400, margin: 0 }}>
+            <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '1.8rem', color: 'var(--color-text)', fontWeight: 400, margin: 0 }}>
               캐시 관리
             </h1>
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <button onClick={handleExport} style={{ background: 'none', border: '1px solid #26262d', borderRadius: '4px', cursor: 'pointer', fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#8a8a96', padding: '8px 14px' }}>
+            <button onClick={handleExport} style={{ background: 'none', border: '1px solid var(--color-border)', borderRadius: '4px', cursor: 'pointer', fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-subtle)', padding: '8px 14px' }}>
               JSON 내보내기
             </button>
             <button onClick={handleClearAll} style={{ background: 'none', border: '1px solid rgba(212,79,79,0.3)', borderRadius: '4px', cursor: 'pointer', fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#d44f4f', padding: '8px 14px' }}>
@@ -115,33 +115,33 @@ export default function TeacherCachePage() {
         </div>
 
         {loading ? (
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: '#5a5a66' }}>로딩 중...</p>
+          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--color-text-muted)' }}>로딩 중...</p>
         ) : entries.length === 0 ? (
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: '#5a5a66' }}>저장된 캐시가 없습니다.</p>
+          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--color-text-muted)' }}>저장된 캐시가 없습니다.</p>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {entries.map((e) => (
-              <div key={e.id} style={{ background: '#111114', border: '1px solid #1a1a1f', borderRadius: '8px', padding: '16px 20px', display: 'flex', gap: '16px', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div key={e.id} style={{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border-dim)', borderRadius: '8px', padding: '16px 20px', display: 'flex', gap: '16px', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#d4ff4f', marginBottom: '4px' }}>{e.solution.topic}</p>
-                  <p style={{ fontSize: '13px', color: '#ececef', marginBottom: '4px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-accent)', marginBottom: '4px' }}>{e.solution.topic}</p>
+                  <p style={{ fontSize: '13px', color: 'var(--color-text)', marginBottom: '4px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     {e.problemText}
                   </p>
                   <div style={{ display: 'flex', gap: '16px' }}>
-                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#5a5a66' }}>
+                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)' }}>
                       정답: {e.solution.finalAnswer}
                     </span>
-                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#5a5a66' }}>
+                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)' }}>
                       조회: {e.hitCount}회
                     </span>
-                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#3a3a44' }}>
+                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-ghost)' }}>
                       {new Date(e.createdAt).toLocaleDateString('ko-KR')}
                     </span>
                   </div>
                 </div>
                 <button
                   onClick={() => handleDelete(e.id)}
-                  style={{ background: 'none', border: '1px solid #26262d', borderRadius: '4px', cursor: 'pointer', fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#8a8a96', padding: '5px 10px', flexShrink: 0 }}
+                  style={{ background: 'none', border: '1px solid var(--color-border)', borderRadius: '4px', cursor: 'pointer', fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-subtle)', padding: '5px 10px', flexShrink: 0 }}
                 >
                   삭제
                 </button>

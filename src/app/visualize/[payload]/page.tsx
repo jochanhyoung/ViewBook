@@ -129,14 +129,14 @@ export default function VisualizePage({ params }: PageProps) {
   }, [goNext, goPrev, goStart, goBack]);
 
   return (
-    <div style={{ height: '100vh', width: '100vw', background: '#0a0a0b', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+    <div style={{ height: '100vh', width: '100vw', background: 'var(--color-bg)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
       {/* Top bar */}
-      <div style={{ height: '48px', borderBottom: '1px solid #1a1a1f', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 20px', flexShrink: 0 }}>
+      <div style={{ height: '48px', borderBottom: '1px solid var(--color-border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 20px', flexShrink: 0 }}>
         <button
           onClick={goBack}
           style={{
             background: 'none', border: 'none', cursor: 'pointer',
-            fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#5a5a66',
+            fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-muted)',
             display: 'flex', alignItems: 'center', gap: '6px', padding: '4px 0',
           }}
         >
@@ -152,7 +152,7 @@ export default function VisualizePage({ params }: PageProps) {
               style={{
                 width: i === index ? '18px' : '5px',
                 height: '4px',
-                background: i === index ? '#d4ff4f' : i < index ? '#3a3a44' : '#26262d',
+                background: i === index ? 'var(--color-accent)' : i < index ? 'var(--color-border)' : 'var(--color-border-dim)',
                 borderRadius: '2px', border: 'none', cursor: 'pointer',
                 transition: 'all 250ms ease', padding: 0,
               }}
@@ -160,7 +160,7 @@ export default function VisualizePage({ params }: PageProps) {
           ))}
         </div>
 
-        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#3a3a44' }}>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-muted)' }}>
           {index + 1} / {total}
         </span>
       </div>
@@ -182,16 +182,16 @@ export default function VisualizePage({ params }: PageProps) {
       </div>
 
       {/* PlaybackControls */}
-      <div style={{ height: '64px', borderTop: '1px solid #1a1a1f', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', flexShrink: 0 }}>
+      <div style={{ height: '64px', borderTop: '1px solid var(--color-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', flexShrink: 0 }}>
         <CtrlBtn onClick={goStart} disabled={index === 0 && subStep === 0 && !isPlaying} title="처음으로">⏮</CtrlBtn>
         <CtrlBtn onClick={goPrev} disabled={index === 0 && subStep === 0} title="이전">⏪</CtrlBtn>
         <button
           onClick={() => setIsPlaying((p) => !p)}
           title={isPlaying ? '일시정지' : '재생'}
           style={{
-            background: '#d4ff4f', border: 'none', borderRadius: '6px', cursor: 'pointer',
+            background: 'var(--color-accent)', border: 'none', borderRadius: '6px', cursor: 'pointer',
             width: '44px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: '16px', color: '#0a0a0b',
+            fontSize: '16px', color: 'var(--color-accent-fg)',
           }}
         >
           {isPlaying ? '⏸' : '▶'}
@@ -209,10 +209,10 @@ function CtrlBtn({ onClick, disabled, title, children }: { onClick: () => void; 
       disabled={disabled}
       title={title}
       style={{
-        background: 'none', border: '1px solid #26262d', borderRadius: '5px',
+        background: 'none', border: '1px solid var(--color-border)', borderRadius: '5px',
         cursor: disabled ? 'default' : 'pointer',
         width: '38px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontSize: '14px', color: disabled ? '#26262d' : '#8a8a96', transition: 'color 150ms',
+        fontSize: '14px', color: disabled ? 'var(--color-border)' : 'var(--color-text-subtle)', transition: 'color 150ms',
       }}
     >
       {children}
@@ -267,7 +267,7 @@ function VizErrorScreen({ router }: { router: ReturnType<typeof useRouter> }) {
     <div style={{
       width: '100vw',
       height: '100vh',
-      background: '#0a0a0b',
+      background: 'var(--color-bg)',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -279,7 +279,7 @@ function VizErrorScreen({ router }: { router: ReturnType<typeof useRouter> }) {
         fontSize: '11px',
         letterSpacing: '0.15em',
         textTransform: 'uppercase',
-        color: '#5a5a66',
+        color: 'var(--color-text-muted)',
       }}>
         시각화를 불러올 수 없습니다
       </p>
@@ -287,17 +287,17 @@ function VizErrorScreen({ router }: { router: ReturnType<typeof useRouter> }) {
         onClick={handleReturn}
         style={{
           background: 'none',
-          border: '1px solid rgba(212, 255, 79, 0.4)',
+          border: '1px solid var(--color-accent)',
           borderRadius: '8px',
           cursor: 'pointer',
           fontFamily: 'var(--font-mono)',
           fontSize: '12px',
-          color: '#d4ff4f',
+          color: 'var(--color-accent)',
           padding: '8px 24px',
           transition: 'all 150ms',
         }}
         onMouseEnter={(e) => {
-          (e.currentTarget as HTMLButtonElement).style.background = 'rgba(212, 255, 79, 0.1)';
+          (e.currentTarget as HTMLButtonElement).style.background = 'var(--color-accent-bg)';
         }}
         onMouseLeave={(e) => {
           (e.currentTarget as HTMLButtonElement).style.background = 'none';
