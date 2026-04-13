@@ -117,11 +117,11 @@ export function LimitDefinition({ fn, x0, subStep = 0, isPlaying = false }: Limi
           {/* h bracket (always visible) */}
           <line x1={toSvgX(x0)} y1={toSvgY(f0) + 22} x2={toSvgX(x0 + h)} y2={toSvgY(f0) + 22} stroke="var(--color-border)" strokeWidth="1" />
           <text x={(toSvgX(x0) + toSvgX(x0 + h)) / 2} y={toSvgY(f0) + 36}
-            fill="var(--color-text-muted)" fontSize="10" textAnchor="middle" fontFamily="JetBrains Mono, monospace">
+            fill="var(--color-text-muted)" fontSize="13" textAnchor="middle" fontFamily="JetBrains Mono, monospace">
             h = {Number.isInteger(h) ? h : h.toPrecision(4)}
           </text>
           <text x={toSvgX(x0)} y={toSvgY(f0) - 12}
-            fill="var(--color-accent)" fontSize="11" textAnchor="middle" fontFamily="JetBrains Mono, monospace">
+            fill="var(--color-accent)" fontSize="14" textAnchor="middle" fontFamily="JetBrains Mono, monospace">
             ({x0}, {f0.toFixed(2)})
           </text>
 
@@ -147,13 +147,13 @@ export function LimitDefinition({ fn, x0, subStep = 0, isPlaying = false }: Limi
                   stroke="var(--color-vis-delta-y)" strokeWidth="1" strokeDasharray="4 3" />
                 {/* Δx 레이블 */}
                 <text x={midX} y={ay + 14}
-                  fill="var(--color-vis-delta-x-lb)" fontSize="10" textAnchor="middle"
+                  fill="var(--color-vis-delta-x-lb)" fontSize="13" textAnchor="middle"
                   fontFamily="JetBrains Mono, monospace">
                   Δx = h
                 </text>
                 {/* Δy 레이블 */}
                 <text x={cornerX + 8} y={midY}
-                  fill="var(--color-vis-delta-y-lb)" fontSize="10" textAnchor="start"
+                  fill="var(--color-vis-delta-y-lb)" fontSize="13" textAnchor="start"
                   fontFamily="JetBrains Mono, monospace" dominantBaseline="middle">
                   Δy
                 </text>

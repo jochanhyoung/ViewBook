@@ -18,13 +18,13 @@ export function TheoremBlock({ number, statement, proof }: TheoremBlockProps) {
     <div style={{ border: '1px solid var(--color-border)', borderRadius: '6px', padding: '20px 24px', marginTop: '24px', marginBottom: '24px', background: 'var(--color-overlay-soft)' }}>
       {/* 번호 헤더 */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '14px' }}>
-        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', letterSpacing: '0.15em', color: 'var(--color-text-subtle)', textTransform: 'uppercase', border: '1px solid var(--color-text-ghost)', borderRadius: '3px', padding: '2px 8px' }}>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', letterSpacing: '0.15em', color: 'var(--color-text-subtle)', textTransform: 'uppercase', border: '1px solid var(--color-text-ghost)', borderRadius: '3px', padding: '2px 8px' }}>
           {number}
         </span>
       </div>
 
       {/* 진술 */}
-      <div className="ko-text" style={{ fontFamily: 'var(--font-display)', fontSize: '15.5px', lineHeight: 1.8, color: 'var(--color-text-dim)' }}>
+      <div className="ko-text" style={{ fontFamily: 'var(--font-display)', fontSize: '17px', lineHeight: 1.8, color: 'var(--color-text)' }}>
         <ReactMarkdown
           remarkPlugins={[remarkMath]}
           rehypePlugins={[rehypeKatex]}
@@ -48,7 +48,7 @@ export function TheoremBlock({ number, statement, proof }: TheoremBlockProps) {
             {proofOpen ? '증명 접기' : '증명 보기'}
           </button>
           {proofOpen && (
-            <div className="ko-text" style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid var(--color-bg-surface)', fontSize: '13.5px', lineHeight: 1.8, color: 'var(--color-text-subtle)' }}>
+            <div className="ko-text" style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid var(--color-bg-surface)', fontSize: '15px', lineHeight: 1.8, color: 'var(--color-text-muted)' }}>
               <ReactMarkdown
                 remarkPlugins={[remarkMath]}
                 rehypePlugins={[rehypeKatex]}

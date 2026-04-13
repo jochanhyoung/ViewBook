@@ -30,14 +30,14 @@ export function ExerciseBlock({ exercise }: ExerciseBlockProps) {
     <div style={{ paddingBottom: '24px', borderBottom: '1px solid var(--color-bg-surface)' }}>
       {/* 번호 + 시각화 버튼 */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', letterSpacing: '0.15em', color: 'var(--color-text-muted)', margin: 0, textTransform: 'uppercase' }}>
+        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', letterSpacing: '0.15em', color: 'var(--color-text-muted)', margin: 0, textTransform: 'uppercase' }}>
           {exercise.number}
         </p>
         <VisualizeButton steps={exercise.visualize} />
       </div>
 
       {/* 문제 */}
-      <div className="ko-text" style={{ fontSize: '14.5px', lineHeight: 1.8, color: 'var(--color-text-dim)', marginBottom: '16px' }}>
+      <div className="ko-text" style={{ fontSize: '16px', lineHeight: 1.8, color: 'var(--color-text)', marginBottom: '16px' }}>
         <ReactMarkdown
           {...md}
           components={{
@@ -61,8 +61,8 @@ export function ExerciseBlock({ exercise }: ExerciseBlockProps) {
               힌트 {i + 1} 보기
             </button>
             {openHints.has(i) && (
-              <div className="ko-text" style={{ marginTop: '8px', padding: '10px 14px', background: 'var(--color-overlay-soft)', borderRadius: '4px', fontSize: '13px', lineHeight: 1.7, color: 'var(--color-text-subtle)' }}>
-                <p style={{ margin: '0 0 4px', fontFamily: 'var(--font-mono)', fontSize: '9px', letterSpacing: '0.15em', color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>
+              <div className="ko-text" style={{ marginTop: '8px', padding: '10px 14px', background: 'var(--color-overlay-soft)', borderRadius: '4px', fontSize: '15px', lineHeight: 1.7, color: 'var(--color-text-muted)' }}>
+                <p style={{ margin: '0 0 4px', fontFamily: 'var(--font-mono)', fontSize: '12px', letterSpacing: '0.15em', color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>
                   힌트 {i + 1}
                 </p>
                 <ReactMarkdown {...md} components={{ p: ({ children }) => <p style={{ margin: 0 }}>{children}</p> }}>
@@ -83,7 +83,7 @@ export function ExerciseBlock({ exercise }: ExerciseBlockProps) {
             풀이 보기
           </button>
           {solutionOpen && (
-            <div className="ko-text" style={{ marginTop: '10px', padding: '14px 16px', background: 'var(--color-overlay-medium)', borderRadius: '4px', fontSize: '13.5px', lineHeight: 1.8, color: 'var(--color-text-dim)' }}>
+            <div className="ko-text" style={{ marginTop: '10px', padding: '14px 16px', background: 'var(--color-overlay-medium)', borderRadius: '4px', fontSize: '15px', lineHeight: 1.8, color: 'var(--color-text)' }}>
               <ReactMarkdown
                 {...md}
                 components={{

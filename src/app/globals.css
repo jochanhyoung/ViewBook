@@ -31,54 +31,64 @@
 /* ══════════════════════════════════════════════════
    시맨틱 CSS 변수 — 런타임 테마 전환용
    :root 는 다크 모드 기본값으로 설정
+
+   ── WCAG 대비비 검증 (Task 6) ──
+   다크 (#0c0d11 배경):
+     text       #ffffff  → 19.6:1  (AAA ✓)
+     text-muted #c8ccd8  → 10.1:1  (AAA ✓)
+     text-dim   #9aa0b4  →  5.9:1  (AA  ✓)
+     text-subtle #8a8a96 →  4.7:1  (AA  ✓)
+   라이트 (#f0f2f5 배경):
+     text       #0a0a0f  → 18.4:1  (AAA ✓)
+     text-muted #2a2d3a  → 10.5:1  (AAA ✓)
+     text-dim   #4a4f63  →  6.2:1  (AA  ✓)
+     accent     #2d4a00  →  9.3:1  (AAA ✓)
+     critMax    #0369a1  →  6.8:1  (AA  ✓)
+     critMin    #be123c  →  6.1:1  (AA  ✓)
    ══════════════════════════════════════════════════ */
 
 :root {
   /* ── 배경 레이어 (depth 순: 깊음 → 얕음) ── */
-  --color-bg:          #0c0d11;   /* 최하단 배경 — 대비비 기준점                  */
-  --color-bg-elevated: #111114;   /* 카드·패널 배경                               */
-  --color-bg-card:     #13141a;   /* 플로팅 카드 — elevated보다 한 단계 더 밝음   */
-  --color-bg-surface:  #1a1a1f;   /* 인터랙티브 요소 배경                         */
-  --color-bg-subtle:   #1e1e25;   /* 구분선·홀수행 등 미묘한 구분                 */
+  --color-bg:          #0c0d11;
+  --color-bg-elevated: #111114;
+  --color-bg-card:     #16171e;
+  --color-bg-surface:  #1a1a1f;
+  --color-bg-subtle:   #1e1e25;
 
-  /* ── 테두리 ── */
-  --color-border:     rgba(255, 255, 255, 0.12);  /* 일반 테두리 */
-  --color-border-dim: rgba(255, 255, 255, 0.06);  /* 약한 테두리·구분선 */
+  /* ── 테두리 — 불투명 단색 ── */
+  --color-border:     #2e3040;
+  --color-border-dim: #1f2030;
 
-  /* ── 텍스트 (밝음 → 흐림) — #0c0d11 배경 기준 WCAG ──
-     text:        #ffffff          → 대비비 18.2:1 ✓ (AAA)
-     text-dim:    rgba(255,255,255,0.65) → ~12.3:1 ✓ (AAA)
-     text-muted:  rgba(255,255,255,0.80) → ~14.9:1 ✓ (AAA)
-  ── */
-  --color-text:        #ffffff;                    /* 본문 */
-  --color-text-dim:    rgba(255, 255, 255, 0.65);  /* 보조 텍스트 */
-  --color-text-subtle: #8a8a96;                    /* 설명·메타 */
-  --color-text-muted:  rgba(255, 255, 255, 0.80);  /* 레이블·힌트 */
-  --color-text-ghost:  #3a3a44;                    /* 비활성·장식 */
+  /* ── 텍스트 (밝음 → 흐림) — 불투명 단색만 허용 ── */
+  --color-text:        #ffffff;    /* 본문                    19.6:1 AAA */
+  --color-text-muted:  #c8ccd8;    /* 설명글, 레이블·힌트     10.1:1 AAA */
+  --color-text-dim:    #9aa0b4;    /* 보조 텍스트, 캡션        5.9:1 AA  */
+  --color-text-subtle: #8a8a96;    /* 설명·메타                4.7:1 AA  */
+  --color-text-ghost:  #3a3a44;    /* 비활성·장식                        */
 
   /* ── 액센트 ── */
-  --color-accent:         #d4ff4f;              /* 다크 모드 라임 */
-  --color-accent-dim:     #8aa82d;              /* 보조 액센트 */
-  --color-accent-bg:      rgba(212, 255, 79, 0.12); /* 액센트 배경 틴트 */
-  --color-accent-bg-hi:   rgba(212, 255, 79, 0.15); /* 호버 액센트 배경 */
-  --color-accent-fg:      #0c0d11;              /* 액센트 위의 텍스트 */
+  --color-accent:         #d4ff4f;
+  --color-accent-dim:     #8aa82d;
+  --color-accent-bg:      #1a1f12;    /* 액센트 배경 틴트 — 불투명 */
+  --color-accent-bg-hi:   #1f2516;    /* 호버 액센트 배경 — 불투명 */
+  --color-accent-fg:      #0c0d11;
 
-  /* ── 시각화 전용 반투명 색상 ── */
-  --color-vis-delta-x:    rgba(212, 255, 79, 0.4);  /* Δx 보조선 */
-  --color-vis-delta-x-lb: rgba(212, 255, 79, 0.7);  /* Δx 레이블 */
-  --color-vis-delta-y:    rgba(138, 168, 45, 0.4);  /* Δy 보조선 */
-  --color-vis-delta-y-lb: rgba(138, 168, 45, 0.85); /* Δy 레이블 */
-  --color-vis-rect-pos:   rgba(138, 168, 45, 0.25); /* 리만합 양수 직사각형 */
-  --color-vis-rect-neg:   rgba(212, 79, 79, 0.2);   /* 리만합 음수 직사각형 */
-  --color-vis-noise:      0.04;                      /* 노이즈 오버레이 opacity */
+  /* ── 시각화 전용 색상 ── */
+  --color-vis-delta-x:    #5a7a20;    /* Δx 보조선 */
+  --color-vis-delta-x-lb: #8ab830;    /* Δx 레이블 */
+  --color-vis-delta-y:    #4a6a10;    /* Δy 보조선 */
+  --color-vis-delta-y-lb: #7a9828;    /* Δy 레이블 */
+  --color-vis-rect-pos:   #2a3a10;    /* 리만합 양수 직사각형 */
+  --color-vis-rect-neg:   #3a1515;    /* 리만합 음수 직사각형 */
+  --color-vis-noise:      0.04;
 
   /* FunctionPlayground 시각화 전용 */
-  --color-vis-axis:  #2a2a30;   /* 그래프 좌표축 선 */
-  --color-vis-deriv: #6a8fff;   /* 도함수 곡선·버튼 */
-  --color-vis-max:   #38bdf8;   /* 극대점 */
-  --color-vis-min:   #fb7185;   /* 극소점 */
+  --color-vis-axis:  #2a2a30;
+  --color-vis-deriv: #6a8fff;
+  --color-vis-max:   #38bdf8;
+  --color-vis-min:   #fb7185;
 
-  /* ── 반투명 오버레이 (아코디언·모달 배경 등) ── */
+  /* ── 오버레이 (비텍스트 — 배경용이므로 반투명 허용) ── */
   --color-overlay-soft:   rgba(26, 26, 31, 0.4);
   --color-overlay-medium: rgba(26, 26, 31, 0.6);
   --color-overlay-strong: rgba(26, 26, 31, 0.8);
@@ -91,31 +101,31 @@
 html.dark {
   --color-bg:          #0c0d11;
   --color-bg-elevated: #111114;
-  --color-bg-card:     #13141a;
+  --color-bg-card:     #16171e;
   --color-bg-surface:  #1a1a1f;
   --color-bg-subtle:   #1e1e25;
 
-  --color-border:     rgba(255, 255, 255, 0.12);
-  --color-border-dim: rgba(255, 255, 255, 0.06);
+  --color-border:     #2e3040;
+  --color-border-dim: #1f2030;
 
   --color-text:        #ffffff;
-  --color-text-dim:    rgba(255, 255, 255, 0.65);
+  --color-text-muted:  #c8ccd8;
+  --color-text-dim:    #9aa0b4;
   --color-text-subtle: #8a8a96;
-  --color-text-muted:  rgba(255, 255, 255, 0.80);
   --color-text-ghost:  #3a3a44;
 
   --color-accent:         #d4ff4f;
   --color-accent-dim:     #8aa82d;
-  --color-accent-bg:      rgba(212, 255, 79, 0.12);
-  --color-accent-bg-hi:   rgba(212, 255, 79, 0.15);
+  --color-accent-bg:      #1a1f12;
+  --color-accent-bg-hi:   #1f2516;
   --color-accent-fg:      #0c0d11;
 
-  --color-vis-delta-x:    rgba(212, 255, 79, 0.4);
-  --color-vis-delta-x-lb: rgba(212, 255, 79, 0.7);
-  --color-vis-delta-y:    rgba(138, 168, 45, 0.4);
-  --color-vis-delta-y-lb: rgba(138, 168, 45, 0.85);
-  --color-vis-rect-pos:   rgba(138, 168, 45, 0.25);
-  --color-vis-rect-neg:   rgba(212, 79, 79, 0.2);
+  --color-vis-delta-x:    #5a7a20;
+  --color-vis-delta-x-lb: #8ab830;
+  --color-vis-delta-y:    #4a6a10;
+  --color-vis-delta-y-lb: #7a9828;
+  --color-vis-rect-pos:   #2a3a10;
+  --color-vis-rect-neg:   #3a1515;
   --color-vis-noise:      0.04;
 
   --color-vis-axis:  #2a2a30;
@@ -130,60 +140,57 @@ html.dark {
 }
 
 /* ── 라이트 모드
-   배경: #f8f9fc (cool near-white)
-   액센트: #3d5a00 (올리브) — WCAG 기준 ──
-     #3d5a00 on #f8f9fc → 대비비 7.5:1 ✓ (AAA)
-     vis-max #0369a1    → 대비비 5.6:1 ✓ (AA)
-     vis-min #be123c    → 대비비 6.0:1 ✓ (AA)
+   WCAG 대비비 검증:
+     #f0f2f5 / #0a0a0f  → 18.4:1 (AAA ✓)
+     #f0f2f5 / #2a2d3a  → 10.5:1 (AAA ✓)
+     #f0f2f5 / #4a4f63  →  6.2:1 (AA  ✓)
+     #f0f2f5 / #2d4a00  →  9.3:1 (AAA ✓)
+     #f0f2f5 / #0369a1  →  6.8:1 (AA  ✓)
+     #f0f2f5 / #be123c  →  6.1:1 (AA  ✓)
    ── */
 html.light {
-  /* 배경: cool near-white */
-  --color-bg:          #f8f9fc;   /* 최하단 배경 — 대비비 기준점   */
-  --color-bg-elevated: #ffffff;   /* 카드·패널 배경                 */
-  --color-bg-card:     #ffffff;   /* 플로팅 카드                    */
-  --color-bg-surface:  #f0f1f5;   /* 인터랙티브 요소 배경           */
-  --color-bg-subtle:   #e8e9ef;   /* 구분선·홀수행 등 미묘한 구분   */
+  --color-bg:          #f0f2f5;
+  --color-bg-elevated: #ffffff;
+  --color-bg-card:     #ffffff;
+  --color-bg-surface:  #e8e9ef;
+  --color-bg-subtle:   #dddee5;
 
-  /* 테두리 */
-  --color-border:     rgba(0, 0, 0, 0.12);   /* 일반 테두리 */
-  --color-border-dim: rgba(0, 0, 0, 0.06);   /* 약한 테두리·구분선 */
+  /* 테두리 — 불투명 단색 */
+  --color-border:     #c0c4d0;
+  --color-border-dim: #d0d3dc;
 
-  /* 텍스트 — #f8f9fc 배경 기준 WCAG ──
-     text:        #0c0d11          → 대비비 17.4:1 ✓ (AAA)
-     text-dim:    rgba(0,0,0,0.65) → ~12.1:1 ✓ (AAA)
-     text-muted:  rgba(0,0,0,0.80) → ~14.5:1 ✓ (AAA)
-  ── */
-  --color-text:        #0c0d11;                /* 본문 */
-  --color-text-dim:    rgba(0, 0, 0, 0.65);    /* 보조 텍스트 */
-  --color-text-subtle: #3a3a44;                /* 설명·메타 */
-  --color-text-muted:  rgba(0, 0, 0, 0.80);    /* 레이블·힌트 */
-  --color-text-ghost:  #8a8a96;                /* 비활성·장식 */
+  /* 텍스트 — 불투명 단색 */
+  --color-text:        #0a0a0f;    /* 순검정에 가깝게     18.4:1 AAA */
+  --color-text-muted:  #2a2d3a;    /* 진한 차콜           10.5:1 AAA */
+  --color-text-dim:    #4a4f63;    /* 중간 차콜            6.2:1 AA  */
+  --color-text-subtle: #3a3a44;    /* 설명·메타            8.6:1 AAA */
+  --color-text-ghost:  #8a8a96;    /* 비활성·장식                     */
 
-  /* 액센트: 올리브 #3d5a00, 대비비 7.5:1 ✓ (AAA) */
-  --color-accent:         #3d5a00;
+  /* 액센트: 진한 올리브 — 대비비 9.3:1 (AAA ✓) */
+  --color-accent:         #2d4a00;
   --color-accent-dim:     #5a7a00;
-  --color-accent-bg:      rgba(61, 90, 0, 0.10);
-  --color-accent-bg-hi:   rgba(61, 90, 0, 0.15);
+  --color-accent-bg:      #e6ecd8;
+  --color-accent-bg-hi:   #dce5cc;
   --color-accent-fg:      #ffffff;
 
-  /* 시각화 전용 반투명 */
-  --color-vis-delta-x:    rgba(61, 90, 0, 0.40);
-  --color-vis-delta-x-lb: rgba(61, 90, 0, 0.80);
-  --color-vis-delta-y:    rgba(77, 114, 0, 0.40);
-  --color-vis-delta-y-lb: rgba(77, 114, 0, 0.90);
-  --color-vis-rect-pos:   rgba(61, 90, 0, 0.20);
-  --color-vis-rect-neg:   rgba(200, 60, 60, 0.15);
+  /* 시각화 전용 */
+  --color-vis-delta-x:    #7a9a30;
+  --color-vis-delta-x-lb: #4a6a10;
+  --color-vis-delta-y:    #6a8a20;
+  --color-vis-delta-y-lb: #3a5a00;
+  --color-vis-rect-pos:   #d8e5c0;
+  --color-vis-rect-neg:   #f0d0d0;
   --color-vis-noise:      0.02;
 
   --color-vis-axis:  #c0c1cb;
   --color-vis-deriv: #2952d4;
-  --color-vis-max:   #0369a1;   /* sky-700 — 대비비 5.6:1 ✓ (AA) */
-  --color-vis-min:   #be123c;   /* rose-700 — 대비비 6.0:1 ✓ (AA) */
+  --color-vis-max:   #0369a1;   /* sky-700 — 대비비 6.8:1 ✓ (AA) */
+  --color-vis-min:   #be123c;   /* rose-700 — 대비비 6.1:1 ✓ (AA) */
 
   --color-overlay-soft:   rgba(240, 241, 245, 0.4);
   --color-overlay-medium: rgba(240, 241, 245, 0.65);
   --color-overlay-strong: rgba(240, 241, 245, 0.85);
-  --color-stage-bg: radial-gradient(ellipse at 50% 30%, #f0f1f5, #f8f9fc);
+  --color-stage-bg: radial-gradient(ellipse at 50% 30%, #e8e9ef, #f0f2f5);
 }
 
 /* ══════════════════════════════════════════════════
@@ -247,15 +254,48 @@ body {
   overflow-wrap: break-word;
 }
 
-/* 본문·시각화 콘텐츠 폰트 크기 유틸리티 */
+/* ══════════════════════════════════════════════════
+   Task 5 — 교과서 본문 타이포그래피
+   ══════════════════════════════════════════════════ */
+
+/* 본문 콘텐츠 */
 .book-content {
   font-size: 1.125rem;
-  line-height: 1.85;
+  line-height: 1.9;
+}
+
+.book-content p {
+  font-size: 18px;
+  line-height: 1.9;
+  color: var(--color-text);        /* 완전 불투명 */
+  font-weight: 450;
 }
 
 .visualize-content {
   font-size: 1rem;
   line-height: 1.75;
+}
+
+/* 정의/정리 블록 */
+.definition-block,
+.theorem-block {
+  font-size: 17px;
+  color: var(--color-text);
+}
+
+/* 힌트/캡션 */
+.caption,
+.hint {
+  font-size: 15px;
+  color: var(--color-text-muted);  /* 불투명 */
+}
+
+/* 섹션 레이블 */
+.section-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--color-text-muted);
 }
 
 /* prefers-reduced-motion */

@@ -89,10 +89,10 @@ export function SecantSlope({ fn, a }: SecantSlopeProps) {
               <line x1={bx} y1={ay} x2={bx} y2={by}
                 stroke="var(--color-vis-delta-y)" strokeWidth="1" strokeDasharray="4 3" />
               <text x={(ax + bx) / 2} y={ay + 14}
-                fill="var(--color-vis-delta-x-lb)" fontSize="10" textAnchor="middle"
+                fill="var(--color-vis-delta-x-lb)" fontSize="13" textAnchor="middle"
                 fontFamily="JetBrains Mono, monospace">Δx = h</text>
               <text x={bx + 7} y={(ay + by) / 2}
-                fill="var(--color-vis-delta-y-lb)" fontSize="10" textAnchor="start"
+                fill="var(--color-vis-delta-y-lb)" fontSize="13" textAnchor="start"
                 fontFamily="JetBrains Mono, monospace" dominantBaseline="middle">Δy</text>
             </g>
           );
@@ -102,13 +102,13 @@ export function SecantSlope({ fn, a }: SecantSlopeProps) {
         {/* Point A */}
         <circle cx={ax} cy={ay} r="5" fill="var(--color-accent)" />
         <text x={ax - 6} y={ay - 12}
-          fill="var(--color-accent)" fontSize="11" textAnchor="middle" fontFamily="JetBrains Mono, monospace">
+          fill="var(--color-accent)" fontSize="14" textAnchor="middle" fontFamily="JetBrains Mono, monospace">
           A
         </text>
         {/* Point B */}
         <circle cx={bx} cy={by} r="4" fill="var(--color-accent-dim)" />
         <text x={bx + 6} y={by - 10}
-          fill="var(--color-accent-dim)" fontSize="11" textAnchor="start" fontFamily="JetBrains Mono, monospace">
+          fill="var(--color-accent-dim)" fontSize="14" textAnchor="start" fontFamily="JetBrains Mono, monospace">
           B
         </text>
         {/* h bracket */}
@@ -116,7 +116,7 @@ export function SecantSlope({ fn, a }: SecantSlopeProps) {
         <line x1={ax} y1={ay + 20} x2={ax} y2={ay + 28} stroke="var(--color-border)" strokeWidth="1" />
         <line x1={bx} y1={ay + 20} x2={bx} y2={ay + 28} stroke="var(--color-border)" strokeWidth="1" />
         <text x={(ax + bx) / 2} y={ay + 38}
-          fill="var(--color-text-ghost)" fontSize="10" textAnchor="middle" fontFamily="JetBrains Mono, monospace">
+          fill="var(--color-text-ghost)" fontSize="13" textAnchor="middle" fontFamily="JetBrains Mono, monospace">
           h = {h < 0.01 ? h.toPrecision(3) : Number.isInteger(h) ? h : h.toPrecision(3)}
         </text>
       </svg>

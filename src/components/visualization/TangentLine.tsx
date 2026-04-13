@@ -69,7 +69,7 @@ export function TangentLine({ fn, x0, domain }: TangentLineProps) {
           x={toX(xMax) - 10}
           y={toY(f0 + slope * (xMax - x0)) - 8}
           fill="var(--color-accent)"
-          fontSize="11"
+          fontSize="14"
           textAnchor="end"
           fontFamily="JetBrains Mono, monospace"
         >

@@ -125,13 +125,13 @@ export function PiecewiseGraph({ pieces, x0 }: PiecewiseGraphProps) {
             onClick={() => setSide(s)}
             style={{
               padding: '6px 16px',
-              border: `1px solid ${side === s ? color : '#26262d'}`,
+              border: `1px solid ${side === s ? color : 'var(--color-border)'}`,
               borderRadius: '4px',
-              background: side === s ? `${color}20` : 'none',
+              background: side === s ? (color === '#d4ff4f' ? 'var(--color-accent-bg)' : '#2a1515') : 'none',
               cursor: 'pointer',
               fontFamily: 'var(--font-mono)',
-              fontSize: '11px',
-              color: side === s ? color : '#5a5a66',
+              fontSize: '14px',
+              color: side === s ? color : 'var(--color-text-dim)',
               transition: 'all 150ms',
             }}
           >
@@ -183,7 +183,7 @@ export function PiecewiseGraph({ pieces, x0 }: PiecewiseGraphProps) {
             <circle cx={ax} cy={ay} r="5" fill="var(--color-accent)" />
           )}
           <text x={ax + 8} y={ay - 8}
-            fill="var(--color-accent)" fontSize="10" fontFamily="JetBrains Mono, monospace">
+            fill="var(--color-accent)" fontSize="13" fontFamily="JetBrains Mono, monospace">
             ({x0}, {isFinite(fa) ? fa.toFixed(2) : 'undef'})
           </text>
 
@@ -194,7 +194,7 @@ export function PiecewiseGraph({ pieces, x0 }: PiecewiseGraphProps) {
               <text
                 x={side === 'right' ? bx + 6 : bx - 6}
                 y={by - 8}
-                fill={accentColor} fontSize="10"
+                fill={accentColor} fontSize="13"
                 textAnchor={side === 'right' ? 'start' : 'end'}
                 fontFamily="JetBrains Mono, monospace"
               >
@@ -217,13 +217,13 @@ export function PiecewiseGraph({ pieces, x0 }: PiecewiseGraphProps) {
                 onClick={() => setH(p)}
                 style={{
                   flex: 1,
-                  background: active ? `${accentColor}20` : 'none',
-                  border: `1px solid ${active ? accentColor : '#26262d'}`,
+                  background: active ? (accentColor === '#d4ff4f' ? 'var(--color-accent-bg)' : '#2a1515') : 'none',
+                  border: `1px solid ${active ? accentColor : 'var(--color-border)'}`,
                   borderRadius: '3px',
                   cursor: 'pointer',
                   fontFamily: 'var(--font-mono)',
-                  fontSize: '11px',
-                  color: active ? accentColor : '#8a8a96',
+                  fontSize: '14px',
+                  color: active ? accentColor : 'var(--color-text-dim)',
                   padding: '4px 0',
                 }}
               >

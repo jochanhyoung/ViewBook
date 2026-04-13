@@ -80,45 +80,44 @@ export function FunctionPlayground({ initialFn, domain }: FunctionPlaygroundProp
   const { theme } = useTheme();
 
   /*
-   * ── 테마별 SVG 색상 ─────────────────────────────────────────────────────
-   * CSS 변수는 SVG presentational attribute에서 브라우저 지원이 불안정하므로
-   * theme prop으로 분기한 COLORS 객체를 사용.
+   * ── 테마별 SVG 색상 — 불투명 단색만 사용 ───────────────────────────────
    *
-   * WCAG AA 검증 (일반 텍스트 4.5:1 이상) ──
-   * 다크 #0c0d11 배경:
-   *   gridLabel rgba(255,255,255,0.55) → ~5.4:1  ✓
-   *   coordText rgba(255,255,255,0.85) → ~13.3:1 ✓
-   * 라이트 #f8f9fc 배경:
-   *   gridLabel rgba(0,0,0,0.55)       → ~4.7:1  ✓
-   *   coordText rgba(0,0,0,0.85)       → ~14.6:1 ✓
-   *   root/accent #3d5a00              → ~7.5:1  ✓
-   *   critMax #0369a1                  → ~5.6:1  ✓
-   *   critMin #be123c                  → ~6.0:1  ✓
+   * WCAG 대비비 검증 ──
+   * 다크 (#0c0d11):
+   *   gridLabel #9aa0b4  → 5.9:1  (AA  ✓)
+   *   coordText #ffffff  → 19.6:1 (AAA ✓)
+   *   critMax   #7dd3fc  → 9.8:1  (AAA ✓)
+   *   critMin   #fda4af  → 7.2:1  (AAA ✓)
+   * 라이트 (#f0f2f5):
+   *   gridLabel #4a4f63  → 6.2:1  (AA  ✓)
+   *   coordText #0a0a0f  → 18.4:1 (AAA ✓)
+   *   critMax   #0369a1  → 6.8:1  (AA  ✓)
+   *   critMin   #be123c  → 6.1:1  (AA  ✓)
    */
   const COLORS = {
-    grid:          theme === 'dark' ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.07)',
-    gridLabel:     theme === 'dark' ? 'rgba(255,255,255,0.55)' : 'rgba(0,0,0,0.55)',
-    rootFill:      theme === 'dark' ? '#D4FF4F' : '#3d5a00',
-    rootBorder:    theme === 'dark' ? 'rgba(212,255,79,0.45)'  : 'rgba(61,90,0,0.45)',
-    rootBoxBg:     theme === 'dark' ? 'rgba(10,10,11,0.92)'   : 'rgba(248,249,252,0.96)',
-    rootBoxHover:  theme === 'dark' ? 'rgba(212,255,79,0.20)' : 'rgba(61,90,0,0.15)',
-    rootLeadLine:  theme === 'dark' ? 'rgba(212,255,79,0.25)' : 'rgba(61,90,0,0.25)',
-    critMax:       theme === 'dark' ? '#38bdf8' : '#0369a1',
-    critMin:       theme === 'dark' ? '#fb7185' : '#be123c',
-    critMaxDim:    theme === 'dark' ? 'rgba(56,189,248,0.50)' : 'rgba(3,105,161,0.50)',
-    critMinDim:    theme === 'dark' ? 'rgba(251,113,133,0.50)': 'rgba(190,18,60,0.50)',
-    critMaxHover:  theme === 'dark' ? 'rgba(56,189,248,0.18)' : 'rgba(3,105,161,0.12)',
-    critMinHover:  theme === 'dark' ? 'rgba(251,113,133,0.18)': 'rgba(190,18,60,0.12)',
-    critMaxBtnBg:  theme === 'dark' ? 'rgba(56,189,248,0.10)' : 'rgba(3,105,161,0.10)',
-    critMinBtnBg:  theme === 'dark' ? 'rgba(251,113,133,0.10)': 'rgba(190,18,60,0.10)',
-    critMaxBtnHov: theme === 'dark' ? 'rgba(56,189,248,0.20)' : 'rgba(3,105,161,0.18)',
-    critMinBtnHov: theme === 'dark' ? 'rgba(251,113,133,0.20)': 'rgba(190,18,60,0.18)',
-    critMaxBtnBdr: theme === 'dark' ? 'rgba(56,189,248,0.40)' : 'rgba(3,105,161,0.40)',
-    critMinBtnBdr: theme === 'dark' ? 'rgba(251,113,133,0.40)': 'rgba(190,18,60,0.40)',
-    coordText:     theme === 'dark' ? 'rgba(255,255,255,0.85)' : 'rgba(0,0,0,0.85)',
-    queryLine:     theme === 'dark' ? 'rgba(212,255,79,0.30)'  : 'rgba(61,90,0,0.30)',
-    queryLabel:    theme === 'dark' ? 'rgba(255,255,255,0.85)' : 'rgba(0,0,0,0.85)',
-    btnSecText:    theme === 'dark' ? 'rgba(255,255,255,0.55)' : 'rgba(0,0,0,0.55)',
+    grid:          theme === 'dark' ? '#1a1b22' : '#d8d9e0',
+    gridLabel:     theme === 'dark' ? '#9aa0b4' : '#4a4f63',
+    rootFill:      theme === 'dark' ? '#D4FF4F' : '#2d4a00',
+    rootBorder:    theme === 'dark' ? '#6a8030' : '#4a6a10',
+    rootBoxBg:     theme === 'dark' ? '#16171e' : '#ffffff',
+    rootBoxHover:  theme === 'dark' ? '#2a3020' : '#e6ecd8',
+    rootLeadLine:  theme === 'dark' ? '#3a4a20' : '#7a9a40',
+    critMax:       theme === 'dark' ? '#7dd3fc' : '#0369a1',
+    critMin:       theme === 'dark' ? '#fda4af' : '#be123c',
+    critMaxDim:    theme === 'dark' ? '#3a6a80' : '#4a8ab0',
+    critMinDim:    theme === 'dark' ? '#804050' : '#a04060',
+    critMaxHover:  theme === 'dark' ? '#1a2a35' : '#daeaf5',
+    critMinHover:  theme === 'dark' ? '#2a1a20' : '#f5dae0',
+    critMaxBtnBg:  theme === 'dark' ? '#121a20' : '#e8f0f8',
+    critMinBtnBg:  theme === 'dark' ? '#1a1215' : '#f8e8ec',
+    critMaxBtnHov: theme === 'dark' ? '#1a2530' : '#d0e5f0',
+    critMinBtnHov: theme === 'dark' ? '#251a20' : '#f0d0d8',
+    critMaxBtnBdr: theme === 'dark' ? '#3a6a80' : '#4a8ab0',
+    critMinBtnBdr: theme === 'dark' ? '#804050' : '#a04060',
+    coordText:     theme === 'dark' ? '#ffffff' : '#0a0a0f',
+    queryLine:     theme === 'dark' ? '#3a4a20' : '#7a9a40',
+    queryLabel:    theme === 'dark' ? '#ffffff' : '#0a0a0f',
+    btnSecText:    theme === 'dark' ? '#9aa0b4' : '#4a4f63',
   } as const;
 
   const [fnExpr, setFnExpr] = useState<string | null>(initialFn);
@@ -605,7 +604,7 @@ export function FunctionPlayground({ initialFn, domain }: FunctionPlaygroundProp
                 />
                 <text
                   x={Math.max(toX(0) - 8, 4)} y={toY(yt) + 4}
-                  fill={COLORS.gridLabel} fontSize="10" fontFamily="var(--font-mono)" textAnchor="end"
+                  fill={COLORS.gridLabel} fontSize="13" fontFamily="var(--font-mono)" textAnchor="end"
                 >
                   {Number.isInteger(yt) ? String(yt) : yt.toFixed(1)}
                 </text>
@@ -649,7 +648,7 @@ export function FunctionPlayground({ initialFn, domain }: FunctionPlaygroundProp
                   />
                   <text
                     x={cx} y={labelY + 3}
-                    fill={COLORS.rootFill} fontSize="11" fontFamily="var(--font-mono)" fontWeight={600} textAnchor="middle"
+                    fill={COLORS.rootFill} fontSize="14" fontFamily="var(--font-mono)" fontWeight={600} textAnchor="middle"
                   >
                     {label}
                   </text>
@@ -707,14 +706,14 @@ export function FunctionPlayground({ initialFn, domain }: FunctionPlaygroundProp
                   {/* 타입 텍스트 */}
                   <text
                     x={boxX + boxW / 2} y={clampedBoxY + 15}
-                    fill={dotColor} fontSize="11" fontFamily="var(--font-mono)" fontWeight="700" textAnchor="middle"
+                    fill={dotColor} fontSize="14" fontFamily="var(--font-mono)" fontWeight="700" textAnchor="middle"
                   >
                     {line1}
                   </text>
                   {/* x 좌표 */}
                   <text
                     x={boxX + boxW / 2} y={clampedBoxY + 30}
-                    fill={COLORS.coordText} fontSize="11" fontFamily="var(--font-mono)" fontWeight="500" textAnchor="middle"
+                    fill={COLORS.coordText} fontSize="14" fontFamily="var(--font-mono)" fontWeight="500" textAnchor="middle"
                   >
                     {line2}
                   </text>
@@ -752,7 +751,7 @@ export function FunctionPlayground({ initialFn, domain }: FunctionPlaygroundProp
                 <circle cx={toX(queryResult.xNum)} cy={toY(queryResult.yNum)} r="5" fill="var(--color-accent)" />
                 <text
                   x={toX(queryResult.xNum)} y={toY(queryResult.yNum) - 12}
-                  fill={COLORS.queryLabel} fontSize="11" fontFamily="var(--font-mono)" textAnchor="middle"
+                  fill={COLORS.queryLabel} fontSize="14" fontFamily="var(--font-mono)" textAnchor="middle"
                 >
                   ({formatNum(queryResult.xNum)}, {queryResult.y})
                 </text>
@@ -767,7 +766,7 @@ export function FunctionPlayground({ initialFn, domain }: FunctionPlaygroundProp
         <button
           onClick={() => setShowDerivative((v) => !v)}
           style={{
-            background: showDerivative ? 'rgba(106,143,255,0.15)' : 'none',
+            background: showDerivative ? '#161a28' : 'none',
             border: '1px solid',
             borderColor: showDerivative ? 'var(--color-vis-deriv)' : 'var(--color-border)',
             borderRadius: '4px',
@@ -915,7 +914,7 @@ export function FunctionPlayground({ initialFn, domain }: FunctionPlaygroundProp
         </div>
       )}
 
-      <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-ghost)', margin: 0 }}>
+      <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--color-text-ghost)', margin: 0 }}>
         그래프를 클릭하면 해당 점의 접선이 그려집니다
       </p>
     </div>

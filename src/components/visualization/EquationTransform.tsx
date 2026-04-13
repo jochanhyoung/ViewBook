@@ -50,7 +50,7 @@ export function EquationTransform({ steps, subStepIndex }: EquationTransformProp
                   borderRadius: '12px',
                   padding: '24px 32px',
                   fontSize: '1.6rem',
-                  opacity: (!isCurrent && !s.highlight) ? 0.6 : 1,
+                  opacity: 1,
                   transition: 'all 300ms ease',
                   width: '100%',
                   textAlign: 'center',

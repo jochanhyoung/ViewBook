@@ -66,14 +66,14 @@ export function DefiniteIntegral({ fn, a, b }: DefiniteIntegralProps) {
         <line x1={toX(a)} y1={0} x2={toX(a)} y2={H} stroke="var(--color-text-muted)" strokeWidth="1" strokeDasharray="3 3" />
         <line x1={toX(b)} y1={0} x2={toX(b)} y2={H} stroke="var(--color-text-muted)" strokeWidth="1" strokeDasharray="3 3" />
         {/* 라벨 */}
-        <text x={toX(a)} y={H + 16} fill="var(--color-text-muted)" fontSize="11" textAnchor="middle" fontFamily="JetBrains Mono, monospace">a={a}</text>
-        <text x={toX(b)} y={H + 16} fill="var(--color-text-muted)" fontSize="11" textAnchor="middle" fontFamily="JetBrains Mono, monospace">b={b}</text>
+        <text x={toX(a)} y={H + 16} fill="var(--color-text-muted)" fontSize="14" textAnchor="middle" fontFamily="JetBrains Mono, monospace">a={a}</text>
+        <text x={toX(b)} y={H + 16} fill="var(--color-text-muted)" fontSize="14" textAnchor="middle" fontFamily="JetBrains Mono, monospace">b={b}</text>
         {/* 적분값 표시 */}
         <text
           x={(toX(a) + toX(b)) / 2}
           y={toY((Math.max(...yVals) + yMax) / 2)}
           fill="var(--color-accent-dim)"
-          fontSize="13"
+          fontSize="15"
           textAnchor="middle"
           fontFamily="JetBrains Mono, monospace"
         >
