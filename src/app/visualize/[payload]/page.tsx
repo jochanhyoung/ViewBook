@@ -131,7 +131,7 @@ export default function VisualizePage({ params }: PageProps) {
   return (
     <div style={{ height: '100vh', width: '100vw', background: 'var(--color-bg)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
       {/* Top bar */}
-      <div style={{ height: '48px', borderBottom: '1px solid var(--color-border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 20px', flexShrink: 0 }}>
+      <div style={{ height: '48px', borderBottom: '1px solid #1a1a1f', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 20px', flexShrink: 0 }}>
         <button
           onClick={goBack}
           style={{
@@ -152,7 +152,7 @@ export default function VisualizePage({ params }: PageProps) {
               style={{
                 width: i === index ? '18px' : '5px',
                 height: '4px',
-                background: i === index ? 'var(--color-accent)' : i < index ? 'var(--color-border)' : 'var(--color-border-dim)',
+                background: i === index ? '#d4ff4f' : i < index ? '#3a3a44' : '#26262d',
                 borderRadius: '2px', border: 'none', cursor: 'pointer',
                 transition: 'all 250ms ease', padding: 0,
               }}
@@ -160,7 +160,7 @@ export default function VisualizePage({ params }: PageProps) {
           ))}
         </div>
 
-        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-muted)' }}>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#3a3a44' }}>
           {index + 1} / {total}
         </span>
       </div>
@@ -182,9 +182,11 @@ export default function VisualizePage({ params }: PageProps) {
       </div>
 
       {/* PlaybackControls */}
-      <div style={{ height: '64px', borderTop: '1px solid var(--color-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', flexShrink: 0 }}>
+      <div style={{ height: '64px', borderTop: '1px solid #1a1a1f', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', flexShrink: 0 }}>
         <CtrlBtn onClick={goStart} disabled={index === 0 && subStep === 0 && !isPlaying} title="처음으로">⏮</CtrlBtn>
-        <CtrlBtn onClick={goPrev} disabled={index === 0 && subStep === 0} title="이전">⏪</CtrlBtn>
+        <CtrlBtn onClick={goPrev} disabled={index === 0 && subStep === 0} title="이전">
+          <IconPrev />
+        </CtrlBtn>
         <button
           onClick={() => setIsPlaying((p) => !p)}
           title={isPlaying ? '일시정지' : '재생'}
@@ -196,7 +198,9 @@ export default function VisualizePage({ params }: PageProps) {
         >
           {isPlaying ? '⏸' : '▶'}
         </button>
-        <CtrlBtn onClick={goNext} disabled={index >= total - 1 && subStep >= currentSubStepCount - 1} title="다음">⏩</CtrlBtn>
+        <CtrlBtn onClick={goNext} disabled={index >= total - 1 && subStep >= currentSubStepCount - 1} title="다음">
+          <IconNext />
+        </CtrlBtn>
       </div>
     </div>
   );
@@ -217,6 +221,26 @@ function CtrlBtn({ onClick, disabled, title, children }: { onClick: () => void; 
     >
       {children}
     </button>
+  );
+}
+
+/** ⏪ 대체 — currentColor를 따르는 SVG (이중 왼쪽 화살표) */
+function IconPrev() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+      <path d="M7 2L2.5 6.5L7 11" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M11.5 2L7 6.5L11.5 11" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+/** ⏩ 대체 — currentColor를 따르는 SVG (이중 오른쪽 화살표) */
+function IconNext() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+      <path d="M2 2L6.5 6.5L2 11" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M6.5 2L11 6.5L6.5 11" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
   );
 }
 
