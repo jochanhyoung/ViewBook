@@ -1,34 +1,22 @@
 'use client';
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { safeEval } from '@/lib/safe-math';
 
 interface LimitDefinitionProps {
   fn: string;
   x0: number;
-  subStep?: number;   // 0..4, 재생 모드에서 사용
-  isPlaying?: boolean;
 }
 
 const PRESETS = [1, 0.5, 0.25, 0.1, 0.01] as const;
 const H_MIN = 0.0001;
 const H_MAX = 2;
 
-export function LimitDefinition({ fn, x0, subStep = 0, isPlaying = false }: LimitDefinitionProps) {
+export function LimitDefinition({ fn, x0 }: LimitDefinitionProps) {
   const [manualH, setManualH] = useState<number>(PRESETS[0]);
   const [textInput, setTextInput] = useState<string>('1');
   const [inputError, setInputError] = useState(false);
 
-  // 재생이 끝나면 마지막 프리셋 값을 manualH로 동기화
-  useEffect(() => {
-    if (!isPlaying) {
-      const snapped = PRESETS[Math.min(subStep, PRESETS.length - 1)];
-      setManualH(snapped);
-      setTextInput(String(snapped));
-      setInputError(false);
-    }
-  }, [isPlaying, subStep]);
-
-  const h = isPlaying ? PRESETS[Math.min(subStep, PRESETS.length - 1)] : manualH;
+  const h = manualH;
 
   const applyText = useCallback(() => {
     const v = Number(textInput);
@@ -163,32 +151,8 @@ export function LimitDefinition({ fn, x0, subStep = 0, isPlaying = false }: Limi
         </svg>
       </div>
 
-      {/* Playing mode: preset buttons only */}
-      {isPlaying && (
-        <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }}>
-          {PRESETS.map((p, i) => (
-            <div
-              key={p}
-              style={{
-                padding: '4px 10px',
-                border: '1px solid',
-                borderColor: i === Math.min(subStep, PRESETS.length - 1) ? 'var(--color-accent)' : 'var(--color-border)',
-                borderRadius: '3px',
-                background: i === Math.min(subStep, PRESETS.length - 1) ? 'var(--color-accent-bg)' : 'none',
-                fontFamily: 'var(--font-mono)',
-                fontSize: '11px',
-                color: i === Math.min(subStep, PRESETS.length - 1) ? 'var(--color-accent)' : 'var(--color-text-ghost)',
-              }}
-            >
-              {p}
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Paused mode: free input + preset shortcuts */}
-      {!isPlaying && (
-        <div style={{ width: '100%', maxWidth: '420px', display: 'flex', flexDirection: 'column', gap: '10px', flexShrink: 0 }}>
+      {/* free input + preset shortcuts */}
+      <div style={{ width: '100%', maxWidth: '420px', display: 'flex', flexDirection: 'column', gap: '10px', flexShrink: 0 }}>
           {/* Preset buttons */}
           <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
             <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)', letterSpacing: '0.1em', textTransform: 'uppercase', flexShrink: 0 }}>
@@ -273,8 +237,7 @@ export function LimitDefinition({ fn, x0, subStep = 0, isPlaying = false }: Limi
             }}
             style={{ width: '100%', accentColor: 'var(--color-accent)' }}
           />
-        </div>
-      )}
+      </div>
 
       {/* Stats */}
       <div

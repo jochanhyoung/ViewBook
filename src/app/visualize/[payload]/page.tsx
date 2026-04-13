@@ -73,7 +73,6 @@ export default function VisualizePage({ params }: PageProps) {
   const currentStep = steps[index];
   const currentSubStepCount =
     currentStep.kind === 'equationTransform' ? currentStep.steps.length :
-    currentStep.kind === 'limitDefinition' ? 5 :
     currentStep.kind === 'solutionSlides' ? currentStep.steps.length :
     1;
 
@@ -93,7 +92,6 @@ export default function VisualizePage({ params }: PageProps) {
       const prevStep = steps[index - 1];
       const prevSubStepCount =
         prevStep.kind === 'equationTransform' ? prevStep.steps.length :
-        prevStep.kind === 'limitDefinition' ? 5 :
         prevStep.kind === 'solutionSlides' ? prevStep.steps.length :
         1;
       setIndex((i) => i - 1);
@@ -249,7 +247,7 @@ function StepContent({ step, isPlaying, subStep }: { step: VisualizationStep; is
     case 'powerRule':
       return <PowerRule coefficient={step.coefficient} exponent={step.exponent} />;
     case 'limitDefinition':
-      return <LimitDefinition fn={step.fn} x0={step.x0} isPlaying={isPlaying} subStep={subStep} />;
+      return <LimitDefinition fn={step.fn} x0={step.x0} />;
     case 'derivativeGraph':
       return <DerivativeGraph fnLatex={step.fnLatex} fn={step.fn} domain={step.domain} />;
     case 'tangentLine':
