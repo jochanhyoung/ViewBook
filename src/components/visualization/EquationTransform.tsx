@@ -1,4 +1,5 @@
 'use client';
+import { AnimatePresence, motion } from 'framer-motion';
 import { BlockMath } from 'react-katex';
 
 interface EquationTransformProps {
@@ -12,64 +13,102 @@ interface EquationTransformProps {
 }
 
 export function EquationTransform({ steps, subStepIndex }: EquationTransformProps) {
-  const visibleSteps = steps.slice(0, subStepIndex + 1);
+  const idx = Math.min(Math.max(0, subStepIndex), steps.length - 1);
+  const current = steps[idx];
+  const isFinal = current.highlight === true;
 
   return (
-    <div style={{ padding: '32px 20px', minHeight: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', overflowY: 'auto' }}>
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '24px', width: '100%', maxWidth: '600px' }}>
-        {visibleSteps.map((s, i) => {
-          const isCurrent = i === visibleSteps.length - 1;
-          const bg = s.highlight
-            ? 'var(--color-accent-bg-hi)'
-            : isCurrent
-              ? 'var(--color-bg-surface)'
-              : 'var(--color-bg-elevated)';
-          const border = s.highlight
-            ? '1px solid var(--color-accent)'
-            : isCurrent
-              ? '1px solid var(--color-text-ghost)'
-              : '1px solid var(--color-border)';
-          const color = s.highlight
-            ? 'var(--color-accent)'
-            : isCurrent
-              ? 'var(--color-text)'
-              : 'var(--color-text-subtle)';
+    <div style={{
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '40px 24px',
+      gap: '20px',
+      background: 'var(--color-bg)',
+      overflowY: 'auto',
+    }}>
+      {/* 진행 점 */}
+      <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+        {steps.map((_, i) => (
+          <div
+            key={i}
+            style={{
+              width: i === idx ? '18px' : '6px',
+              height: '6px',
+              borderRadius: '3px',
+              background: i < idx
+                ? 'var(--color-text-ghost)'
+                : i === idx
+                  ? 'var(--color-accent)'
+                  : 'var(--color-border)',
+              transition: 'all 250ms ease',
+            }}
+          />
+        ))}
+      </div>
 
-          return (
-            <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', width: '100%' }}>
-              {/* 레이블 */}
-              <span style={{ fontSize: '11px', letterSpacing: '0.15em', color: 'var(--color-text-muted)', textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>
-                {s.label}
-              </span>
-              {/* 수식 박스 */}
-              <div
-                style={{
-                  background: bg,
-                  border: border,
-                  color: color,
-                  borderRadius: '12px',
-                  padding: '24px 32px',
-                  fontSize: '1.6rem',
-                  opacity: 1,
-                  transition: 'all 300ms ease',
-                  width: '100%',
-                  textAlign: 'center',
-                  overflowX: 'auto',
-                }}
-              >
-                <BlockMath math={s.latex} />
-              </div>
-              {/* 설명 텍스트 */}
-              {s.description && isCurrent && (
-                <p style={{ fontSize: '13px', color: 'var(--color-text-subtle)', marginTop: '4px', textAlign: 'center' }}>{s.description}</p>
-              )}
-              {/* 단계 간 화살표 */}
-              {i < visibleSteps.length - 1 && (
-                <span style={{ color: 'var(--color-text-muted)', fontSize: '20px', marginTop: '8px' }}>↓</span>
-              )}
-            </div>
-          );
-        })}
+      {/* 단계 레이블 */}
+      <div style={{
+        fontFamily: 'var(--font-mono)',
+        fontSize: '10px',
+        letterSpacing: '0.2em',
+        textTransform: 'uppercase',
+        color: isFinal ? 'var(--color-accent)' : 'var(--color-text-ghost)',
+        transition: 'color 300ms ease',
+      }}>
+        {current.label}
+      </div>
+
+      {/* 수식 카드 — 스텝 변경 시 fade */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={idx}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.22, ease: 'easeOut' }}
+          style={{
+            maxWidth: '540px',
+            width: '100%',
+            background: isFinal ? 'var(--color-accent-bg)' : 'var(--color-bg-elevated)',
+            border: `1px solid ${isFinal ? 'var(--color-accent)' : 'var(--color-bg-subtle)'}`,
+            borderRadius: '10px',
+            padding: '32px 36px',
+            fontSize: '1.6rem',
+            textAlign: 'center',
+            color: isFinal ? 'var(--color-accent)' : 'var(--color-text)',
+            boxShadow: isFinal ? '0 0 28px var(--color-accent-bg)' : 'none',
+            transition: 'border-color 300ms ease, box-shadow 300ms ease',
+            overflowX: 'auto',
+          }}
+        >
+          <BlockMath math={current.latex} />
+        </motion.div>
+      </AnimatePresence>
+
+      {/* 설명 */}
+      {current.description && (
+        <p style={{
+          fontSize: '13px',
+          color: 'var(--color-text-subtle)',
+          textAlign: 'center',
+          margin: 0,
+          lineHeight: 1.6,
+        }}>
+          {current.description}
+        </p>
+      )}
+
+      {/* 스텝 카운터 */}
+      <div style={{
+        fontFamily: 'var(--font-mono)',
+        fontSize: '10px',
+        color: 'var(--color-text-ghost)',
+        letterSpacing: '0.1em',
+      }}>
+        {idx + 1} / {steps.length}
       </div>
     </div>
   );
