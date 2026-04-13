@@ -51,7 +51,7 @@ export function PowerRule({ coefficient, exponent }: PowerRuleProps) {
             value={userCoef}
             onChange={(e) => setUserCoef(Number(e.target.value))}
             style={{
-              width: '56px',
+              width: '60px',
               background: 'var(--color-bg-surface)',
               border: '1px solid var(--color-border)',
               borderRadius: '4px',
@@ -70,7 +70,7 @@ export function PowerRule({ coefficient, exponent }: PowerRuleProps) {
             value={userExp}
             onChange={(e) => setUserExp(Number(e.target.value))}
             style={{
-              width: '56px',
+              width: '60px',
               background: 'var(--color-bg-surface)',
               border: '1px solid var(--color-border)',
               borderRadius: '4px',

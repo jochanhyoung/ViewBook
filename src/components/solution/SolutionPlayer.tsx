@@ -1,5 +1,5 @@
 'use client';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import type { VisualizationStep } from '@/types/visualization';
 import { PowerRule } from '@/components/visualization/PowerRule';
@@ -23,18 +23,45 @@ interface SolutionPlayerProps {
 
 export function SolutionPlayer({ steps, index, total, onPrev, onNext, compact = false }: SolutionPlayerProps) {
   const step = steps[Math.min(index, steps.length - 1)];
+  const [subStep, setSubStep] = useState(0);
+
+  // 메인 스텝이 바뀌면 서브스텝 리셋
+  useEffect(() => { setSubStep(0); }, [index]);
+
+  const subStepCount = step?.kind === 'equationTransform' ? step.steps.length : 1;
+  const isFirstSubStep = subStep === 0;
+  const isLastSubStep = subStep >= subStepCount - 1;
+
+  const handleNext = () => {
+    if (!isLastSubStep) {
+      setSubStep((s: number) => s + 1);
+    } else {
+      onNext();
+    }
+  };
+
+  const handlePrev = () => {
+    if (!isFirstSubStep) {
+      setSubStep((s: number) => s - 1);
+    } else {
+      onPrev();
+    }
+  };
 
   useEffect(() => {
     if (compact) return;
     function handleKey(e: KeyboardEvent) {
-      if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); onNext(); }
-      if (e.key === 'ArrowLeft') onPrev();
+      if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); handleNext(); }
+      if (e.key === 'ArrowLeft') handlePrev();
     }
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, [onPrev, onNext, compact]);
+  }, [handleNext, handlePrev, compact]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!step) return null;
+
+  const isNextDisabled = isLastSubStep && index >= total - 1;
+  const isPrevDisabled = isFirstSubStep && index === 0;
 
   return (
     <div style={{ height: compact ? 'auto' : '100%', display: 'flex', flexDirection: 'column' }}>
@@ -49,7 +76,7 @@ export function SolutionPlayer({ steps, index, total, onPrev, onNext, compact = 
             transition={{ duration: 0.2 }}
             style={{ height: compact ? 'auto' : '100%' }}
           >
-            <StepContent step={step} />
+            <StepContent step={step} subStep={subStep} />
           </motion.div>
         </AnimatePresence>
       </div>
@@ -67,13 +94,13 @@ export function SolutionPlayer({ steps, index, total, onPrev, onNext, compact = 
           }}
         >
           <button
-            onClick={onPrev}
-            disabled={index === 0}
+            onClick={handlePrev}
+            disabled={isPrevDisabled}
             style={{
               background: 'none',
               border: 'none',
-              cursor: index === 0 ? 'default' : 'pointer',
-              color: index === 0 ? 'var(--color-border)' : 'var(--color-text-subtle)',
+              cursor: isPrevDisabled ? 'default' : 'pointer',
+              color: isPrevDisabled ? 'var(--color-border)' : 'var(--color-text-subtle)',
               fontFamily: 'var(--font-mono)',
               fontSize: '12px',
               padding: '4px 8px',
@@ -82,30 +109,45 @@ export function SolutionPlayer({ steps, index, total, onPrev, onNext, compact = 
             ← 이전
           </button>
 
-          {/* 진행 점 */}
+          {/* 진행 점 — equationTransform이면 서브스텝 기준으로 표시 */}
           <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-            {steps.map((_, i) => (
-              <div
-                key={i}
-                style={{
-                  width: i === index ? '16px' : '5px',
-                  height: '4px',
-                  background: i === index ? 'var(--color-accent)' : 'var(--color-border)',
-                  borderRadius: '2px',
-                  transition: 'all 250ms ease',
-                }}
-              />
-            ))}
+            {step.kind === 'equationTransform' ? (
+              step.steps.map((_, i) => (
+                <div
+                  key={i}
+                  style={{
+                    width: i === subStep ? '16px' : '5px',
+                    height: '4px',
+                    background: i === subStep ? 'var(--color-accent)' : 'var(--color-border)',
+                    borderRadius: '2px',
+                    transition: 'all 250ms ease',
+                  }}
+                />
+              ))
+            ) : (
+              steps.map((_, i) => (
+                <div
+                  key={i}
+                  style={{
+                    width: i === index ? '16px' : '5px',
+                    height: '4px',
+                    background: i === index ? 'var(--color-accent)' : 'var(--color-border)',
+                    borderRadius: '2px',
+                    transition: 'all 250ms ease',
+                  }}
+                />
+              ))
+            )}
           </div>
 
           <button
-            onClick={onNext}
-            disabled={index >= total - 1}
+            onClick={handleNext}
+            disabled={isNextDisabled}
             style={{
               background: 'none',
               border: 'none',
-              cursor: index >= total - 1 ? 'default' : 'pointer',
-              color: index >= total - 1 ? 'var(--color-border)' : 'var(--color-text-subtle)',
+              cursor: isNextDisabled ? 'default' : 'pointer',
+              color: isNextDisabled ? 'var(--color-border)' : 'var(--color-text-subtle)',
               fontFamily: 'var(--font-mono)',
               fontSize: '12px',
               padding: '4px 8px',
@@ -119,7 +161,7 @@ export function SolutionPlayer({ steps, index, total, onPrev, onNext, compact = 
   );
 }
 
-function StepContent({ step }: { step: VisualizationStep }) {
+function StepContent({ step, subStep }: { step: VisualizationStep; subStep: number }) {
   switch (step.kind) {
     case 'powerRule':
       return <PowerRule coefficient={step.coefficient} exponent={step.exponent} />;
@@ -136,7 +178,7 @@ function StepContent({ step }: { step: VisualizationStep }) {
     case 'definiteIntegral':
       return <DefiniteIntegral fn={step.fn} a={step.a} b={step.b} />;
     case 'equationTransform':
-      return <EquationTransform steps={step.steps} subStepIndex={step.steps.length - 1} />;
+      return <EquationTransform steps={step.steps} subStepIndex={subStep} />;
     case 'text':
       return <StepText latex={step.latex} markdown={step.markdown} />;
     default:

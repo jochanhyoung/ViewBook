@@ -112,7 +112,7 @@ export const powerRulePage: Page = {
       id: 'ex-2-2-1',
       number: '예제 2.2.1',
       problem:
-        '다음 함수들의 도함수를 거듭제곱 미분법으로 구하시오.\n\n(1) $f(x) = x^7$ \\qquad (2) $g(x) = 5x^3$ \\qquad (3) $h(x) = \\dfrac{1}{2}x^6$',
+        '다음 함수들의 도함수를 거듭제곱 미분법으로 구하시오.\n\n(1) $f(x) = x^7$ $\\qquad$ (2) $g(x) = 5x^3$ $\\qquad$ (3) $h(x) = \\dfrac{1}{2}x^6$',
       hint:
         '공식 $(ax^n)\' = anx^{n-1}$을 각 항에 적용하라. 지수를 계수에 곱하고, 지수를 1 줄인다.',
       solution:
@@ -120,6 +120,7 @@ export const powerRulePage: Page = {
       visualize: [
         { kind: 'powerRule', coefficient: 1, exponent: 7 },
         { kind: 'powerRule', coefficient: 5, exponent: 3 },
+        { kind: 'powerRule', coefficient: 0.5, exponent: 6 },
       ],
     },
     {

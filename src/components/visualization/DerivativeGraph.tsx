@@ -63,9 +63,6 @@ export function DerivativeGraph({ fn, domain }: DerivativeGraphProps) {
 
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px', gap: '8px' }}>
-      <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)', letterSpacing: '0.1em', alignSelf: 'flex-start' }}>
-        f(x) — 원함수
-      </p>
       <svg
         ref={svgRef}
         width={W}
@@ -73,6 +70,10 @@ export function DerivativeGraph({ fn, domain }: DerivativeGraphProps) {
         onMouseMove={handleMouseMove}
         style={{ cursor: 'crosshair', overflow: 'visible' }}
       >
+        {/* 라벨 — SVG 내부 좌표로 고정, 컨테이너 너비와 무관 */}
+        <text x={4} y={14} fontFamily="JetBrains Mono, monospace" fontSize="10" letterSpacing="1" fill="var(--color-text-muted)">
+          f(x) — 원함수
+        </text>
         {yMin <= 0 && yMax >= 0 && (
           <line x1={0} y1={toY(0, yMin, yMax)} x2={W} y2={toY(0, yMin, yMax)} stroke="var(--color-border)" strokeWidth="1" />
         )}
@@ -89,15 +90,16 @@ export function DerivativeGraph({ fn, domain }: DerivativeGraphProps) {
         <circle cx={cx} cy={cy_f} r="4" fill="var(--color-accent)" />
       </svg>
 
-      <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)', letterSpacing: '0.1em', alignSelf: 'flex-start', marginTop: '8px' }}>
-        f′(x) — 도함수
-      </p>
       <svg
         width={W}
         height={H}
         onMouseMove={handleMouseMove}
-        style={{ cursor: 'crosshair', overflow: 'visible' }}
+        style={{ cursor: 'crosshair', overflow: 'visible', marginTop: '8px' }}
       >
+        {/* 라벨 — SVG 내부 좌표로 고정 */}
+        <text x={4} y={14} fontFamily="JetBrains Mono, monospace" fontSize="10" letterSpacing="1" fill="var(--color-text-muted)">
+          f′(x) — 도함수
+        </text>
         {dMin <= 0 && dMax >= 0 && (
           <line x1={0} y1={toY(0, dMin, dMax)} x2={W} y2={toY(0, dMin, dMax)} stroke="var(--color-border)" strokeWidth="1" />
         )}

@@ -197,38 +197,38 @@ export const derivativeDefinitionPage: Page = {
       visualize: [
         { kind: 'secantSlope', fn: 'x^2 + 3*x', a: 2 },
         {
-          kind: 'solutionSlides',
+          kind: 'equationTransform',
           steps: [
             {
               label: '① 정의 대입',
-              tex: '\\dfrac{f(2+h) - f(2)}{h}',
-              hint: 'f(x) = x² + 3x 이므로 f(2) = 4 + 6 = 10',
+              latex: '\\dfrac{f(2+h) - f(2)}{h}',
+              description: 'f(x) = x² + 3x 이므로 f(2) = 4 + 6 = 10',
             },
             {
               label: '② f(x) 대입 · 전개',
-              tex: '\\dfrac{(2+h)^2 + 3(2+h) - 10}{h}',
-              hint: '(2+h)² = 4+4h+h², 3(2+h) = 6+3h',
+              latex: '\\dfrac{(2+h)^2 + 3(2+h) - 10}{h}',
+              description: '(2+h)² = 4+4h+h², 3(2+h) = 6+3h',
             },
             {
               label: '③ 분자 정리',
-              tex: '\\dfrac{h^2 + 7h}{h}',
-              hint: '4+6-10 = 0 으로 상수항 소거, 4h+3h = 7h',
+              latex: '\\dfrac{h^2 + 7h}{h}',
+              description: '4+6-10 = 0 으로 상수항 소거, 4h+3h = 7h',
             },
             {
               label: '④ 인수분해 · 약분',
-              tex: '\\dfrac{h(h + 7)}{h} = h + 7',
-              hint: 'h ≠ 0 이므로 분모와 분자의 h를 약분',
+              latex: '\\dfrac{h(h + 7)}{h} = h + 7',
+              description: 'h ≠ 0 이므로 분모와 분자의 h를 약분',
             },
             {
               label: '⑤ 극한',
-              tex: '\\lim_{h \\to 0}\\,(h + 7)',
-              hint: 'h를 0으로 보낸다',
+              latex: '\\lim_{h \\to 0}\\,(h + 7)',
+              description: 'h를 0으로 보낸다',
             },
             {
               label: '⑥ 답',
-              tex: 'f\'(2) = 7',
-              hint: '접점 (2, 10) 에서 접선의 기울기는 7',
-              final: true,
+              latex: 'f\'(2) = 7',
+              description: '접점 (2, 10) 에서 접선의 기울기는 7',
+              highlight: true,
             },
           ],
         },
