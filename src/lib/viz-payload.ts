@@ -7,7 +7,7 @@ import { VisualizationStepSchema } from './schemas';
 export const VizPayloadSchema = z.object({
   steps: z.array(VisualizationStepSchema).min(1).max(20),
   returnTo: z.string().max(200),
-  title: z.string().max(100).optional(),
+  title: z.string().max(500).optional(),
 });
 
 export type VizPayload = z.infer<typeof VizPayloadSchema>;

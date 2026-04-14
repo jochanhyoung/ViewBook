@@ -46,7 +46,10 @@ export function PiecewiseGraph({ pieces, x0 }: PiecewiseGraphProps) {
   const leftLimit  = (evalAt(x0) - evalAt(x0 - eps)) / eps;
   const currentLimit = side === 'right' ? rightLimit : leftLimit;
 
-  const accentColor = side === 'right' ? '#d4ff4f' : '#f87171';
+  // CSS 변수 — 다크/라이트 모드 자동 전환
+  const accentColor = side === 'right' ? 'var(--color-accent)' : 'var(--color-vis-min)';
+  const accentDimColor = side === 'right' ? 'var(--color-accent-dim)' : 'var(--color-vis-min)';
+  const accentBg = side === 'right' ? 'var(--color-accent-bg)' : 'var(--color-vis-neg-bg)';
 
   const W = 380, H_SVG = 220;
   // 전체 도메인: pieces의 domain 합집합 + 여백
@@ -117,27 +120,32 @@ export function PiecewiseGraph({ pieces, x0 }: PiecewiseGraphProps) {
       {/* 좌/우미분 토글 */}
       <div style={{ display: 'flex', gap: '6px' }}>
         {([
-          ['right', '우미분 (h → 0⁺)', '#d4ff4f'] as const,
-          ['left',  '좌미분 (h → 0⁻)', '#f87171'] as const,
-        ]).map(([s, label, color]) => (
-          <button
-            key={s}
-            onClick={() => setSide(s)}
-            style={{
-              padding: '6px 16px',
-              border: `1px solid ${side === s ? color : 'var(--color-border)'}`,
-              borderRadius: '4px',
-              background: side === s ? (color === '#d4ff4f' ? 'var(--color-accent-bg)' : '#2a1515') : 'none',
-              cursor: 'pointer',
-              fontFamily: 'var(--font-mono)',
-              fontSize: '14px',
-              color: side === s ? color : 'var(--color-text-dim)',
-              transition: 'all 150ms',
-            }}
-          >
-            {label}
-          </button>
-        ))}
+          ['right', '우미분 (h → 0⁺)'] as const,
+          ['left',  '좌미분 (h → 0⁻)'] as const,
+        ]).map(([s, label]) => {
+          const isActive = side === s;
+          const btnAccent = s === 'right' ? 'var(--color-accent)' : 'var(--color-vis-min)';
+          const btnBg = s === 'right' ? 'var(--color-accent-bg)' : 'var(--color-vis-neg-bg)';
+          return (
+            <button
+              key={s}
+              onClick={() => setSide(s)}
+              style={{
+                padding: '6px 16px',
+                border: `1px solid ${isActive ? btnAccent : 'var(--color-border)'}`,
+                borderRadius: '4px',
+                background: isActive ? btnBg : 'none',
+                cursor: 'pointer',
+                fontFamily: 'var(--font-mono)',
+                fontSize: '14px',
+                color: isActive ? btnAccent : 'var(--color-text-dim)',
+                transition: 'all 150ms',
+              }}
+            >
+              {label}
+            </button>
+          );
+        })}
       </div>
 
       {/* SVG 그래프 */}
@@ -152,7 +160,7 @@ export function PiecewiseGraph({ pieces, x0 }: PiecewiseGraphProps) {
             <line
               x1={toX(xMin)} y1={toY(tanY1)}
               x2={toX(xMax)} y2={toY(tanY2)}
-              stroke={accentColor} strokeWidth="1" strokeDasharray="5 4"
+              style={{ stroke: accentColor }} strokeWidth="1" strokeDasharray="5 4"
               strokeOpacity={Math.max(0, 1 - h * 5)}
             />
           )}
@@ -162,7 +170,7 @@ export function PiecewiseGraph({ pieces, x0 }: PiecewiseGraphProps) {
             <line
               x1={toX(xMin)} y1={toY(secY1)}
               x2={toX(xMax)} y2={toY(secY2)}
-              stroke={side === 'right' ? '#8aa82d' : '#f87171'} strokeWidth="1.6" strokeOpacity="0.85"
+              style={{ stroke: accentDimColor }} strokeWidth="1.6" strokeOpacity="0.85"
             />
           )}
 
@@ -182,19 +190,15 @@ export function PiecewiseGraph({ pieces, x0 }: PiecewiseGraphProps) {
           {isFinite(fa) && (
             <circle cx={ax} cy={ay} r="5" fill="var(--color-accent)" />
           )}
-          <text x={ax + 8} y={ay - 8}
-            fill="var(--color-accent)" fontSize="13" fontFamily="JetBrains Mono, monospace">
-            ({x0}, {isFinite(fa) ? fa.toFixed(2) : 'undef'})
-          </text>
 
           {/* 점 B */}
           {isFinite(fah) && (
             <>
-              <circle cx={bx} cy={by} r="4" fill={accentColor} />
+              <circle cx={bx} cy={by} r="4" style={{ fill: accentColor }} />
               <text
                 x={side === 'right' ? bx + 6 : bx - 6}
                 y={by - 8}
-                fill={accentColor} fontSize="13"
+                style={{ fill: accentColor }} fontSize="13"
                 textAnchor={side === 'right' ? 'start' : 'end'}
                 fontFamily="JetBrains Mono, monospace"
               >
@@ -217,7 +221,7 @@ export function PiecewiseGraph({ pieces, x0 }: PiecewiseGraphProps) {
                 onClick={() => setH(p)}
                 style={{
                   flex: 1,
-                  background: active ? (accentColor === '#d4ff4f' ? 'var(--color-accent-bg)' : '#2a1515') : 'none',
+                  background: active ? accentBg : 'none',
                   border: `1px solid ${active ? accentColor : 'var(--color-border)'}`,
                   borderRadius: '3px',
                   cursor: 'pointer',
@@ -239,7 +243,7 @@ export function PiecewiseGraph({ pieces, x0 }: PiecewiseGraphProps) {
           step={0.01}
           value={Math.log10(h || H_MIN)}
           onChange={(e) => setH(parseFloat(Math.pow(10, Number(e.target.value)).toPrecision(3)))}
-          style={{ width: '100%', accentColor }}
+          style={{ width: '100%', accentColor: accentColor }}
         />
       </div>
 
@@ -261,7 +265,7 @@ export function PiecewiseGraph({ pieces, x0 }: PiecewiseGraphProps) {
             <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
               {side === 'right' ? '우미분 극한' : '좌미분 극한'}
             </div>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '22px', color: accentColor, fontWeight: 'bold', lineHeight: 1, marginTop: '4px' }}>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '22px', color: accentColor as string, fontWeight: 'bold', lineHeight: 1, marginTop: '4px' }}>
               {secantSlope.toFixed(4)}
             </div>
             <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)', marginTop: '4px' }}>
@@ -272,7 +276,7 @@ export function PiecewiseGraph({ pieces, x0 }: PiecewiseGraphProps) {
             <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
               수렴값
             </div>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '22px', color: accentColor, fontWeight: 'bold', lineHeight: 1, marginTop: '4px' }}>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '22px', color: accentColor as string, fontWeight: 'bold', lineHeight: 1, marginTop: '4px' }}>
               {isFinite(currentLimit) ? currentLimit.toFixed(4) : 'N/A'}
             </div>
           </div>
@@ -284,7 +288,7 @@ export function PiecewiseGraph({ pieces, x0 }: PiecewiseGraphProps) {
           paddingTop: '10px',
           fontFamily: 'var(--font-mono)',
           fontSize: '11px',
-          color: isDifferentiable ? '#d4ff4f' : '#f87171',
+          color: isDifferentiable ? 'var(--color-accent)' : 'var(--color-vis-min)',
           textAlign: 'center',
           letterSpacing: '0.04em',
         }}>
