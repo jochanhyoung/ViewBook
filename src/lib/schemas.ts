@@ -4,6 +4,16 @@ export const VisualizationStepSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('powerRule'), coefficient: z.number(), exponent: z.number() }),
   z.object({ kind: z.literal('limitDefinition'), fn: z.string().max(200), x0: z.number() }),
   z.object({
+    kind: z.literal('piecewiseGraph'),
+    x0: z.number(),
+    pieces: z.array(z.object({
+      fn: z.string().max(200),
+      fnLatex: z.string().max(200),
+      condition: z.string().max(100),
+      domain: z.tuple([z.number(), z.number()]),
+    })).min(2).max(6),
+  }),
+  z.object({
     kind: z.literal('derivativeGraph'),
     fnLatex: z.string().max(200),
     fn: z.string().max(200),

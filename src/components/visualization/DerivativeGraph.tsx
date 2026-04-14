@@ -62,7 +62,7 @@ export function DerivativeGraph({ fn, domain }: DerivativeGraphProps) {
   }
 
   return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px', gap: '8px' }}>
+    <div style={{ minHeight: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '18px', gap: '8px', overflowY: 'auto' }}>
       <svg
         ref={svgRef}
         width={W}

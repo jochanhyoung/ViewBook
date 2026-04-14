@@ -135,7 +135,7 @@ function BookViewerInner({ page }: BookViewerProps) {
         {/* Page nav */}
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
           {pageIdx > 0 && (
-            <a href={`/read/${pages[pageIdx - 1].slug}`} style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-muted)', textDecoration: 'none' }}>
+            <a href={`/read/${pages[pageIdx - 1].slug}?sheet=0`} style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-muted)', textDecoration: 'none' }}>
               ← {pages[pageIdx - 1].number}
             </a>
           )}
@@ -143,7 +143,7 @@ function BookViewerInner({ page }: BookViewerProps) {
             {page.number}&ensp;{page.title}
           </span>
           {pageIdx < pages.length - 1 && (
-            <a href={`/read/${pages[pageIdx + 1].slug}`} style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-muted)', textDecoration: 'none' }}>
+            <a href={`/read/${pages[pageIdx + 1].slug}?sheet=0`} style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-muted)', textDecoration: 'none' }}>
               {pages[pageIdx + 1].number} →
             </a>
           )}

@@ -4,6 +4,11 @@
 export type VisualizationStep =
   | { kind: 'powerRule'; coefficient: number; exponent: number }
   | { kind: 'limitDefinition'; fn: string; x0: number }
+  | {
+      kind: 'piecewiseGraph';
+      x0: number;
+      pieces: { fn: string; fnLatex: string; condition: string; domain: [number, number] }[];
+    }
   | { kind: 'derivativeGraph'; fnLatex: string; fn: string; domain: [number, number] }
   | { kind: 'tangentLine'; fn: string; x0: number; domain: [number, number] }
   | {

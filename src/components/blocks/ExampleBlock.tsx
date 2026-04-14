@@ -31,7 +31,7 @@ export function ExampleBlock({ number, problem, hint, solution, visualize }: Exa
         <span style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--color-accent)' }}>
           {number}
         </span>
-        <VisualizeButton steps={visualize} />
+        <VisualizeButton steps={visualize} title={problem} />
       </div>
 
       <div style={{ padding: '20px' }}>
