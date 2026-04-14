@@ -11,6 +11,8 @@ import { DefiniteIntegral } from '@/components/visualization/DefiniteIntegral';
 import { EquationTransform } from '@/components/visualization/EquationTransform';
 import { StepText } from '@/components/visualization/StepText';
 import { SecantSlope } from '@/components/visualization/SecantSlope';
+import { PiecewiseGraph } from '@/components/visualization/PiecewiseGraph';
+import { SolutionSlides } from '@/components/visualization/SolutionSlides';
 
 interface SolutionPlayerProps {
   steps: VisualizationStep[];
@@ -179,6 +181,10 @@ function StepContent({ step, subStep }: { step: VisualizationStep; subStep: numb
       return <DefiniteIntegral fn={step.fn} a={step.a} b={step.b} />;
     case 'equationTransform':
       return <EquationTransform steps={step.steps} subStepIndex={subStep} />;
+    case 'piecewiseGraph':
+      return <PiecewiseGraph pieces={step.pieces} x0={step.x0} />;
+    case 'solutionSlides':
+      return <SolutionSlides steps={step.steps} subStep={subStep} />;
     case 'text':
       return <StepText latex={step.latex} markdown={step.markdown} />;
     default:

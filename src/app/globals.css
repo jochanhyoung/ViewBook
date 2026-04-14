@@ -80,6 +80,7 @@
   --color-vis-delta-y-lb: #7a9828;    /* Δy 레이블 */
   --color-vis-rect-pos:   #2a3a10;    /* 리만합 양수 직사각형 */
   --color-vis-rect-neg:   #3a1515;    /* 리만합 음수 직사각형 */
+  --color-vis-neg-bg:     #2a1515;    /* 좌미분 버튼 배경 */
   --color-vis-noise:      0.04;
 
   /* FunctionPlayground 시각화 전용 */
@@ -126,6 +127,7 @@ html.dark {
   --color-vis-delta-y-lb: #7a9828;
   --color-vis-rect-pos:   #2a3a10;
   --color-vis-rect-neg:   #3a1515;
+  --color-vis-neg-bg:     #2a1515;
   --color-vis-noise:      0.04;
 
   --color-vis-axis:  #2a2a30;
@@ -180,6 +182,7 @@ html.light {
   --color-vis-delta-y-lb: #3a5a00;
   --color-vis-rect-pos:   #d8e5c0;
   --color-vis-rect-neg:   #f0d0d0;
+  --color-vis-neg-bg:     #fce7ec;
   --color-vis-noise:      0.02;
 
   --color-vis-axis:  #c0c1cb;

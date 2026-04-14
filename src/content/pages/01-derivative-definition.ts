@@ -195,7 +195,6 @@ export const derivativeDefinitionPage: Page = {
       solution:
         '**풀이.** $f(2+h) - f(2) = (h^2 + 7h + 10) - 10 = h^2 + 7h$이므로, 평균변화율은 $\\dfrac{h^2 + 7h}{h} = h + 7.$ 극한을 취하면 $f\'(2) = \\lim_{h \\to 0} (h + 7) = \\mathbf{7}.$',
       visualize: [
-        { kind: 'secantSlope', fn: 'x^2 + 3*x', a: 2 },
         {
           kind: 'equationTransform',
           steps: [
