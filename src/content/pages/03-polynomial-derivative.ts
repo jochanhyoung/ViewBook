@@ -4,7 +4,7 @@ export const polynomialDerivativePage: Page = {
   slug: 'polynomial-derivative',
   chapter: 'II. 미분',
   section: '3. 다항함수의 도함수',
-  number: '2.3',
+  number: '3.3',
   title: '다항함수의 도함수',
   subtitle: '원함수와 도함수의 동기화',
 
@@ -24,14 +24,14 @@ export const polynomialDerivativePage: Page = {
     {
       kind: 'heading',
       level: 2,
-      number: '2.3.1',
+      number: '3.3.1',
       text: '합과 차의 미분법',
       eyebrow: '선형성',
     },
     {
       kind: 'theorem',
       id: 'thm-sum-rule',
-      number: '정리 2.3',
+      number: '정리 3.3',
       statement:
         '두 함수 $f(x)$, $g(x)$가 $x$에서 미분가능하면,\n$$[f(x) \\pm g(x)]\' = f\'(x) \\pm g\'(x)$$\n가 성립한다.',
       proof:
@@ -52,7 +52,7 @@ export const polynomialDerivativePage: Page = {
     {
       kind: 'heading',
       level: 2,
-      number: '2.3.2',
+      number: '3.3.2',
       text: '원함수와 도함수의 동기화',
       eyebrow: '그래프 해석',
     },
@@ -64,7 +64,7 @@ export const polynomialDerivativePage: Page = {
         fn: 'x^3 - 3*x',
         domain: [-2.5, 2.5],
       },
-      caption: '그림 2.3 — $f(x) = x^3 - 3x$와 $f\'(x) = 3x^2 - 3$. 수직선이 두 그래프를 동기화한다.',
+      caption: '그림 3.3 — $f(x) = x^3 - 3x$와 $f\'(x) = 3x^2 - 3$. 수직선이 두 그래프를 동기화한다.',
     },
     {
       kind: 'definition',
@@ -87,7 +87,7 @@ export const polynomialDerivativePage: Page = {
     {
       kind: 'heading',
       level: 2,
-      number: '2.3.3',
+      number: '3.3.3',
       text: '이계도함수와 오목·볼록',
       eyebrow: '곡률',
     },
@@ -114,7 +114,7 @@ export const polynomialDerivativePage: Page = {
     {
       kind: 'example',
       id: 'ex-2-3-1',
-      number: '예제 2.3.1',
+      number: '예제 3.3.1',
       problem:
         '$f(x) = x^3 - 3x$의 도함수를 구하고, 극값과 증감 구간을 조사하시오.',
       hint:
@@ -128,7 +128,7 @@ export const polynomialDerivativePage: Page = {
     {
       kind: 'example',
       id: 'ex-2-3-2',
-      number: '예제 2.3.2',
+      number: '예제 3.3.2',
       problem:
         '$f(x) = 2x^3 - 6x^2 + 1$의 도함수를 구하고, 이계도함수를 이용해 $x = 2$에서의 극값 여부를 판별하시오.',
       hint:
@@ -152,7 +152,7 @@ export const polynomialDerivativePage: Page = {
   exercises: [
     {
       id: 'exr-2-3-1',
-      number: '연습문제 2.3.1',
+      number: '연습문제 3.3.1',
       problem: '$f(x) = x^4 - 4x^3$의 도함수를 구하고, 극값을 찾으시오.',
       hints: [
         '$f\'(x) = 4x^3 - 12x^2 = 4x^2(x-3)$임을 확인하라.',
@@ -166,7 +166,7 @@ export const polynomialDerivativePage: Page = {
     },
     {
       id: 'exr-2-3-2',
-      number: '연습문제 2.3.2',
+      number: '연습문제 3.3.2',
       problem: '$f(x) = x^3 - 6x^2 + 9x - 2$의 모든 극값을 구하시오.',
       hints: [
         '$f\'(x) = 3x^2 - 12x + 9 = 3(x-1)(x-3)$.',
@@ -180,7 +180,7 @@ export const polynomialDerivativePage: Page = {
     },
     {
       id: 'exr-2-3-3',
-      number: '연습문제 2.3.3',
+      number: '연습문제 3.3.3',
       problem: '$f(x) = x^3 - 3x + 2$의 이계도함수를 구하고, 변곡점을 구하시오.',
       hints: [
         '$f\'(x) = 3x^2 - 3$, $f\'\'(x) = 6x$임을 확인하라.',

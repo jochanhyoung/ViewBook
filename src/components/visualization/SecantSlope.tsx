@@ -5,13 +5,14 @@ import { safeEval } from '@/lib/safe-math';
 interface SecantSlopeProps {
   fn: string;
   a: number;
+  interactive?: boolean;
 }
 
 const H_PRESETS = [2, 1, 0.5, 0.1, 0.01] as const;
 const H_MIN = 0.001;
 const H_MAX = 3;
 
-export function SecantSlope({ fn, a }: SecantSlopeProps) {
+export function SecantSlope({ fn, a, interactive = true }: SecantSlopeProps) {
   const [h, setH] = useState(1);
 
   const evalFn = useCallback(
@@ -123,43 +124,69 @@ export function SecantSlope({ fn, a }: SecantSlopeProps) {
 
       {/* h presets + slider */}
       <div style={{ width: '100%', maxWidth: '420px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-        <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)', flexShrink: 0, letterSpacing: '0.1em' }}>
-            h =
-          </span>
-          {H_PRESETS.map((p) => (
-            <button
-              key={p}
-              onClick={() => setH(p)}
-              style={{
-                flex: 1,
-                background: h === p ? 'var(--color-accent-bg)' : 'none',
-                border: '1px solid',
-                borderColor: h === p ? 'var(--color-accent)' : 'var(--color-border)',
-                borderRadius: '3px',
-                cursor: 'pointer',
-                fontFamily: 'var(--font-mono)',
-                fontSize: '11px',
-                color: h === p ? 'var(--color-accent)' : 'var(--color-text-subtle)',
-                padding: '4px 0',
-              }}
-            >
-              {p}
-            </button>
-          ))}
-        </div>
-        <input
-          type="range"
-          min={Math.log10(H_MIN)}
-          max={Math.log10(H_MAX)}
-          step={0.005}
-          value={Math.log10(Math.abs(h) || H_MIN)}
-          onChange={(e) => {
-            const v = parseFloat(Math.pow(10, Number(e.target.value)).toPrecision(3));
-            setH(v);
-          }}
-          style={{ width: '100%', accentColor: 'var(--color-accent)' }}
-        />
+        {interactive ? (
+          <>
+            <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)', flexShrink: 0, letterSpacing: '0.1em' }}>
+                h =
+              </span>
+              {H_PRESETS.map((p) => (
+                <button
+                  key={p}
+                  onClick={() => setH(p)}
+                  style={{
+                    flex: 1,
+                    background: h === p ? 'var(--color-accent-bg)' : 'none',
+                    border: '1px solid',
+                    borderColor: h === p ? 'var(--color-accent)' : 'var(--color-border)',
+                    borderRadius: '3px',
+                    cursor: 'pointer',
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '11px',
+                    color: h === p ? 'var(--color-accent)' : 'var(--color-text-subtle)',
+                    padding: '4px 0',
+                  }}
+                >
+                  {p}
+                </button>
+              ))}
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-muted)' }}>
+                <span>h 슬라이더</span>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)' }}>
+                  <span>h</span>
+                  <input
+                    type="number"
+                    min={H_MIN}
+                    max={H_MAX}
+                    step={0.01}
+                    value={h}
+                    onChange={(e) => setH(Math.min(H_MAX, Math.max(H_MIN, Number(e.target.value) || H_MIN)))}
+                    style={{ width: '72px', background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)', color: 'var(--color-text)', fontFamily: 'var(--font-mono)', fontSize: '11px', padding: '4px 6px' }}
+                  />
+                </label>
+              </div>
+              <input
+                type="range"
+                min={Math.log10(H_MIN)}
+                max={Math.log10(H_MAX)}
+                step={0.005}
+                value={Math.log10(Math.abs(h) || H_MIN)}
+                onChange={(e) => {
+                  const v = parseFloat(Math.pow(10, Number(e.target.value)).toPrecision(3));
+                  setH(v);
+                }}
+                style={{ width: '100%', accentColor: 'var(--color-accent)' }}
+              />
+            </div>
+          </>
+        ) : (
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-muted)', paddingBottom: '6px', borderBottom: '1px solid var(--color-bg-surface)' }}>
+            <span>문제 간격</span>
+            <span>h = {h < 0.01 ? h.toPrecision(3) : Number.isInteger(h) ? h : h.toPrecision(3)}</span>
+          </div>
+        )}
       </div>
 
       {/* Info panel */}

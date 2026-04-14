@@ -19,6 +19,13 @@ import { FunctionPlayground } from '@/components/visualization/FunctionPlaygroun
 import { SolutionSlides } from '@/components/visualization/SolutionSlides';
 import { SecantSlope } from '@/components/visualization/SecantSlope';
 import { PiecewiseGraph } from '@/components/visualization/PiecewiseGraph';
+import { ClockAngle } from '@/components/visualization/ClockAngle';
+import { SaltConcentration } from '@/components/visualization/SaltConcentration';
+import { CalendarPattern } from '@/components/visualization/CalendarPattern';
+import { DistanceTime } from '@/components/visualization/DistanceTime';
+import { LinearFunction } from '@/components/visualization/LinearFunction';
+import { QuadraticFunction } from '@/components/visualization/QuadraticFunction';
+import { SystemOfEquations } from '@/components/visualization/SystemOfEquations';
 
 const RETURN_KEY = 'visualize_return_url';
 const FALLBACK_URL = '/read';
@@ -281,6 +288,20 @@ function StepContent({ step, isPlaying, subStep }: { step: VisualizationStep; is
       return <PowerRule coefficient={step.coefficient} exponent={step.exponent} />;
     case 'limitDefinition':
       return <LimitDefinition fn={step.fn} x0={step.x0} />;
+    case 'clockAngle':
+      return <ClockAngle hour={step.hour} minute={step.minute} interactive={step.interactive} />;
+    case 'saltConcentration':
+      return <SaltConcentration water={step.water} salt={step.salt} interactive={step.interactive} />;
+    case 'calendarPattern':
+      return <CalendarPattern day={step.day} interactive={step.interactive} />;
+    case 'distanceTime':
+      return <DistanceTime speed={step.speed} />;
+    case 'linearFunction':
+      return <LinearFunction slope={step.slope} intercept={step.intercept} interactive={step.interactive} />;
+    case 'quadraticFunction':
+      return <QuadraticFunction a={step.a} interactive={step.interactive} />;
+    case 'systemOfEquations':
+      return <SystemOfEquations line1={step.line1} line2={step.line2} />;
     case 'piecewiseGraph':
       return <PiecewiseGraph pieces={step.pieces} x0={step.x0} />;
     case 'derivativeGraph':
@@ -300,7 +321,7 @@ function StepContent({ step, isPlaying, subStep }: { step: VisualizationStep; is
     case 'solutionSlides':
       return <SolutionSlides steps={step.steps} subStep={subStep} isPlaying={isPlaying} />;
     case 'secantSlope':
-      return <SecantSlope fn={step.fn} a={step.a} />;
+      return <SecantSlope fn={step.fn} a={step.a} interactive={step.interactive} />;
     default:
       return null;
   }
@@ -385,6 +406,7 @@ function shouldShowExplanation(step: VisualizationStep): boolean {
     case 'limitDefinition':
     case 'piecewiseGraph':
     case 'secantSlope':
+    case 'systemOfEquations':
     case 'tangentLine':
     case 'derivativeGraph':
     case 'riemannSum':
@@ -398,7 +420,7 @@ function shouldShowExplanation(step: VisualizationStep): boolean {
 function getStepExplanation(step: VisualizationStep, problemTitle?: string): { title: string; sections: { heading: string; body: string }[] } {
   switch (step.kind) {
     case 'powerRule':
-      if (problemTitle?.includes('예제 2.2.1') || problemTitle?.includes('다음 함수들의 도함수를 거듭제곱 미분법으로 구하시오.')) {
+      if (problemTitle?.includes('예제 3.2.1') || problemTitle?.includes('다음 함수들의 도함수를 거듭제곱 미분법으로 구하시오.')) {
         return {
           title: '거듭제곱 미분법 적용하기',
           sections: [
@@ -505,6 +527,94 @@ function getStepExplanation(step: VisualizationStep, problemTitle?: string): { t
         ],
       };
     case 'secantSlope':
+      if (problemTitle?.includes('예제 2.3.1') || problemTitle?.includes('함수 $y=x^2$에서 $x=1$ 근처의 평균변화율을 관찰할 때')) {
+        return {
+          title: '두 점이 가까워질수록 할선은 접선이 된다',
+          sections: [
+            {
+              heading: '핵심',
+              body:
+                '이 문제는 계산보다 **관찰**이 중요하다. 곡선 위 두 점을 잇는 할선은 두 점이 가까워질수록 한 점에서의 방향을 더 잘 보여 주고, 결국 접선의 방향에 가까워진다.',
+            },
+            {
+              heading: '그래프 읽기',
+              body:
+                '점 $A$는 $x=1$에 고정되어 있고 점 $B$는 오른쪽에서 가까워진다. $h$가 줄어들수록 할선의 기울기가 점점 일정한 값에 가까워지며, 그 직선이 접선처럼 보인다.',
+            },
+            {
+              heading: '문제 연결',
+              body:
+                '따라서 이 문제의 답은 "두 점 사이 거리가 작아질수록 할선의 기울기가 접선의 기울기에 가까워진다"이다. 평균변화율이 순간변화율로 이어지는 장면을 보는 문제다.',
+            },
+          ],
+        };
+      }
+      if (problemTitle?.includes('연습문제 2.3.1') || problemTitle?.includes('$h$가 0에 가까워질수록 왜 할선의 기울기가 중요해지는지')) {
+        return {
+          title: '왜 할선의 기울기가 중요한가',
+          sections: [
+            {
+              heading: '핵심',
+              body:
+                '할선의 기울기는 두 점 사이의 평균변화율이다. 그런데 두 점 사이 간격을 줄이면 이 값이 한 점에서의 변화 방향을 잘 보여 주기 때문에 중요해진다.',
+            },
+            {
+              heading: '그래프 읽기',
+              body:
+                '$h$가 클 때는 구간 전체 평균만 보이지만, $h$가 작아질수록 점 $A$ 근처의 실제 방향에 더 가까워진다. 그래서 접선의 기울기를 추측할 수 있다.',
+            },
+            {
+              heading: '문제 연결',
+              body:
+                '이 연습문제에서는 바로 그 이유를 설명하면 된다. $h$가 작아질수록 평균변화율이 순간변화율을 더 잘 나타내므로, 할선의 기울기가 중요하다.',
+            },
+          ],
+        };
+      }
+      if (problemTitle?.includes('연습문제 2.3.2') || problemTitle?.includes('함수 $y=x^2$에서 $x=2$를 기준으로')) {
+        return {
+          title: '$x=2$에서 접선 기울기에 가까워지는 과정',
+          sections: [
+            {
+              heading: '핵심',
+              body:
+                '기준점을 $x=2$로 바꾸어도 원리는 같다. 움직이는 점이 기준점에 가까워질수록 할선의 기울기는 그 점에서의 접선 기울기로 수렴한다.',
+            },
+            {
+              heading: '그래프 읽기',
+              body:
+                '점 $A$는 $(2,4)$에 있고 점 $B$가 그 근처로 다가온다. 할선은 처음에는 비교적 다른 방향을 가지지만, 점점 접선과 거의 같은 방향이 된다.',
+            },
+            {
+              heading: '문제 연결',
+              body:
+                '따라서 이 문제의 설명은 "할선의 기울기가 $x=2$에서의 접선 기울기에 가까워진다"이다. 평균변화율이 특정 점의 순간변화율로 모이는 예시다.',
+            },
+          ],
+        };
+      }
+      if (problemTitle?.includes('연습문제 2.3.3') || problemTitle?.includes('함수 $y=x^2+1$에서 $x=1$ 근처의 평균변화율을 관찰할 때')) {
+        return {
+          title: '왜 두 점 사이 거리를 줄여야 하는가',
+          sections: [
+            {
+              heading: '핵심',
+              body:
+                '우리가 알고 싶은 값이 한 점에서의 변화라면, 두 점 사이 간격을 줄여야 한다. 그래야 구간 평균이 아니라 점 근처의 실제 방향을 볼 수 있다.',
+            },
+            {
+              heading: '그래프 읽기',
+              body:
+                '$y=x^2+1$은 단순히 위로 1만큼 이동한 포물선이라서, 점 근처의 방향을 보려면 여전히 할선을 점점 짧게 만들어야 한다.',
+            },
+            {
+              heading: '문제 연결',
+              body:
+                '이 문제에서는 "두 점이 멀면 전체 평균만 보이고, 가까워질수록 순간변화율을 더 잘 알 수 있기 때문"이라고 정리하면 된다.',
+            },
+          ],
+        };
+      }
       return {
         title: '두 점을 잇는 할선으로 평균변화율 보기',
         sections: [
@@ -522,6 +632,115 @@ function getStepExplanation(step: VisualizationStep, problemTitle?: string): { t
             heading: '문제 연결',
             body:
               '문제에서는 이 값을 식으로 계산한 뒤, 필요하면 $h$를 더 작게 해서 접선의 기울기와 연결한다. 즉 할선은 미분으로 가기 전 단계라고 보면 된다.',
+          },
+        ],
+      };
+    case 'systemOfEquations':
+      if (problemTitle?.includes('예제 2.4.1') || problemTitle?.includes('$y=x+1$, $y=-x+3$의 해를 그래프로 해석하시오.')) {
+        return {
+          title: '두 직선의 교점을 해로 읽기',
+          sections: [
+            {
+              heading: '핵심',
+              body:
+                '연립방정식의 해는 두 식을 동시에 만족하는 점이다. 그래프에서는 두 직선이 만나는 **교점**이 바로 그 해가 된다.',
+            },
+            {
+              heading: '그래프 읽기',
+              body:
+                '한 직선은 오른쪽으로 갈수록 올라가고, 다른 직선은 내려간다. 두 직선이 만나는 점의 좌표를 읽으면 해를 바로 확인할 수 있다.',
+            },
+            {
+              heading: '문제 연결',
+              body:
+                '이 문제에서는 두 직선이 $(1, 2)$에서 만나므로, 연립방정식의 해를 그래프로 해석하면 **$(1, 2)$**가 된다.',
+            },
+          ],
+        };
+      }
+      if (problemTitle?.includes('연습문제 2.4.1') || problemTitle?.includes('$y=2x+1$, $y=-x+4$의 해를 구하시오.')) {
+        return {
+          title: '교점 좌표를 읽어 해 구하기',
+          sections: [
+            {
+              heading: '핵심',
+              body:
+                '두 직선을 각각 그리면 교점 하나가 생기고, 그 점의 좌표가 두 식을 동시에 만족하는 값이 된다.',
+            },
+            {
+              heading: '그래프 읽기',
+              body:
+                '그래프에서 두 직선은 하나는 더 가파르게 올라가고 다른 하나는 내려간다. 만나는 지점은 $(1, 3)$ 근처로 보인다.',
+            },
+            {
+              heading: '문제 연결',
+              body:
+                '따라서 이 연습문제의 해는 **$(1, 3)$**이다. 식으로 풀어도 같은 좌표가 나온다.',
+            },
+          ],
+        };
+      }
+      if (problemTitle?.includes('연습문제 2.4.2') || problemTitle?.includes('$y=x+2$, $y=-2x+5$의 해를 구하시오.')) {
+        return {
+          title: '기울기가 다른 두 직선의 교점',
+          sections: [
+            {
+              heading: '핵심',
+              body:
+                '기울기가 다른 두 직선은 반드시 한 점에서 만난다. 그 한 점이 연립방정식의 유일한 해다.',
+            },
+            {
+              heading: '그래프 읽기',
+              body:
+                '한 직선은 완만하게 올라가고 다른 직선은 더 가파르게 내려간다. 둘이 만나는 점은 $(1, 3)$이다.',
+            },
+            {
+              heading: '문제 연결',
+              body:
+                '이 문제에서는 그래프의 교점이 **$(1, 3)$**이므로, 그것이 연립방정식의 해이다.',
+            },
+          ],
+        };
+      }
+      if (problemTitle?.includes('연습문제 2.4.3') || problemTitle?.includes('$y=3x-1$, $y=-x+7$의 해를 구하시오.')) {
+        return {
+          title: '교점을 식과 그래프로 동시에 확인하기',
+          sections: [
+            {
+              heading: '핵심',
+              body:
+                '연립방정식은 식으로도 풀 수 있고 그래프로도 읽을 수 있다. 두 방법이 같은 교점 좌표를 준다는 것이 중요하다.',
+            },
+            {
+              heading: '그래프 읽기',
+              body:
+                '기울기 3인 직선은 빠르게 올라가고, 다른 직선은 내려간다. 두 직선은 $(2, 5)$에서 만난다.',
+            },
+            {
+              heading: '문제 연결',
+              body:
+                '따라서 이 문제의 해는 **$(2, 5)$**이다. 시각화는 그 좌표가 왜 해가 되는지 교점으로 보여 준다.',
+            },
+          ],
+        };
+      }
+      return {
+        title: '연립방정식과 교점',
+        sections: [
+          {
+            heading: '핵심',
+            body:
+              '두 일차방정식을 그래프로 나타내면 두 직선의 교점이 연립방정식의 해가 된다.',
+          },
+          {
+            heading: '그래프 읽기',
+            body:
+              '교점에서는 두 직선의 y값이 같아지므로, 같은 x와 y를 동시에 만족하는 좌표를 얻을 수 있다.',
+          },
+          {
+            heading: '문제 연결',
+            body:
+              '그래프에서 읽은 교점 좌표를 식에 대입하면 두 식을 모두 만족하는 것을 확인할 수 있다.',
           },
         ],
       };

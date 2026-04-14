@@ -4,7 +4,7 @@ export const derivativeDefinitionPage: Page = {
   slug: 'derivative-definition',
   chapter: 'II. 미분',
   section: '1. 미분계수와 도함수',
-  number: '2.1',
+  number: '3.1',
   title: '미분의 정의',
   subtitle: '할선이 접선이 되는 순간',
 
@@ -52,7 +52,7 @@ export const derivativeDefinitionPage: Page = {
         fn: 'x^2',
         x0: 1,
       },
-      caption: '그림 2.1 — $f(x)=x^2$에서 $h=1$일 때, 두 점 $A(1,1)$과 $B(2,4)$를 잇는 할선의 기울기 $\\dfrac{\\Delta y}{\\Delta x} = \\dfrac{3}{1} = 3$이 바로 이 구간의 평균변화율이다. 슬라이더로 $h$를 줄여 보면 할선이 점점 접선에 가까워진다.',
+      caption: '그림 3.1 — $f(x)=x^2$에서 $h=1$일 때, 두 점 $A(1,1)$과 $B(2,4)$를 잇는 할선의 기울기 $\\dfrac{\\Delta y}{\\Delta x} = \\dfrac{3}{1} = 3$이 바로 이 구간의 평균변화율이다. 슬라이더로 $h$를 줄여 보면 할선이 점점 접선에 가까워진다.',
     },
     {
       kind: 'paragraph',
@@ -76,7 +76,7 @@ export const derivativeDefinitionPage: Page = {
     {
       kind: 'theorem',
       id: 'thm-diff-implies-cont',
-      number: '정리 2.1',
+      number: '정리 3.1',
       statement:
         '함수 $f(x)$가 $x = a$에서 미분가능하면, $f(x)$는 $x = a$에서 연속이다. 그러나 그 역은 성립하지 않는다 — 연속이지만 미분불가능한 점이 존재한다.',
       proof:
@@ -99,7 +99,7 @@ export const derivativeDefinitionPage: Page = {
     {
       kind: 'example',
       id: 'ex-2-1-1',
-      number: '예제 2.1.1',
+      number: '예제 3.1.1',
       problem:
         '함수 $f(x) = x^2$에 대하여, 구간 $[1,\\, 1+h]$에서의 평균변화율을 구하고, 이를 이용하여 $x = 1$에서의 미분계수 $f\'(1)$을 정의에 따라 구하시오.',
       hint:
@@ -146,7 +146,7 @@ export const derivativeDefinitionPage: Page = {
     {
       kind: 'example',
       id: 'ex-2-1-2',
-      number: '예제 2.1.2',
+      number: '예제 3.1.2',
       problem:
         '함수 $f(x) = |x|$가 $x = 0$에서 연속이지만 미분불가능함을 극한을 이용해 설명하시오.',
       hint:
@@ -186,7 +186,7 @@ export const derivativeDefinitionPage: Page = {
   exercises: [
     {
       id: 'exr-2-1-1',
-      number: '연습문제 2.1.1',
+      number: '연습문제 3.1.1',
       problem: '함수 $f(x) = x^2 + 3x$에 대하여, 정의에 따라 $f\'(2)$를 구하시오.',
       hints: [
         '$\\dfrac{f(2+h) - f(2)}{h}$를 계산하는 것이 출발점이다. 먼저 $f(2+h)$와 $f(2)$를 각각 구하라.',
@@ -236,7 +236,7 @@ export const derivativeDefinitionPage: Page = {
     },
     {
       id: 'exr-2-1-2',
-      number: '연습문제 2.1.2',
+      number: '연습문제 3.1.2',
       problem:
         '함수 $f(x) = \\dfrac{1}{x}$의 $x = 1$에서의 미분계수를 정의에 따라 구하시오.',
       hints: [
@@ -282,7 +282,7 @@ export const derivativeDefinitionPage: Page = {
     },
     {
       id: 'exr-2-1-3',
-      number: '연습문제 2.1.3',
+      number: '연습문제 3.1.3',
       problem:
         '함수 $f(x) = \\begin{cases} x^2 & (x \\geq 0) \\\\ -x^2 & (x < 0) \\end{cases}$는 $x = 0$에서 미분가능한가? 정의에 따라 판별하시오.',
       hints: [

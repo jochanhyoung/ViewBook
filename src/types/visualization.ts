@@ -4,6 +4,17 @@
 export type VisualizationStep =
   | { kind: 'powerRule'; coefficient: number; exponent: number }
   | { kind: 'limitDefinition'; fn: string; x0: number }
+  | { kind: 'clockAngle'; hour: number; minute: number; interactive?: boolean }
+  | { kind: 'saltConcentration'; water: number; salt: number; interactive?: boolean }
+  | { kind: 'calendarPattern'; day: number; interactive?: boolean }
+  | { kind: 'distanceTime'; speed: number }
+  | { kind: 'linearFunction'; slope: number; intercept: number; interactive?: boolean }
+  | { kind: 'quadraticFunction'; a: number; interactive?: boolean }
+  | {
+      kind: 'systemOfEquations';
+      line1: { slope: number; intercept: number };
+      line2: { slope: number; intercept: number };
+    }
   | {
       kind: 'piecewiseGraph';
       x0: number;
@@ -24,4 +35,4 @@ export type VisualizationStep =
   | { kind: 'text'; latex?: string; markdown?: string }
   | { kind: 'playground'; initialFn: string; domain: [number, number] }
   | { kind: 'solutionSlides'; steps: { label: string; tex: string; hint?: string; final?: boolean }[] }
-  | { kind: 'secantSlope'; fn: string; a: number };
+  | { kind: 'secantSlope'; fn: string; a: number; interactive?: boolean };

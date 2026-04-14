@@ -3,6 +3,17 @@ import { z } from 'zod';
 export const VisualizationStepSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('powerRule'), coefficient: z.number(), exponent: z.number() }),
   z.object({ kind: z.literal('limitDefinition'), fn: z.string().max(200), x0: z.number() }),
+  z.object({ kind: z.literal('clockAngle'), hour: z.number(), minute: z.number(), interactive: z.boolean().optional() }),
+  z.object({ kind: z.literal('saltConcentration'), water: z.number(), salt: z.number(), interactive: z.boolean().optional() }),
+  z.object({ kind: z.literal('calendarPattern'), day: z.number().int().min(1).max(31), interactive: z.boolean().optional() }),
+  z.object({ kind: z.literal('distanceTime'), speed: z.number() }),
+  z.object({ kind: z.literal('linearFunction'), slope: z.number(), intercept: z.number(), interactive: z.boolean().optional() }),
+  z.object({ kind: z.literal('quadraticFunction'), a: z.number(), interactive: z.boolean().optional() }),
+  z.object({
+    kind: z.literal('systemOfEquations'),
+    line1: z.object({ slope: z.number(), intercept: z.number() }),
+    line2: z.object({ slope: z.number(), intercept: z.number() }),
+  }),
   z.object({
     kind: z.literal('piecewiseGraph'),
     x0: z.number(),
@@ -66,6 +77,7 @@ export const VisualizationStepSchema = z.discriminatedUnion('kind', [
     kind: z.literal('secantSlope'),
     fn: z.string().max(200),
     a: z.number(),
+    interactive: z.boolean().optional(),
   }),
 ]);
 
