@@ -41,7 +41,7 @@ export function TangentLine({ fn, x0, domain }: TangentLineProps) {
   }).join(' ');
 
   return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px', gap: '16px' }}>
+    <div style={{ minHeight: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '18px', gap: '12px', overflowY: 'auto' }}>
       <svg width={W} height={H} style={{ overflow: 'visible' }}>
         {/* 축 */}
         {yMin <= 0 && yMax >= 0 && (

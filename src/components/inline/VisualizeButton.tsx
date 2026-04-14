@@ -8,9 +8,10 @@ const RETURN_KEY = 'visualize_return_url';
 interface VisualizeButtonProps {
   steps: VisualizationStep[];
   label?: string;
+  title?: string;
 }
 
-export function VisualizeButton({ steps, label = '시각화로 보기' }: VisualizeButtonProps) {
+export function VisualizeButton({ steps, label = '시각화로 보기', title }: VisualizeButtonProps) {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -24,7 +25,7 @@ export function VisualizeButton({ steps, label = '시각화로 보기' }: Visual
     } catch (e) {
       console.error('[VisualizeButton] Storage access error:', e);
     }
-    const payload = encodeVizPayload({ steps, returnTo: pathname ?? '/' });
+    const payload = encodeVizPayload({ steps, returnTo: pathname ?? '/', title });
     router.push(`/visualize/${payload}`);
   };
 

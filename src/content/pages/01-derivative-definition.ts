@@ -294,7 +294,14 @@ export const derivativeDefinitionPage: Page = {
         '**풀이.** 우미분계수 $\\lim_{h \\to 0^+} \\dfrac{f(h) - f(0)}{h} = \\lim_{h \\to 0^+} \\dfrac{h^2}{h} = 0.$ 좌미분계수 $\\lim_{h \\to 0^-} \\dfrac{f(h) - f(0)}{h} = \\lim_{h \\to 0^-} \\dfrac{-h^2}{h} = 0.$ 두 일방극한이 모두 $0$으로 일치하므로, $f$는 $x = 0$에서 **미분가능**하며 $f\'(0) = 0$이다.',
       visualize: [
         { kind: 'text', markdown: '좌미분과 우미분이 모두 $0$으로 일치하므로 $x=0$에서 미분가능하다.' },
-        { kind: 'tangentLine', fn: 'x^2', x0: 0, domain: [-1.5, 1.5] },
+        {
+          kind: 'piecewiseGraph',
+          x0: 0,
+          pieces: [
+            { fn: '-x^2', fnLatex: '-x^2', condition: 'x < 0', domain: [-1.5, 0] },
+            { fn: 'x^2', fnLatex: 'x^2', condition: 'x \\ge 0', domain: [0, 1.5] },
+          ],
+        },
       ],
     },
   ],

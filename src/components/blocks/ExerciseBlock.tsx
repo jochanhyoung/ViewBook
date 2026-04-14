@@ -33,7 +33,7 @@ export function ExerciseBlock({ exercise }: ExerciseBlockProps) {
         <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', letterSpacing: '0.15em', color: 'var(--color-text-muted)', margin: 0, textTransform: 'uppercase' }}>
           {exercise.number}
         </p>
-        <VisualizeButton steps={exercise.visualize} />
+        <VisualizeButton steps={exercise.visualize} title={exercise.problem} />
       </div>
 
       {/* 문제 */}

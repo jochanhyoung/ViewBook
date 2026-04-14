@@ -71,8 +71,8 @@ export function LimitDefinition({ fn, x0 }: LimitDefinitionProps) {
         alignItems: 'center',
         justifyContent: 'center',
         overflowY: 'auto',
-        padding: '20px',
-        gap: '16px',
+        padding: '16px',
+        gap: '12px',
       }}
     >
       {/*

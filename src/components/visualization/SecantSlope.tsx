@@ -55,13 +55,13 @@ export function SecantSlope({ fn, a }: SecantSlopeProps) {
 
   return (
     <div style={{
-      height: '100%',
+      minHeight: '100%',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      padding: '20px',
-      gap: '14px',
+      padding: '16px',
+      gap: '12px',
       overflowY: 'auto',
     }}>
       {/* SVG graph */}
