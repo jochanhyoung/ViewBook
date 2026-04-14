@@ -4,7 +4,7 @@ export const tangentLinePage: Page = {
   slug: 'tangent-line',
   chapter: 'II. 미분',
   section: '4. 접선의 방정식',
-  number: '2.4',
+  number: '3.4',
   title: '접선의 방정식',
   subtitle: '한 점에서, 또는 외부에서',
 
@@ -24,7 +24,7 @@ export const tangentLinePage: Page = {
     {
       kind: 'heading',
       level: 2,
-      number: '2.4.1',
+      number: '3.4.1',
       text: '곡선 위의 점에서 접선',
       eyebrow: '기본 절차',
     },
@@ -51,13 +51,13 @@ export const tangentLinePage: Page = {
         x0: 1.5,
         domain: [-0.5, 3],
       },
-      caption: '그림 2.4 — $y = x^2$의 접선. 접점을 따라 이동할 때 기울기가 어떻게 변하는지 확인하라.',
+      caption: '그림 3.4 — $y = x^2$의 접선. 접점을 따라 이동할 때 기울기가 어떻게 변하는지 확인하라.',
     },
 
     {
       kind: 'heading',
       level: 2,
-      number: '2.4.2',
+      number: '3.4.2',
       text: '곡선 밖의 점에서 접선',
       eyebrow: '발전 문제',
     },
@@ -71,7 +71,7 @@ export const tangentLinePage: Page = {
     {
       kind: 'theorem',
       id: 'thm-tangent-count',
-      number: '정리 2.4',
+      number: '정리 3.4',
       statement:
         '이차함수 $y = ax^2 + bx + c$에 외부점 $(p, q)$에서 그을 수 있는 접선의 수는 판별식 $D$의 부호에 따라 결정된다: $D > 0$이면 2개, $D = 0$이면 1개(외부점이 사실상 접점과 겹치는 경우), $D < 0$이면 0개(내부점).',
       proof:
@@ -92,7 +92,7 @@ export const tangentLinePage: Page = {
     {
       kind: 'example',
       id: 'ex-2-4-1',
-      number: '예제 2.4.1',
+      number: '예제 3.4.1',
       problem:
         '곡선 $y = x^2 - 2x + 3$ 위의 점 $(2, 3)$에서의 접선의 방정식을 구하시오.',
       hint:
@@ -106,7 +106,7 @@ export const tangentLinePage: Page = {
     {
       kind: 'example',
       id: 'ex-2-4-2',
-      number: '예제 2.4.2',
+      number: '예제 3.4.2',
       problem:
         '점 $(0, -3)$에서 포물선 $y = x^2$에 그은 접선의 방정식을 모두 구하시오.',
       hint:
@@ -131,7 +131,7 @@ export const tangentLinePage: Page = {
   exercises: [
     {
       id: 'exr-2-4-1',
-      number: '연습문제 2.4.1',
+      number: '연습문제 3.4.1',
       problem: '곡선 $y = x^3$의 점 $(-1, -1)$에서의 접선의 방정식을 구하시오.',
       hints: [
         '$f\'(x) = 3x^2$이다. $x = -1$에서의 기울기를 구하라.',
@@ -145,7 +145,7 @@ export const tangentLinePage: Page = {
     },
     {
       id: 'exr-2-4-2',
-      number: '연습문제 2.4.2',
+      number: '연습문제 3.4.2',
       problem: '점 $(1, 0)$에서 곡선 $y = x^2 + 1$에 그은 접선의 방정식을 구하시오.',
       hints: [
         '점 $(1, 0)$이 곡선 위에 있는지 확인하라. $f(1) = 2 \\neq 0$이므로 외부점이다.',
@@ -160,7 +160,7 @@ export const tangentLinePage: Page = {
     },
     {
       id: 'exr-2-4-3',
-      number: '연습문제 2.4.3',
+      number: '연습문제 3.4.3',
       problem: '곡선 $y = x^2 - 4x + 5$에서 기울기가 $2$인 접선의 방정식을 구하시오.',
       hints: [
         '기울기가 $2$인 접선을 구하는 것이므로, $f\'(x) = 2x - 4 = 2$를 풀어 접점의 $x$ 좌표를 구하라.',

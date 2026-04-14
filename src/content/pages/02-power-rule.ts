@@ -4,7 +4,7 @@ export const powerRulePage: Page = {
   slug: 'power-rule',
   chapter: 'II. 미분',
   section: '2. 거듭제곱의 미분',
-  number: '2.2',
+  number: '3.2',
   title: '거듭제곱의 미분법',
   subtitle: '지수가 계수로 내려오는 순간',
 
@@ -24,7 +24,7 @@ export const powerRulePage: Page = {
     {
       kind: 'heading',
       level: 2,
-      number: '2.2.1',
+      number: '3.2.1',
       text: '공식의 유도',
       eyebrow: '거듭제곱 미분',
     },
@@ -58,7 +58,7 @@ export const powerRulePage: Page = {
     {
       kind: 'theorem',
       id: 'thm-power-rule',
-      number: '정리 2.2',
+      number: '정리 3.2',
       statement:
         '자연수 $n$에 대하여 $f(x) = x^n$이면 $f\'(x) = nx^{n-1}$이다. 이 공식은 음의 정수와 유리수 지수에도 성립한다.',
       proof:
@@ -72,13 +72,13 @@ export const powerRulePage: Page = {
         coefficient: 3,
         exponent: 4,
       },
-      caption: '그림 2.2 — $3x^4$의 미분. 지수 $4$가 계수 $3$에 곱해져 $12$가 되고, 지수는 $3$으로 감소한다.',
+      caption: '그림 3.2 — $3x^4$의 미분. 지수 $4$가 계수 $3$에 곱해져 $12$가 되고, 지수는 $3$으로 감소한다.',
     },
 
     {
       kind: 'heading',
       level: 2,
-      number: '2.2.2',
+      number: '3.2.2',
       text: '상수 배수 법칙',
       eyebrow: '선형성',
     },
@@ -110,7 +110,7 @@ export const powerRulePage: Page = {
     {
       kind: 'example',
       id: 'ex-2-2-1',
-      number: '예제 2.2.1',
+      number: '예제 3.2.1',
       problem:
         '다음 함수들의 도함수를 거듭제곱 미분법으로 구하시오.\n\n(1) $f(x) = x^7$ $\\qquad$ (2) $g(x) = 5x^3$ $\\qquad$ (3) $h(x) = \\dfrac{1}{2}x^6$',
       hint:
@@ -126,7 +126,7 @@ export const powerRulePage: Page = {
     {
       kind: 'example',
       id: 'ex-2-2-2',
-      number: '예제 2.2.2',
+      number: '예제 3.2.2',
       problem:
         '음수 및 분수 지수의 미분: $f(x) = x^{-3}$과 $g(x) = x^{2/3}$의 도함수를 구하시오.',
       hint:
@@ -151,7 +151,7 @@ export const powerRulePage: Page = {
   exercises: [
     {
       id: 'exr-2-2-1',
-      number: '연습문제 2.2.1',
+      number: '연습문제 3.2.1',
       problem: '다음을 미분하시오: $f(x) = 4x^5 - 2x^{10}$',
       hints: [
         '각 항에 거듭제곱 미분법을 독립적으로 적용하라.',
@@ -165,7 +165,7 @@ export const powerRulePage: Page = {
     },
     {
       id: 'exr-2-2-2',
-      number: '연습문제 2.2.2',
+      number: '연습문제 3.2.2',
       problem: '$f(x) = \\sqrt[3]{x^2}$를 미분하시오.',
       hints: [
         '$\\sqrt[3]{x^2} = x^{2/3}$으로 변환하라.',
@@ -179,7 +179,7 @@ export const powerRulePage: Page = {
     },
     {
       id: 'exr-2-2-3',
-      number: '연습문제 2.2.3',
+      number: '연습문제 3.2.3',
       problem: '$x = 2$에서 $f(x) = 3x^4$의 미분계수를 구하시오.',
       hints: [
         '먼저 $f\'(x)$를 거듭제곱 미분법으로 구하라.',

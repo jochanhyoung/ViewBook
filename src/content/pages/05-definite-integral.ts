@@ -4,7 +4,7 @@ export const definiteIntegralPage: Page = {
   slug: 'definite-integral',
   chapter: 'III. 적분',
   section: '1. 정적분과 넓이',
-  number: '3.1',
+  number: '3.5',
   title: '정적분과 넓이',
   subtitle: '리만합이 수렴하는 극한',
 
@@ -24,7 +24,7 @@ export const definiteIntegralPage: Page = {
     {
       kind: 'heading',
       level: 2,
-      number: '3.1.1',
+      number: '3.5.1',
       text: '리만합',
       eyebrow: '근사에서 극한으로',
     },
@@ -50,7 +50,7 @@ export const definiteIntegralPage: Page = {
         n: 8,
         method: 'right',
       },
-      caption: '그림 3.1 — $f(x) = x^2$, $[0, 2]$에서의 오른쪽 리만합. $n$을 키울수록 정확해진다.',
+      caption: '그림 3.5 — $f(x) = x^2$, $[0, 2]$에서의 오른쪽 리만합. $n$을 키울수록 정확해진다.',
     },
 
     {
@@ -63,14 +63,14 @@ export const definiteIntegralPage: Page = {
     {
       kind: 'heading',
       level: 2,
-      number: '3.1.2',
+      number: '3.5.2',
       text: '정적분의 기본 성질',
       eyebrow: '선형성과 구간',
     },
     {
       kind: 'theorem',
       id: 'thm-integral-properties',
-      number: '정리 3.1',
+      number: '정리 3.5',
       statement:
         '$f$와 $g$가 $[a, b]$에서 연속이고 $c$는 상수일 때:\n\n(1) $\\int_a^b cf(x)\\,dx = c\\int_a^b f(x)\\,dx$\n\n(2) $\\int_a^b [f(x) \\pm g(x)]\\,dx = \\int_a^b f(x)\\,dx \\pm \\int_a^b g(x)\\,dx$\n\n(3) $\\int_a^b f(x)\\,dx = \\int_a^c f(x)\\,dx + \\int_c^b f(x)\\,dx$\n\n(4) $\\int_a^a f(x)\\,dx = 0$\n\n(5) $\\int_a^b f(x)\\,dx = -\\int_b^a f(x)\\,dx$',
       proof:
@@ -79,14 +79,14 @@ export const definiteIntegralPage: Page = {
     {
       kind: 'heading',
       level: 2,
-      number: '3.1.3',
+      number: '3.5.3',
       text: '미적분학의 기본 정리',
       eyebrow: '미분과 적분의 연결',
     },
     {
       kind: 'theorem',
       id: 'thm-ftc',
-      number: '정리 3.2 (미적분학의 기본 정리)',
+      number: '정리 3.6 (미적분학의 기본 정리)',
       statement:
         '$f$가 $[a, b]$에서 연속이고 $F$가 $f$의 임의의 역도함수(원시함수), 즉 $F\'(x) = f(x)$이면,\n$$\\int_a^b f(x)\\,dx = F(b) - F(a) = [F(x)]_a^b.$$',
       proof:
@@ -107,7 +107,7 @@ export const definiteIntegralPage: Page = {
     {
       kind: 'example',
       id: 'ex-3-1-1',
-      number: '예제 3.1.1',
+      number: '예제 3.5.1',
       problem:
         '정적분 $\\displaystyle\\int_0^1 x^2\\,dx$를 미적분학의 기본 정리를 이용해 계산하시오.',
       hint:
@@ -122,7 +122,7 @@ export const definiteIntegralPage: Page = {
     {
       kind: 'example',
       id: 'ex-3-1-2',
-      number: '예제 3.1.2',
+      number: '예제 3.5.2',
       problem:
         '정적분 $\\displaystyle\\int_1^2 (2x + 1)\\,dx$를 계산하시오.',
       hint:
@@ -146,7 +146,7 @@ export const definiteIntegralPage: Page = {
   exercises: [
     {
       id: 'exr-3-1-1',
-      number: '연습문제 3.1.1',
+      number: '연습문제 3.5.1',
       problem: '$\\displaystyle\\int_0^2 (x^3 - x)\\,dx$를 계산하시오.',
       hints: [
         '$x^3 - x$의 역도함수 $F(x) = \\dfrac{x^4}{4} - \\dfrac{x^2}{2}$를 구하라.',
@@ -160,7 +160,7 @@ export const definiteIntegralPage: Page = {
     },
     {
       id: 'exr-3-1-2',
-      number: '연습문제 3.1.2',
+      number: '연습문제 3.5.2',
       problem: '$n = 4$인 오른쪽 리만합으로 $\\displaystyle\\int_0^2 x^2\\,dx$를 근사하고, 실제값과 비교하시오.',
       hints: [
         '$\\Delta x = 0.5$이고 대표점은 $x_1 = 0.5, x_2 = 1.0, x_3 = 1.5, x_4 = 2.0$이다.',
@@ -175,7 +175,7 @@ export const definiteIntegralPage: Page = {
     },
     {
       id: 'exr-3-1-3',
-      number: '연습문제 3.1.3',
+      number: '연습문제 3.5.3',
       problem: '$\\displaystyle\\int_{-1}^{2} (3x^2 - 2x + 1)\\,dx$를 계산하시오.',
       hints: [
         '역도함수 $F(x) = x^3 - x^2 + x$를 구하라.',

@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect, useCallback, useRef, Suspense } from 'react';
+import type { CSSProperties } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { LatexTextRenderer } from '@/components/inline/LatexTextRenderer';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -11,7 +12,8 @@ import { ExerciseBlock } from '@/components/blocks/ExerciseBlock';
 import { CameraFab } from '@/components/ai/CameraFab';
 import { CameraModal } from '@/components/ai/CameraModal';
 import { useTextbookStore } from '@/store/textbook-store';
-import { pages } from '@/content/index';
+import { coursePages, getCourseBySlug } from '@/content/index';
+import type { CourseId } from '@/content/index';
 import { ThemeToggle } from '@/components/ThemeToggle';
 
 interface BookViewerProps {
@@ -69,8 +71,13 @@ function useSheetIndex(totalSheets: number, slug: string) {
 
 // ── 실제 뷰어 (useSearchParams 사용 → Suspense 필요) ─────────────
 function BookViewerInner({ page }: BookViewerProps) {
+  const router = useRouter();
   const sheets = paginate(page);
-  const { currentSheet: sheetIdx, goNext, goPrev, setSheet } = useSheetIndex(sheets.length, page.slug);
+  const { currentSheet: sheetIdx, setSheet } = useSheetIndex(sheets.length, page.slug);
+  const [courseMenuOpen, setCourseMenuOpen] = useState(false);
+  const [chapterMenuOpen, setChapterMenuOpen] = useState(false);
+  const courseMenuRef = useRef<HTMLDivElement>(null);
+  const chapterMenuRef = useRef<HTMLDivElement>(null);
 
   // 애니메이션 방향 추적
   const [direction, setDirection] = useState(0);
@@ -91,7 +98,9 @@ function BookViewerInner({ page }: BookViewerProps) {
   );
 
   const cameraOpen = useTextbookStore((s) => s.cameraOpen);
-  const pageIdx = pages.findIndex((p) => p.slug === page.slug);
+  const currentCourse = getCourseBySlug(page.slug) ?? 'high';
+  const currentCoursePages = coursePages[currentCourse];
+  const pageIdx = currentCoursePages.findIndex((p) => p.slug === page.slug);
 
   const variants = {
     enter: (dir: number) => ({ x: dir > 0 ? '100%' : '-100%', opacity: 0 }),
@@ -118,6 +127,61 @@ function BookViewerInner({ page }: BookViewerProps) {
     return () => window.removeEventListener('keydown', handleKey);
   }, [navigate, setSheet, sheets.length]);
 
+  useEffect(() => {
+    function handlePointerDown(event: MouseEvent) {
+      if (!courseMenuRef.current?.contains(event.target as Node)) {
+        setCourseMenuOpen(false);
+      }
+      if (!chapterMenuRef.current?.contains(event.target as Node)) {
+        setChapterMenuOpen(false);
+      }
+    }
+
+    window.addEventListener('mousedown', handlePointerDown);
+    return () => window.removeEventListener('mousedown', handlePointerDown);
+  }, []);
+
+  const headerButtonStyle: CSSProperties = {
+    width: '84px',
+    height: '24px',
+    border: '1px solid var(--color-bg-surface)',
+    background: 'var(--color-bg)',
+    color: 'var(--color-text-subtle)',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '10px',
+    lineHeight: 1,
+    cursor: 'pointer',
+    padding: 0,
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  };
+
+  const courseOptions: Array<{ id: CourseId; label: string }> = [
+    { id: 'elementary', label: '초등 과정' },
+    { id: 'middle', label: '중등 과정' },
+    { id: 'high', label: '고등 과정' },
+  ];
+
+  const handleCourseSelect = useCallback(
+    (courseId: CourseId) => {
+      setCourseMenuOpen(false);
+      setChapterMenuOpen(false);
+      const targetPage = coursePages[courseId][0];
+      if (!targetPage) return;
+      router.push(`/read/${targetPage.slug}?sheet=0`);
+    },
+    [router]
+  );
+
+  const handleChapterSelect = useCallback(
+    (slug: string) => {
+      setChapterMenuOpen(false);
+      router.push(`/read/${slug}?sheet=0`);
+    },
+    [router]
+  );
+
   return (
     <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', background: 'var(--color-bg)' }}>
       {/* 스크린리더 공지 */}
@@ -133,20 +197,124 @@ function BookViewerInner({ page }: BookViewerProps) {
       {/* Header bar */}
       <div style={{ height: '44px', borderBottom: '1px solid var(--color-bg-surface)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 20px', flexShrink: 0 }}>
         {/* Page nav */}
-        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-          {pageIdx > 0 && (
-            <a href={`/read/${pages[pageIdx - 1].slug}?sheet=0`} style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-muted)', textDecoration: 'none' }}>
-              ← {pages[pageIdx - 1].number}
-            </a>
-          )}
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-subtle)' }}>
-            {page.number}&ensp;{page.title}
-          </span>
-          {pageIdx < pages.length - 1 && (
-            <a href={`/read/${pages[pageIdx + 1].slug}?sheet=0`} style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-muted)', textDecoration: 'none' }}>
-              {pages[pageIdx + 1].number} →
-            </a>
-          )}
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div ref={courseMenuRef} style={{ position: 'relative', flexShrink: 0 }}>
+            <button
+              type="button"
+              aria-haspopup="menu"
+              aria-expanded={courseMenuOpen}
+              onClick={() => setCourseMenuOpen((open) => !open)}
+              style={headerButtonStyle}
+            >
+              과정 선택
+            </button>
+
+            {courseMenuOpen && (
+              <div
+                role="menu"
+                aria-label="과정 선택"
+                style={{
+                  position: 'absolute',
+                  top: 'calc(100% + 1px)',
+                  left: 0,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '1px',
+                  zIndex: 30,
+                }}
+              >
+                {courseOptions.map((course) => (
+                  <button
+                    key={course.id}
+                    type="button"
+                    role="menuitemradio"
+                    aria-checked={currentCourse === course.id}
+                    onClick={() => handleCourseSelect(course.id)}
+                    style={{
+                      ...headerButtonStyle,
+                      background: currentCourse === course.id ? 'var(--color-bg-surface)' : 'var(--color-bg)',
+                      color: currentCourse === course.id ? 'var(--color-text)' : 'var(--color-text-subtle)',
+                    }}
+                  >
+                    {course.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginLeft: '14px' }}>
+            {pageIdx > 0 && (
+              <a href={`/read/${currentCoursePages[pageIdx - 1].slug}?sheet=0`} style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-muted)', textDecoration: 'none' }}>
+                ← {currentCoursePages[pageIdx - 1].number}
+              </a>
+            )}
+            <div ref={chapterMenuRef} style={{ position: 'relative' }}>
+              <button
+                type="button"
+                aria-haspopup="menu"
+                aria-expanded={chapterMenuOpen}
+                onClick={() => setChapterMenuOpen((open) => !open)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  padding: 0,
+                  cursor: 'pointer',
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '11px',
+                  color: 'var(--color-text-subtle)',
+                }}
+              >
+                {page.number}&ensp;{page.title}
+              </button>
+              {chapterMenuOpen && (
+                <div
+                  role="menu"
+                  aria-label="챕터 선택"
+                  style={{
+                    position: 'absolute',
+                    top: 'calc(100% + 8px)',
+                    left: 0,
+                    minWidth: '220px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    border: '1px solid var(--color-bg-surface)',
+                    background: 'var(--color-bg)',
+                    zIndex: 30,
+                  }}
+                >
+                  {currentCoursePages.map((coursePage) => (
+                    <button
+                      key={coursePage.slug}
+                      type="button"
+                      role="menuitemradio"
+                      aria-checked={coursePage.slug === page.slug}
+                      onClick={() => handleChapterSelect(coursePage.slug)}
+                      style={{
+                        height: '28px',
+                        border: 'none',
+                        borderBottom: '1px solid var(--color-bg-surface)',
+                        background: coursePage.slug === page.slug ? 'var(--color-bg-surface)' : 'var(--color-bg)',
+                        color: coursePage.slug === page.slug ? 'var(--color-text)' : 'var(--color-text-subtle)',
+                        fontFamily: 'var(--font-mono)',
+                        fontSize: '10px',
+                        textAlign: 'left',
+                        padding: '0 10px',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      {coursePage.number} {coursePage.title}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            {pageIdx < currentCoursePages.length - 1 && (
+              <a href={`/read/${currentCoursePages[pageIdx + 1].slug}?sheet=0`} style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-muted)', textDecoration: 'none' }}>
+                {currentCoursePages[pageIdx + 1].number} →
+              </a>
+            )}
+          </div>
         </div>
 
         {/* 우측: 다크/라이트 토글 + 시트 인디케이터 도트 */}

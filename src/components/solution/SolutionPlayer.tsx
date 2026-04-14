@@ -13,6 +13,13 @@ import { StepText } from '@/components/visualization/StepText';
 import { SecantSlope } from '@/components/visualization/SecantSlope';
 import { PiecewiseGraph } from '@/components/visualization/PiecewiseGraph';
 import { SolutionSlides } from '@/components/visualization/SolutionSlides';
+import { ClockAngle } from '@/components/visualization/ClockAngle';
+import { SaltConcentration } from '@/components/visualization/SaltConcentration';
+import { CalendarPattern } from '@/components/visualization/CalendarPattern';
+import { DistanceTime } from '@/components/visualization/DistanceTime';
+import { LinearFunction } from '@/components/visualization/LinearFunction';
+import { QuadraticFunction } from '@/components/visualization/QuadraticFunction';
+import { SystemOfEquations } from '@/components/visualization/SystemOfEquations';
 
 interface SolutionPlayerProps {
   steps: VisualizationStep[];
@@ -169,8 +176,22 @@ function StepContent({ step, subStep }: { step: VisualizationStep; subStep: numb
       return <PowerRule coefficient={step.coefficient} exponent={step.exponent} />;
     case 'limitDefinition':
       return <LimitDefinition fn={step.fn} x0={step.x0} />;
+    case 'clockAngle':
+      return <ClockAngle hour={step.hour} minute={step.minute} interactive={step.interactive} />;
+    case 'saltConcentration':
+      return <SaltConcentration water={step.water} salt={step.salt} interactive={step.interactive} />;
+    case 'calendarPattern':
+      return <CalendarPattern day={step.day} interactive={step.interactive} />;
+    case 'distanceTime':
+      return <DistanceTime speed={step.speed} />;
+    case 'linearFunction':
+      return <LinearFunction slope={step.slope} intercept={step.intercept} interactive={step.interactive} />;
+    case 'quadraticFunction':
+      return <QuadraticFunction a={step.a} interactive={step.interactive} />;
+    case 'systemOfEquations':
+      return <SystemOfEquations line1={step.line1} line2={step.line2} />;
     case 'secantSlope':
-      return <SecantSlope fn={step.fn} a={step.a} />;
+      return <SecantSlope fn={step.fn} a={step.a} interactive={step.interactive} />;
     case 'derivativeGraph':
       return <DerivativeGraph fnLatex={step.fnLatex} fn={step.fn} domain={step.domain} />;
     case 'tangentLine':
