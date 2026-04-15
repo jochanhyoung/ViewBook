@@ -35,18 +35,21 @@ export const systemOfEquationsPage: Page = {
       caption: '두 직선의 교점이 자동으로 표시되며, 그 좌표가 연립방정식의 해가 된다.',
     },
     {
+      // 예제 2.4.1 — 인터랙티브 그래프
       kind: 'example',
       id: 'ex-mid-2-4',
       number: '예제 2.4.1',
-      problem: '$y=x+1$, $y=-x+3$의 해를 그래프로 해석하시오.',
-      hint: '교점에서는 두 식의 y값이 같아진다.',
+      problem:
+        '$y=x+1$, $y=-x+3$의 해를 그래프로 구하시오. 슬라이더로 두 직선을 직접 맞춰 보며 교점을 찾아보자.',
+      hint: '교점에서는 두 식의 $y$값이 같아진다.',
       solution:
         '**풀이.** 두 직선은 $(1, 2)$에서 만난다. 따라서 연립방정식의 해는 **$(1, 2)$**이다.',
       visualize: [
         {
           kind: 'systemOfEquations',
-          line1: { slope: 1, intercept: 1 },
+          line1: { slope: 1,  intercept: 1 },
           line2: { slope: -1, intercept: 3 },
+          interactive: true,
         },
       ],
     },
@@ -56,55 +59,154 @@ export const systemOfEquationsPage: Page = {
     { term: '연립방정식의 해', short: '두 식을 동시에 만족하는 값의 쌍.' },
   ],
   exercises: [
+    // ── 연습문제 2.4.1 ──
     {
       id: 'exr-mid-2-4',
       number: '연습문제 2.4.1',
       problem: '$y=2x+1$, $y=-x+4$의 해를 구하시오.',
       hints: [
-        '두 직선이 만나는 x좌표를 먼저 구한다.',
-        '$2x+1=-x+4$가 되는 점을 찾는다.',
+        '두 식의 $y$가 같은 $x$를 찾는다.',
+        '$2x+1=-x+4$가 되는 점을 구한다.',
       ],
-      solution: '**풀이.** $2x+1=-x+4$이므로 $3x=3$, $x=1$이다. 이 값을 대입하면 $y=3$이므로 해는 **$(1, 3)$**이다.',
+      solution:
+        '**풀이.** $2x+1=-x+4$이므로 $3x=3$, $x=1$. 대입하면 $y=3$. 해: **$(1, 3)$**.',
       visualize: [
         {
+          kind: 'equationTransform',
+          steps: [
+            {
+              label: '두 식을 같다고 놓기',
+              latex: '2x + 1 = -x + 4',
+              description: '교점에서는 두 직선의 y값이 같습니다.',
+            },
+            {
+              label: 'x 항 이항',
+              latex: '2x + x = 4 - 1',
+              description: '-x를 좌변으로, 1을 우변으로 이항합니다.',
+            },
+            {
+              label: '동류항 정리',
+              latex: '3x = 3',
+              description: '좌변의 x항, 우변의 상수항을 각각 계산합니다.',
+            },
+            {
+              label: 'x 도출',
+              latex: 'x = 1',
+              description: '양변을 3으로 나눕니다.',
+            },
+            {
+              label: '해 확정',
+              latex: 'x = 1, \\quad y = 3',
+              description: 'x=1을 y=2x+1에 대입하면 y=2(1)+1=3입니다.',
+              highlight: true,
+            },
+          ],
+        },
+        {
           kind: 'systemOfEquations',
-          line1: { slope: 2, intercept: 1 },
+          line1: { slope: 2,  intercept: 1 },
           line2: { slope: -1, intercept: 4 },
         },
       ],
     },
+
+    // ── 연습문제 2.4.2 ──
     {
       id: 'exr-mid-2-4-2',
       number: '연습문제 2.4.2',
       problem: '$y=x+2$, $y=-2x+5$의 해를 구하시오.',
       hints: [
-        '교점에서는 두 식의 y값이 같다.',
+        '교점에서는 두 식의 $y$값이 같다.',
         '$x+2=-2x+5$를 먼저 풀어라.',
       ],
       solution:
-        '**풀이.** $x+2=-2x+5$이므로 $3x=3$, $x=1$이다. 이를 대입하면 $y=3$이므로 해는 **$(1, 3)$**이다.',
+        '**풀이.** $x+2=-2x+5$이므로 $3x=3$, $x=1$. 대입하면 $y=3$. 해: **$(1, 3)$**.',
       visualize: [
         {
+          kind: 'equationTransform',
+          steps: [
+            {
+              label: '두 식을 같다고 놓기',
+              latex: 'x + 2 = -2x + 5',
+              description: '교점에서는 두 직선의 y값이 같습니다.',
+            },
+            {
+              label: 'x 항 이항',
+              latex: 'x + 2x = 5 - 2',
+              description: '-2x를 좌변으로, 2를 우변으로 이항합니다.',
+            },
+            {
+              label: '동류항 정리',
+              latex: '3x = 3',
+              description: '좌변의 x항, 우변의 상수항을 각각 계산합니다.',
+            },
+            {
+              label: 'x 도출',
+              latex: 'x = 1',
+              description: '양변을 3으로 나눕니다.',
+            },
+            {
+              label: '해 확정',
+              latex: 'x = 1, \\quad y = 3',
+              description: 'x=1을 y=x+2에 대입하면 y=1+2=3입니다.',
+              highlight: true,
+            },
+          ],
+        },
+        {
           kind: 'systemOfEquations',
-          line1: { slope: 1, intercept: 2 },
+          line1: { slope: 1,  intercept: 2 },
           line2: { slope: -2, intercept: 5 },
         },
       ],
     },
+
+    // ── 연습문제 2.4.3 ──
     {
       id: 'exr-mid-2-4-3',
       number: '연습문제 2.4.3',
       problem: '$y=3x-1$, $y=-x+7$의 해를 구하시오.',
       hints: [
-        '$3x-1=-x+7$을 풀어 x를 구하라.',
-        '구한 x값을 둘 중 하나의 식에 넣어 y를 찾는다.',
+        '$3x-1=-x+7$을 풀어 $x$를 구하라.',
+        '구한 $x$값을 둘 중 하나의 식에 넣어 $y$를 찾는다.',
       ],
       solution:
-        '**풀이.** $3x-1=-x+7$이므로 $4x=8$, $x=2$이다. 이 값을 대입하면 $y=5$이므로 해는 **$(2, 5)$**이다.',
+        '**풀이.** $3x-1=-x+7$이므로 $4x=8$, $x=2$. 대입하면 $y=5$. 해: **$(2, 5)$**.',
       visualize: [
         {
+          kind: 'equationTransform',
+          steps: [
+            {
+              label: '두 식을 같다고 놓기',
+              latex: '3x - 1 = -x + 7',
+              description: '교점에서는 두 직선의 y값이 같습니다.',
+            },
+            {
+              label: 'x 항 이항',
+              latex: '3x + x = 7 + 1',
+              description: '-x를 좌변으로, -1을 우변으로 이항합니다.',
+            },
+            {
+              label: '동류항 정리',
+              latex: '4x = 8',
+              description: '좌변의 x항, 우변의 상수항을 각각 계산합니다.',
+            },
+            {
+              label: 'x 도출',
+              latex: 'x = 2',
+              description: '양변을 4로 나눕니다.',
+            },
+            {
+              label: '해 확정',
+              latex: 'x = 2, \\quad y = 5',
+              description: 'x=2를 y=3x-1에 대입하면 y=3(2)-1=5입니다.',
+              highlight: true,
+            },
+          ],
+        },
+        {
           kind: 'systemOfEquations',
-          line1: { slope: 3, intercept: -1 },
+          line1: { slope: 3,  intercept: -1 },
           line2: { slope: -1, intercept: 7 },
         },
       ],

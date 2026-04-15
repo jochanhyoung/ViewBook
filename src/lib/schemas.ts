@@ -18,6 +18,7 @@ export const VisualizationStepSchema = z.discriminatedUnion('kind', [
     kind: z.literal('systemOfEquations'),
     line1: z.object({ slope: z.number(), intercept: z.number() }),
     line2: z.object({ slope: z.number(), intercept: z.number() }),
+    interactive: z.boolean().optional(),
   }),
   z.object({
     kind: z.literal('piecewiseGraph'),

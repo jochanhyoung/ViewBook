@@ -14,6 +14,7 @@ export type VisualizationStep =
       kind: 'systemOfEquations';
       line1: { slope: number; intercept: number };
       line2: { slope: number; intercept: number };
+      interactive?: boolean;
     }
   | {
       kind: 'piecewiseGraph';

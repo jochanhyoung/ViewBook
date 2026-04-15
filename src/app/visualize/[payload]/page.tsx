@@ -301,7 +301,7 @@ function StepContent({ step, isPlaying, subStep }: { step: VisualizationStep; is
     case 'quadraticFunction':
       return <QuadraticFunction a={step.a} interactive={step.interactive} />;
     case 'systemOfEquations':
-      return <SystemOfEquations line1={step.line1} line2={step.line2} />;
+      return <SystemOfEquations line1={step.line1} line2={step.line2} interactive={step.interactive} />;
     case 'piecewiseGraph':
       return <PiecewiseGraph pieces={step.pieces} x0={step.x0} />;
     case 'derivativeGraph':

@@ -189,7 +189,7 @@ function StepContent({ step, subStep }: { step: VisualizationStep; subStep: numb
     case 'quadraticFunction':
       return <QuadraticFunction a={step.a} interactive={step.interactive} />;
     case 'systemOfEquations':
-      return <SystemOfEquations line1={step.line1} line2={step.line2} />;
+      return <SystemOfEquations line1={step.line1} line2={step.line2} interactive={step.interactive} />;
     case 'coordinatePlane':
       return <CoordinatePlane points={step.points} interactive={step.interactive} showSigns={step.showSigns} />;
     case 'derivativeGraph':
