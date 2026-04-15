@@ -10,7 +10,7 @@ import { RiemannSum } from '@/components/visualization/RiemannSum';
 import { DefiniteIntegral } from '@/components/visualization/DefiniteIntegral';
 import { EquationTransform } from '@/components/visualization/EquationTransform';
 import { StepText } from '@/components/visualization/StepText';
-import { SecantSlope } from '@/components/visualization/SecantSlope';
+import { CoordinatePlane } from '@/components/visualization/CoordinatePlane';
 import { PiecewiseGraph } from '@/components/visualization/PiecewiseGraph';
 import { SolutionSlides } from '@/components/visualization/SolutionSlides';
 import { ClockAngle } from '@/components/visualization/ClockAngle';
@@ -190,8 +190,8 @@ function StepContent({ step, subStep }: { step: VisualizationStep; subStep: numb
       return <QuadraticFunction a={step.a} interactive={step.interactive} />;
     case 'systemOfEquations':
       return <SystemOfEquations line1={step.line1} line2={step.line2} />;
-    case 'secantSlope':
-      return <SecantSlope fn={step.fn} a={step.a} interactive={step.interactive} />;
+    case 'coordinatePlane':
+      return <CoordinatePlane points={step.points} interactive={step.interactive} />;
     case 'derivativeGraph':
       return <DerivativeGraph fnLatex={step.fnLatex} fn={step.fn} domain={step.domain} />;
     case 'tangentLine':

@@ -79,9 +79,12 @@ export const VisualizationStepSchema = z.discriminatedUnion('kind', [
     })).min(1).max(12),
   }),
   z.object({
-    kind: z.literal('secantSlope'),
-    fn: z.string().max(200),
-    a: z.number(),
+    kind: z.literal('coordinatePlane'),
+    points: z.array(z.object({
+      x: z.number().min(-4).max(4),
+      y: z.number().min(-4).max(4),
+      label: z.string().max(4).optional(),
+    })).max(8).optional(),
     interactive: z.boolean().optional(),
   }),
 ]);

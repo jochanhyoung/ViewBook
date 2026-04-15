@@ -17,7 +17,7 @@ import { EquationTransform } from '@/components/visualization/EquationTransform'
 import { StepText } from '@/components/visualization/StepText';
 import { FunctionPlayground } from '@/components/visualization/FunctionPlayground';
 import { SolutionSlides } from '@/components/visualization/SolutionSlides';
-import { SecantSlope } from '@/components/visualization/SecantSlope';
+import { CoordinatePlane } from '@/components/visualization/CoordinatePlane';
 import { PiecewiseGraph } from '@/components/visualization/PiecewiseGraph';
 import { ClockAngle } from '@/components/visualization/ClockAngle';
 import { SaltConcentration } from '@/components/visualization/SaltConcentration';
@@ -320,8 +320,8 @@ function StepContent({ step, isPlaying, subStep }: { step: VisualizationStep; is
       return <FunctionPlayground initialFn={step.initialFn} domain={step.domain} />;
     case 'solutionSlides':
       return <SolutionSlides steps={step.steps} subStep={subStep} isPlaying={isPlaying} />;
-    case 'secantSlope':
-      return <SecantSlope fn={step.fn} a={step.a} interactive={step.interactive} />;
+    case 'coordinatePlane':
+      return <CoordinatePlane points={step.points} interactive={step.interactive} />;
     default:
       return null;
   }
@@ -405,7 +405,7 @@ function shouldShowExplanation(step: VisualizationStep): boolean {
     case 'powerRule':
     case 'limitDefinition':
     case 'piecewiseGraph':
-    case 'secantSlope':
+    case 'coordinatePlane':
     case 'systemOfEquations':
     case 'tangentLine':
     case 'derivativeGraph':
@@ -526,112 +526,46 @@ function getStepExplanation(step: VisualizationStep, problemTitle?: string): { t
           },
         ],
       };
-    case 'secantSlope':
-      if (problemTitle?.includes('예제 2.3.1') || problemTitle?.includes('함수 $y=x^2$에서 $x=1$ 근처의 평균변화율을 관찰할 때')) {
+    case 'coordinatePlane':
+      if (problemTitle?.includes('예제 2.1.1') || problemTitle?.includes('점 $\\mathrm{P}(3, -2)$를 좌표평면에 나타내고')) {
         return {
-          title: '두 점이 가까워질수록 할선은 접선이 된다',
+          title: '좌표로 점의 위치 읽기',
           sections: [
             {
               heading: '핵심',
               body:
-                '이 문제는 계산보다 **관찰**이 중요하다. 곡선 위 두 점을 잇는 할선은 두 점이 가까워질수록 한 점에서의 방향을 더 잘 보여 주고, 결국 접선의 방향에 가까워진다.',
+                '순서쌍 $(x, y)$에서 첫 번째 수는 **x좌표(가로)**, 두 번째 수는 **y좌표(세로)**이다. x좌표의 부호가 양수이면 오른쪽, 음수이면 왼쪽에 점이 있다.',
             },
             {
               heading: '그래프 읽기',
               body:
-                '점 $A$는 $x=1$에 고정되어 있고 점 $B$는 오른쪽에서 가까워진다. $h$가 줄어들수록 할선의 기울기가 점점 일정한 값에 가까워지며, 그 직선이 접선처럼 보인다.',
+                '점 P(3, −2)는 x축으로 오른쪽 3, y축으로 아래 2만큼 이동한 위치이다. x > 0이고 y < 0이므로 제4사분면에 있다.',
             },
             {
               heading: '문제 연결',
               body:
-                '따라서 이 문제의 답은 "두 점 사이 거리가 작아질수록 할선의 기울기가 접선의 기울기에 가까워진다"이다. 평균변화율이 순간변화율로 이어지는 장면을 보는 문제다.',
-            },
-          ],
-        };
-      }
-      if (problemTitle?.includes('연습문제 2.3.1') || problemTitle?.includes('$h$가 0에 가까워질수록 왜 할선의 기울기가 중요해지는지')) {
-        return {
-          title: '왜 할선의 기울기가 중요한가',
-          sections: [
-            {
-              heading: '핵심',
-              body:
-                '할선의 기울기는 두 점 사이의 평균변화율이다. 그런데 두 점 사이 간격을 줄이면 이 값이 한 점에서의 변화 방향을 잘 보여 주기 때문에 중요해진다.',
-            },
-            {
-              heading: '그래프 읽기',
-              body:
-                '$h$가 클 때는 구간 전체 평균만 보이지만, $h$가 작아질수록 점 $A$ 근처의 실제 방향에 더 가까워진다. 그래서 접선의 기울기를 추측할 수 있다.',
-            },
-            {
-              heading: '문제 연결',
-              body:
-                '이 연습문제에서는 바로 그 이유를 설명하면 된다. $h$가 작아질수록 평균변화율이 순간변화율을 더 잘 나타내므로, 할선의 기울기가 중요하다.',
-            },
-          ],
-        };
-      }
-      if (problemTitle?.includes('연습문제 2.3.2') || problemTitle?.includes('함수 $y=x^2$에서 $x=2$를 기준으로')) {
-        return {
-          title: '$x=2$에서 접선 기울기에 가까워지는 과정',
-          sections: [
-            {
-              heading: '핵심',
-              body:
-                '기준점을 $x=2$로 바꾸어도 원리는 같다. 움직이는 점이 기준점에 가까워질수록 할선의 기울기는 그 점에서의 접선 기울기로 수렴한다.',
-            },
-            {
-              heading: '그래프 읽기',
-              body:
-                '점 $A$는 $(2,4)$에 있고 점 $B$가 그 근처로 다가온다. 할선은 처음에는 비교적 다른 방향을 가지지만, 점점 접선과 거의 같은 방향이 된다.',
-            },
-            {
-              heading: '문제 연결',
-              body:
-                '따라서 이 문제의 설명은 "할선의 기울기가 $x=2$에서의 접선 기울기에 가까워진다"이다. 평균변화율이 특정 점의 순간변화율로 모이는 예시다.',
-            },
-          ],
-        };
-      }
-      if (problemTitle?.includes('연습문제 2.3.3') || problemTitle?.includes('함수 $y=x^2+1$에서 $x=1$ 근처의 평균변화율을 관찰할 때')) {
-        return {
-          title: '왜 두 점 사이 거리를 줄여야 하는가',
-          sections: [
-            {
-              heading: '핵심',
-              body:
-                '우리가 알고 싶은 값이 한 점에서의 변화라면, 두 점 사이 간격을 줄여야 한다. 그래야 구간 평균이 아니라 점 근처의 실제 방향을 볼 수 있다.',
-            },
-            {
-              heading: '그래프 읽기',
-              body:
-                '$y=x^2+1$은 단순히 위로 1만큼 이동한 포물선이라서, 점 근처의 방향을 보려면 여전히 할선을 점점 짧게 만들어야 한다.',
-            },
-            {
-              heading: '문제 연결',
-              body:
-                '이 문제에서는 "두 점이 멀면 전체 평균만 보이고, 가까워질수록 순간변화율을 더 잘 알 수 있기 때문"이라고 정리하면 된다.',
+                'x좌표의 부호: +, y좌표의 부호: − 이면 항상 **제4사분면**이다. 시각화의 점 위치로 이 사실을 눈으로 확인하라.',
             },
           ],
         };
       }
       return {
-        title: '두 점을 잇는 할선으로 평균변화율 보기',
+        title: '좌표평면 위의 점과 사분면',
         sections: [
           {
             heading: '핵심',
             body:
-              '이 그래프는 함수 위의 두 점을 잇는 **할선의 기울기**를 보여 준다. 이것은 두 점 사이에서 함수가 얼마나 변했는지를 나타내는 **평균변화율**이다.',
+              'x축과 y축이 만드는 네 구역을 사분면이라 한다. 점의 좌표 부호를 보면 그 점이 어느 사분면에 있는지 바로 알 수 있다.',
           },
           {
             heading: '그래프 읽기',
             body:
-              '점 $A$에서 점 $B$로 이동할 때를 생각해보자.\n\n가로로는 $x$값이 $h$만큼 변하고 $(\\Delta x = h)$, 세로로는 $y$값이 $\\Delta y$만큼 변한다.\n\n이때 기울기는 "세로 변화 ÷ 가로 변화"이므로 $\\dfrac{\\Delta y}{\\Delta x} = \\dfrac{\\Delta y}{h}$가 된다.\n\n즉, 이 값은 $A$에서 $B$까지 이동하는 동안 함수값이 얼마나 변했는지를 나타내는 값이고, 이것을 평균변화율이라고 한다.',
+              '각 점의 x좌표와 y좌표의 부호를 확인한다. x > 0이고 y > 0이면 제1사분면, x < 0이고 y > 0이면 제2사분면이다.',
           },
           {
             heading: '문제 연결',
             body:
-              '문제에서는 이 값을 식으로 계산한 뒤, 필요하면 $h$를 더 작게 해서 접선의 기울기와 연결한다. 즉 할선은 미분으로 가기 전 단계라고 보면 된다.',
+              '좌표축 위(x = 0 또는 y = 0)에 있는 점은 어느 사분면에도 속하지 않는다는 점을 주의하라.',
           },
         ],
       };
