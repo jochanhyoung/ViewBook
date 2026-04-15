@@ -295,7 +295,7 @@ function StepContent({ step, isPlaying, subStep }: { step: VisualizationStep; is
     case 'calendarPattern':
       return <CalendarPattern day={step.day} interactive={step.interactive} />;
     case 'distanceTime':
-      return <DistanceTime speed={step.speed} />;
+      return <DistanceTime speed={step.speed} sampleTime={step.sampleTime} interactive={step.interactive} />;
     case 'linearFunction':
       return <LinearFunction slope={step.slope} intercept={step.intercept} interactive={step.interactive} />;
     case 'quadraticFunction':

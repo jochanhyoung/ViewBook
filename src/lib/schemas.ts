@@ -6,7 +6,12 @@ export const VisualizationStepSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('clockAngle'), hour: z.number(), minute: z.number(), interactive: z.boolean().optional() }),
   z.object({ kind: z.literal('saltConcentration'), water: z.number(), salt: z.number(), interactive: z.boolean().optional() }),
   z.object({ kind: z.literal('calendarPattern'), day: z.number().int().min(1).max(31), interactive: z.boolean().optional() }),
-  z.object({ kind: z.literal('distanceTime'), speed: z.number() }),
+  z.object({
+    kind: z.literal('distanceTime'),
+    speed: z.number(),
+    sampleTime: z.number().min(0).max(10).optional(),
+    interactive: z.boolean().optional(),
+  }),
   z.object({ kind: z.literal('linearFunction'), slope: z.number(), intercept: z.number(), interactive: z.boolean().optional() }),
   z.object({ kind: z.literal('quadraticFunction'), a: z.number(), interactive: z.boolean().optional() }),
   z.object({

@@ -7,7 +7,7 @@ export type VisualizationStep =
   | { kind: 'clockAngle'; hour: number; minute: number; interactive?: boolean }
   | { kind: 'saltConcentration'; water: number; salt: number; interactive?: boolean }
   | { kind: 'calendarPattern'; day: number; interactive?: boolean }
-  | { kind: 'distanceTime'; speed: number }
+  | { kind: 'distanceTime'; speed: number; sampleTime?: number; interactive?: boolean }
   | { kind: 'linearFunction'; slope: number; intercept: number; interactive?: boolean }
   | { kind: 'quadraticFunction'; a: number; interactive?: boolean }
   | {
