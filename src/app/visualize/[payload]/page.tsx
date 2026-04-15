@@ -321,7 +321,7 @@ function StepContent({ step, isPlaying, subStep }: { step: VisualizationStep; is
     case 'solutionSlides':
       return <SolutionSlides steps={step.steps} subStep={subStep} isPlaying={isPlaying} />;
     case 'coordinatePlane':
-      return <CoordinatePlane points={step.points} interactive={step.interactive} />;
+      return <CoordinatePlane points={step.points} interactive={step.interactive} showSigns={step.showSigns} />;
     default:
       return null;
   }

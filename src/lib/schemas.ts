@@ -86,6 +86,7 @@ export const VisualizationStepSchema = z.discriminatedUnion('kind', [
       label: z.string().max(4).optional(),
     })).max(8).optional(),
     interactive: z.boolean().optional(),
+    showSigns: z.boolean().optional(),
   }),
 ]);
 

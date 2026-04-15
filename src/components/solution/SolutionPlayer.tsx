@@ -191,7 +191,7 @@ function StepContent({ step, subStep }: { step: VisualizationStep; subStep: numb
     case 'systemOfEquations':
       return <SystemOfEquations line1={step.line1} line2={step.line2} />;
     case 'coordinatePlane':
-      return <CoordinatePlane points={step.points} interactive={step.interactive} />;
+      return <CoordinatePlane points={step.points} interactive={step.interactive} showSigns={step.showSigns} />;
     case 'derivativeGraph':
       return <DerivativeGraph fnLatex={step.fnLatex} fn={step.fn} domain={step.domain} />;
     case 'tangentLine':

@@ -35,4 +35,4 @@ export type VisualizationStep =
   | { kind: 'text'; latex?: string; markdown?: string }
   | { kind: 'playground'; initialFn: string; domain: [number, number] }
   | { kind: 'solutionSlides'; steps: { label: string; tex: string; hint?: string; final?: boolean }[] }
-  | { kind: 'coordinatePlane'; points?: { x: number; y: number; label?: string }[]; interactive?: boolean };
+  | { kind: 'coordinatePlane'; points?: { x: number; y: number; label?: string }[]; interactive?: boolean; showSigns?: boolean };

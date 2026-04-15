@@ -48,9 +48,13 @@ export const coordinatePlanePage: Page = {
         'x축과 y축은 좌표평면을 네 구역으로 나눈다. 오른쪽 위부터 시계 반대 방향으로 **제1사분면, 제2사분면, 제3사분면, 제4사분면**이라 한다. 좌표축 위의 점은 어느 사분면에도 속하지 않는다.',
     },
     {
-      kind: 'keyPoint',
-      markdown:
-        '| 사분면 | x의 부호 | y의 부호 |\n|---|---|---|\n| 제1사분면 | $+$ | $+$ |\n| 제2사분면 | $-$ | $+$ |\n| 제3사분면 | $-$ | $-$ |\n| 제4사분면 | $+$ | $-$ |',
+      kind: 'figure',
+      visualization: {
+        kind: 'coordinatePlane',
+        showSigns: true,
+        interactive: false,
+      },
+      caption: '각 사분면에서 x, y의 부호. 좌표축 위의 점은 어느 사분면에도 속하지 않는다.',
     },
     {
       kind: 'example',
