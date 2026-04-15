@@ -7,9 +7,9 @@ import { clockAnglePage } from './pages/11-clock-angle';
 import { saltConcentrationPage } from './pages/12-salt-concentration';
 import { calendarPatternPage } from './pages/13-calendar-pattern';
 import { distanceTimePage } from './pages/14-distance-time';
+import { coordinatePlanePage } from './pages/20-coordinate-plane';
 import { linearFunctionPage } from './pages/21-linear-function';
 import { quadraticFunctionPage } from './pages/22-quadratic-function';
-import { secantToTangentPage } from './pages/23-secant-to-tangent';
 import { systemOfEquationsPage } from './pages/24-system-of-equations';
 import type { Page } from '@/types/content';
 
@@ -31,9 +31,9 @@ export const elementaryPages: Page[] = [
 ];
 
 export const middleSchoolPages: Page[] = [
+  coordinatePlanePage,
   linearFunctionPage,
   quadraticFunctionPage,
-  secantToTangentPage,
   systemOfEquationsPage,
 ];
 

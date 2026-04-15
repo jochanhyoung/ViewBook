@@ -3,8 +3,8 @@ import type { Page } from '@/types/content';
 export const quadraticFunctionPage: Page = {
   slug: 'quadratic-function',
   chapter: 'II. 함수와 그래프',
-  section: '2. 이차함수',
-  number: '2.2',
+  section: '3. 이차함수',
+  number: '2.3',
   title: '이차함수',
   subtitle: '$a$ 값 하나가 포물선의 모양을 바꾼다',
   learningObjectives: [
@@ -30,8 +30,8 @@ export const quadraticFunctionPage: Page = {
     },
     {
       kind: 'example',
-      id: 'ex-mid-2-2',
-      number: '예제 2.2.1',
+      id: 'ex-mid-2-3',
+      number: '예제 2.3.1',
       problem: '함수 $y=-2x^2$의 그래프는 위로 열리는가, 아래로 열리는가?',
       hint: '$a=-2$의 부호를 보라.',
       solution:
@@ -45,8 +45,8 @@ export const quadraticFunctionPage: Page = {
   ],
   exercises: [
     {
-      id: 'exr-mid-2-2',
-      number: '연습문제 2.2.1',
+      id: 'exr-mid-2-3',
+      number: '연습문제 2.3.1',
       problem: '$y = 0.5x^2$의 그래프는 $y = x^2$보다 넓은가 좁은가?',
       hints: [
         '$|0.5| < 1$이다.',
@@ -56,8 +56,8 @@ export const quadraticFunctionPage: Page = {
       visualize: [{ kind: 'quadraticFunction', a: 0.5, interactive: false }],
     },
     {
-      id: 'exr-mid-2-2-2',
-      number: '연습문제 2.2.2',
+      id: 'exr-mid-2-3-2',
+      number: '연습문제 2.3.2',
       problem: '$y = 3x^2$의 그래프는 위로 열리는가, 아래로 열리는가? 또 $y=x^2$보다 넓은가 좁은가?',
       hints: [
         '$a=3>0$이므로 위로 열린다.',
@@ -67,8 +67,8 @@ export const quadraticFunctionPage: Page = {
       visualize: [{ kind: 'quadraticFunction', a: 3, interactive: false }],
     },
     {
-      id: 'exr-mid-2-2-3',
-      number: '연습문제 2.2.3',
+      id: 'exr-mid-2-3-3',
+      number: '연습문제 2.3.3',
       problem: '$y = -0.5x^2$의 그래프는 위로 열리는가, 아래로 열리는가? 또 $y=-x^2$보다 넓은가 좁은가?',
       hints: [
         '$a=-0.5<0$이므로 아래로 열린다.',

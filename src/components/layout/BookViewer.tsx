@@ -432,7 +432,7 @@ function IntroSheet({ page }: { page: Page }) {
       </h1>
       {page.subtitle && (
         <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--color-text-subtle)', marginBottom: '40px' }}>
-          {page.subtitle}
+          <LatexTextRenderer text={page.subtitle} />
         </p>
       )}
       <div style={{ borderLeft: '2px solid var(--color-border)', paddingLeft: '20px' }}>

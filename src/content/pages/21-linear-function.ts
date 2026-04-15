@@ -3,8 +3,8 @@ import type { Page } from '@/types/content';
 export const linearFunctionPage: Page = {
   slug: 'linear-function',
   chapter: 'II. 함수와 그래프',
-  section: '1. 일차함수',
-  number: '2.1',
+  section: '2. 일차함수',
+  number: '2.2',
   title: '일차함수',
   subtitle: '기울기와 절편이 직선을 결정한다',
   learningObjectives: [
@@ -32,8 +32,8 @@ export const linearFunctionPage: Page = {
     },
     {
       kind: 'example',
-      id: 'ex-mid-2-1',
-      number: '예제 2.1.1',
+      id: 'ex-mid-2-2',
+      number: '예제 2.2.1',
       problem: '함수 $y = 2x + 1$의 기울기와 y절편을 말하시오.',
       hint: '$y = mx + b$와 비교하라.',
       solution:
@@ -47,8 +47,8 @@ export const linearFunctionPage: Page = {
   ],
   exercises: [
     {
-      id: 'exr-mid-2-1',
-      number: '연습문제 2.1.1',
+      id: 'exr-mid-2-2',
+      number: '연습문제 2.2.1',
       problem: '$y = -3x + 4$의 기울기와 y절편을 구하시오.',
       hints: [
         '$m=-3$, $b=4$이다.',
@@ -58,8 +58,8 @@ export const linearFunctionPage: Page = {
       visualize: [{ kind: 'linearFunction', slope: -3, intercept: 4, interactive: false }],
     },
     {
-      id: 'exr-mid-2-1-2',
-      number: '연습문제 2.1.2',
+      id: 'exr-mid-2-2-2',
+      number: '연습문제 2.2.2',
       problem: '$y = 0.5x - 2$의 기울기와 y절편을 구하시오.',
       hints: [
         '$y=mx+b$ 꼴에서 $m=0.5$, $b=-2$이다.',
@@ -69,8 +69,8 @@ export const linearFunctionPage: Page = {
       visualize: [{ kind: 'linearFunction', slope: 0.5, intercept: -2, interactive: false }],
     },
     {
-      id: 'exr-mid-2-1-3',
-      number: '연습문제 2.1.3',
+      id: 'exr-mid-2-2-3',
+      number: '연습문제 2.2.3',
       problem: '$y = -x - 1$의 기울기와 y절편을 구하시오.',
       hints: [
         '$-x$는 $-1x$이므로 기울기는 -1이다.',
