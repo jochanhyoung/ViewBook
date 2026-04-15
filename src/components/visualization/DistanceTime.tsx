@@ -3,25 +3,38 @@ import { useMemo, useState } from 'react';
 
 interface DistanceTimeProps {
   speed: number;
+  sampleTime?: number;
+  interactive?: boolean;
 }
 
-export function DistanceTime({ speed }: DistanceTimeProps) {
+export function DistanceTime({ speed, sampleTime = 6, interactive = true }: DistanceTimeProps) {
   const [currentSpeed, setCurrentSpeed] = useState(speed);
+  const [currentTime, setCurrentTime] = useState(sampleTime);
+  const [speedInput, setSpeedInput] = useState(String(speed));
+  const [timeInput, setTimeInput] = useState(String(sampleTime));
   const totalTime = 10;
-  const distanceAtTen = currentSpeed * totalTime;
+  const maxSpeed = 100;
+  const maxDistance = maxSpeed * totalTime;
+  const displaySpeed = interactive ? currentSpeed : speed;
+  const displayTime = interactive ? currentTime : sampleTime;
+  const distanceAtTen = displaySpeed * totalTime;
+  const markedTime = Math.min(totalTime, Math.max(0, displayTime));
+  const markerX = 30 + (markedTime / totalTime) * 320;
 
   const points = useMemo(() => {
     const items: string[] = [];
     for (let t = 0; t <= 10; t += 0.2) {
       const x = 30 + (t / totalTime) * 320;
-      const y = 220 - ((currentSpeed * t) / Math.max(distanceAtTen, 1)) * 180;
+      const y = 220 - ((displaySpeed * t) / maxDistance) * 180;
       items.push(`${x},${y}`);
     }
     return items.join(' ');
-  }, [currentSpeed, distanceAtTen]);
+  }, [displaySpeed, maxDistance]);
 
-  const sampleTime = 6;
-  const sampleDistance = currentSpeed * sampleTime;
+  const sampleDistance = displaySpeed * markedTime;
+  const sampleY = 220 - (sampleDistance / maxDistance) * 180;
+  const labelX = markerX > 260 ? markerX - 116 : markerX + 10;
+  const labelY = Math.max(sampleY - 34, 22);
 
   return (
     <div style={{ minHeight: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '18px', padding: '20px', overflowY: 'auto' }}>
@@ -29,38 +42,117 @@ export function DistanceTime({ speed }: DistanceTimeProps) {
         <line x1="30" y1="220" x2="350" y2="220" stroke="var(--color-border)" />
         <line x1="30" y1="220" x2="30" y2="24" stroke="var(--color-border)" />
         <polyline points={points} fill="none" stroke="var(--color-accent)" strokeWidth="3" />
-        <line x1="30" y1="220" x2="222" y2={220 - ((sampleDistance) / Math.max(distanceAtTen, 1)) * 180} stroke="var(--color-accent-dim)" strokeDasharray="5 4" />
-        <circle cx="222" cy={220 - ((sampleDistance) / Math.max(distanceAtTen, 1)) * 180} r="5" fill="var(--color-accent)" />
+        <line x1="30" y1="40" x2="350" y2="40" stroke="var(--color-bg-surface)" strokeDasharray="3 5" />
+        <text x="36" y="36" fontFamily="var(--font-mono)" fontSize="9" fill="var(--color-text-muted)">1000km</text>
+        <line x1={markerX} y1="220" x2={markerX} y2={sampleY} stroke="var(--color-accent-dim)" strokeDasharray="5 4" />
+        <line x1="30" y1={sampleY} x2={markerX} y2={sampleY} stroke="var(--color-accent-dim)" strokeDasharray="5 4" />
+        <circle cx={markerX} cy={sampleY} r="10" fill="var(--color-bg)" stroke="var(--color-accent)" strokeWidth="3" />
+        <circle cx={markerX} cy={sampleY} r="4" fill="var(--color-accent)" />
+        <rect x={labelX} y={labelY} width="106" height="25" rx="7" fill="var(--color-bg-elevated)" stroke="var(--color-accent-dim)" />
+        <text x={labelX + 8} y={labelY + 16} fontFamily="var(--font-mono)" fontSize="10" fill="var(--color-text)">
+          {markedTime}시간: {sampleDistance}km
+        </text>
         <text x="352" y="224" fontFamily="var(--font-mono)" fontSize="10" fill="var(--color-text-muted)">시간</text>
         <text x="10" y="18" fontFamily="var(--font-mono)" fontSize="10" fill="var(--color-text-muted)">거리</text>
       </svg>
 
-      <div style={{ width: '100%', maxWidth: '420px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-muted)' }}>
-          <span>속도 슬라이더</span>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)' }}>
-            <span>속도</span>
-            <input
-              type="number"
+      {interactive ? (
+        <div style={{ width: '100%', maxWidth: '420px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+            <NumberControl
+              label="속도 입력"
+              value={speedInput}
+              unit="km/h"
               min={10}
               max={100}
-              value={currentSpeed}
-              onChange={(e) => setCurrentSpeed(Math.min(100, Math.max(10, Number(e.target.value) || 10)))}
-              style={{ width: '72px', background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)', color: 'var(--color-text)', fontFamily: 'var(--font-mono)', fontSize: '11px', padding: '4px 6px' }}
+              step={1}
+              onValueChange={setSpeedInput}
+              onValidNumber={setCurrentSpeed}
             />
-            <span>km/h</span>
-          </label>
+            <NumberControl
+              label="시간 입력"
+              value={timeInput}
+              unit="시간"
+              min={0}
+              max={10}
+              step={0.5}
+              onValueChange={setTimeInput}
+              onValidNumber={setCurrentTime}
+            />
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-muted)' }}>
+            <span>속도 슬라이더</span>
+            <span>{currentSpeed} km/h</span>
+          </div>
+          <input
+            type="range"
+            min={10}
+            max={100}
+            step={1}
+            value={currentSpeed}
+            onChange={(e) => {
+              const next = Number(e.target.value);
+              setCurrentSpeed(next);
+              setSpeedInput(String(next));
+            }}
+            style={{ width: '100%', accentColor: 'var(--color-accent)' }}
+          />
         </div>
-        <input type="range" min={10} max={100} step={1} value={currentSpeed} onChange={(e) => setCurrentSpeed(Number(e.target.value))} style={{ width: '100%', accentColor: 'var(--color-accent)' }} />
-      </div>
+      ) : (
+        <div style={{ width: '100%', maxWidth: '420px', background: 'var(--color-bg-elevated)', border: '1px solid var(--color-bg-surface)', borderRadius: '8px', padding: '12px 16px', display: 'flex', justifyContent: 'space-between', gap: '12px', fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-muted)' }}>
+          <span>문제 조건 고정</span>
+          <span>{displaySpeed}km/h × {markedTime}시간</span>
+        </div>
+      )}
 
       <div style={{ width: '100%', maxWidth: '420px', background: 'var(--color-bg-elevated)', border: '1px solid var(--color-bg-surface)', borderRadius: '8px', padding: '14px 18px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-        <Stat label="그래프 기울기" value={`${currentSpeed}`} />
-        <Stat label="6시간 이동 거리" value={`${sampleDistance} km`} />
+        <Stat label="그래프 기울기" value={`${displaySpeed} km/h`} />
+        <Stat label={`${markedTime}시간 이동 거리`} value={`${sampleDistance} km`} />
         <Stat label="10시간 이동 거리" value={`${distanceAtTen} km`} />
-        <Stat label="해석" value="속력이 클수록 선이 더 가파름" />
+        <Stat label="표시 점" value="해당 시간의 거리" />
       </div>
     </div>
+  );
+}
+
+function NumberControl({ label, value, unit, min, max, step, onValueChange, onValidNumber }: { label: string; value: string; unit: string; min: number; max: number; step: number; onValueChange: (next: string) => void; onValidNumber: (next: number) => void }) {
+  const handleChange = (raw: string) => {
+    onValueChange(raw);
+    if (raw.trim() === '') return;
+    const next = Number(raw);
+    if (!Number.isFinite(next)) return;
+    if (next >= min && next <= max) onValidNumber(next);
+  };
+
+  const handleBlur = () => {
+    const next = Number(value);
+    if (!Number.isFinite(next)) {
+      onValueChange(String(min));
+      onValidNumber(min);
+      return;
+    }
+    const clamped = Math.min(max, Math.max(min, next));
+    onValueChange(String(clamped));
+    onValidNumber(clamped);
+  };
+
+  return (
+    <label style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)' }}>
+      <span>{label}</span>
+      <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+        <input
+          type="number"
+          min={min}
+          max={max}
+          step={step}
+          value={value}
+          onChange={(e) => handleChange(e.target.value)}
+          onBlur={handleBlur}
+          style={{ width: '100%', background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)', color: 'var(--color-text)', fontFamily: 'var(--font-mono)', fontSize: '12px', padding: '6px 8px', borderRadius: '4px' }}
+        />
+        <span>{unit}</span>
+      </span>
+    </label>
   );
 }
 
