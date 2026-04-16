@@ -3,10 +3,12 @@
 import Dexie, { type Table } from 'dexie';
 import type { Solution } from './schemas';
 import { hammingDistance } from './phash';
+import type { CourseId } from '@/content/index';
 
 interface CachedSolution {
   id: string;       // normalize(problemText) 해시
   phash: string;    // 64bit hex
+  courseId: CourseId;
   problemText: string;
   solution: Solution;
   createdAt: number;
@@ -18,6 +20,7 @@ class TextbookDB extends Dexie {
   constructor() {
     super('textbook-cache');
     this.version(1).stores({ solutions: 'id, phash, createdAt' });
+    this.version(2).stores({ solutions: 'id, courseId, phash, createdAt' });
   }
 }
 
@@ -42,8 +45,8 @@ async function hashString(s: string): Promise<string> {
     .slice(0, 32);
 }
 
-export async function lookupByText(problemText: string): Promise<Solution | null> {
-  const key = normalizeProblem(problemText);
+export async function lookupByText(problemText: string, courseId: CourseId): Promise<Solution | null> {
+  const key = `${courseId}:${normalizeProblem(problemText)}`;
   const id = await hashString(key);
   const db = getDB();
   const entry = await db.solutions.get(id);
@@ -55,11 +58,11 @@ export async function lookupByText(problemText: string): Promise<Solution | null
   return null;
 }
 
-export async function lookupByPhash(phash: string): Promise<Solution | null> {
+export async function lookupByPhash(phash: string, courseId: CourseId): Promise<Solution | null> {
   const db = getDB();
   const all = await db.solutions.toArray();
   for (const entry of all) {
-    if (entry.phash && hammingDistance(phash, entry.phash) <= 6) {
+    if (entry.courseId === courseId && entry.phash && hammingDistance(phash, entry.phash) <= 6) {
       entry.hitCount++;
       await db.solutions.put(entry);
       return entry.solution;
@@ -71,14 +74,16 @@ export async function lookupByPhash(phash: string): Promise<Solution | null> {
 export async function cacheSolution(
   problemText: string,
   phash: string,
-  solution: Solution
+  solution: Solution,
+  courseId: CourseId
 ): Promise<void> {
-  const key = normalizeProblem(problemText);
+  const key = `${courseId}:${normalizeProblem(problemText)}`;
   const id = await hashString(key);
   const db = getDB();
   await db.solutions.put({
     id,
     phash,
+    courseId,
     problemText,
     solution,
     createdAt: Date.now(),

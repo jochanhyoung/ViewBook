@@ -15,14 +15,10 @@ export function PageChrome({ currentIndex, total, onPrev, onNext, pages }: PageC
 
   return (
     <div
+      className="flex min-h-[56px] items-center justify-between gap-3 px-3 sm:min-h-12 sm:px-4 md:px-6"
       style={{
-        height: '48px',
         background: 'var(--color-bg-elevated)',
         borderTop: '1px solid var(--color-bg-surface)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '0 24px',
         flexShrink: 0,
       }}
     >
@@ -49,7 +45,7 @@ export function PageChrome({ currentIndex, total, onPrev, onNext, pages }: PageC
       </button>
 
       {/* 중앙: 페이지 점 표시기 */}
-      <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+      <div className="mx-2 flex min-w-0 flex-1 items-center justify-center gap-1.5 overflow-x-auto">
         {pages.map((page, i) => (
           <button
             key={page.slug}

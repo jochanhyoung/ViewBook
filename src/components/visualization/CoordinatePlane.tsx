@@ -23,14 +23,6 @@ function toSvg(x: number, y: number) {
   return { sx: CX + x * SX, sy: CY - y * SY };
 }
 
-function quadrantLabel(x: number, y: number): string {
-  if (x === 0 || y === 0) return '축';
-  if (x > 0 && y > 0) return '제1사분면';
-  if (x < 0 && y > 0) return '제2사분면';
-  if (x < 0 && y < 0) return '제3사분면';
-  return '제4사분면';
-}
-
 // showSigns 전용: 각 사분면 메타데이터
 // dimBg 불투명도 0.18 → 라이트/다크 모드 모두에서 충분히 보임
 // nameColor: 배경색보다 진한 채도로, 어두운 배경/밝은 배경 모두에서 가독성 확보
@@ -210,19 +202,9 @@ export function CoordinatePlane({ points = [], interactive = true, showSigns = f
   const ticks = [-4, -3, -2, -1, 1, 2, 3, 4];
 
   return (
-    <div
-      style={{
-        minHeight: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        gap: '18px',
-        padding: '20px',
-        overflowY: 'auto',
-      }}
-    >
-      <svg width="380" height="270" viewBox="0 0 380 270" style={{ flexShrink: 0 }}>
+    <div className="flex min-h-full w-full flex-col items-center justify-center gap-4 overflow-y-auto p-4 sm:gap-5 sm:p-5">
+      <div className="aspect-[380/270] w-full max-w-[420px]">
+      <svg width="380" height="270" viewBox="0 0 380 270" className="h-full w-full" style={{ flexShrink: 0 }}>
         {/* 1) 사분면 배경 색조 — 격자선 아래 */}
         {showSigns && <QuadrantBgsLayer />}
 
@@ -250,18 +232,11 @@ export function CoordinatePlane({ points = [], interactive = true, showSigns = f
           );
         })}
       </svg>
+      </div>
 
       {/* ── showSigns 모드: 범례 패널 ── */}
       {showSigns && (
-        <div
-          style={{
-            width: '100%',
-            maxWidth: '420px',
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: '8px',
-          }}
-        >
+        <div className="grid w-full max-w-[420px] grid-cols-1 gap-2 sm:grid-cols-2">
           {QUADRANTS.map((q) => (
             <div
               key={q.id}
@@ -288,12 +263,13 @@ export function CoordinatePlane({ points = [], interactive = true, showSigns = f
 
       {/* ── 일반 모드: 컨트롤 패널 ── */}
       {!showSigns && interactive && (
-        <div style={{ width: '100%', maxWidth: '420px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-end' }}>
+        <div className="flex w-full max-w-[420px] flex-col gap-2.5">
+          <div className="flex flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:items-end">
             <NumberInput label="x좌표" value={inputX} min={-4} max={4} step={1} onChange={setInputX} />
             <NumberInput label="y좌표" value={inputY} min={-4} max={4} step={1} onChange={setInputY} />
             <button
               onClick={handleAdd}
+              className="w-full sm:w-auto"
               style={{
                 background: 'var(--color-accent)', border: 'none', borderRadius: '5px',
                 padding: '6px 14px', fontFamily: 'var(--font-mono)', fontSize: '11px',
@@ -305,6 +281,7 @@ export function CoordinatePlane({ points = [], interactive = true, showSigns = f
             {shown.length > points.length && (
               <button
                 onClick={handleReset}
+                className="w-full sm:w-auto"
                 style={{
                   background: 'none', border: '1px solid var(--color-border)', borderRadius: '5px',
                   padding: '6px 10px', fontFamily: 'var(--font-mono)', fontSize: '11px',
@@ -334,15 +311,11 @@ export function CoordinatePlane({ points = [], interactive = true, showSigns = f
 // ────────────────────────────────────────────
 function PointTable({ points }: { points: Point[] }) {
   return (
-    <div
-      style={{
-        width: '100%', maxWidth: '420px',
-        background: 'var(--color-bg-elevated)',
-        border: '1px solid var(--color-bg-surface)',
-        borderRadius: '8px', padding: '12px 16px',
-        display: 'flex', flexDirection: 'column', gap: '6px',
-      }}
-    >
+    <div className="flex w-full max-w-[420px] flex-col gap-1.5" style={{
+      background: 'var(--color-bg-elevated)',
+      border: '1px solid var(--color-bg-surface)',
+      borderRadius: '8px', padding: '12px 16px',
+    }}>
       {points.map((pt, idx) => {
         const lbl = pt.label ?? String.fromCharCode(65 + (idx % 26));
         return (

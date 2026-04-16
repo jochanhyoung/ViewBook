@@ -28,7 +28,7 @@ export function CalendarPattern({ day, interactive = true }: CalendarPatternProp
   const samePatternDays = cells.filter((cell) => cell.weekday === (firstWeekday + selectedDay - 1) % 7).map((cell) => cell.day);
 
   return (
-    <div style={{ minHeight: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '18px', padding: '20px', overflowY: 'auto' }}>
+    <div className="flex min-h-full w-full flex-col items-center justify-center gap-4 overflow-y-auto p-4 sm:gap-5 sm:p-5">
       <div style={{ width: '100%', maxWidth: '420px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '6px', marginBottom: '6px' }}>
           {WEEKDAYS.map((weekday) => (
@@ -51,7 +51,7 @@ export function CalendarPattern({ day, interactive = true }: CalendarPatternProp
                   if (interactive) setSelectedDay(cell.day);
                 }}
                 style={{
-                  height: '42px',
+                  minHeight: '42px',
                   border: '1px solid var(--color-bg-surface)',
                   background: cell.selected ? 'var(--color-accent)' : samePattern ? 'var(--color-accent-bg)' : 'var(--color-bg-elevated)',
                   color: cell.selected ? 'var(--color-accent-fg)' : 'var(--color-text)',
@@ -67,8 +67,8 @@ export function CalendarPattern({ day, interactive = true }: CalendarPatternProp
         </div>
       </div>
 
-      <div style={{ width: '100%', maxWidth: '420px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-muted)' }}>
+      <div className="flex w-full max-w-[420px] flex-col gap-2">
+        <div className="flex flex-col gap-2 text-[11px] sm:flex-row sm:items-center sm:justify-between" style={{ fontFamily: 'var(--font-mono)', color: 'var(--color-text-muted)' }}>
           <span>{interactive ? '날짜 선택' : '문제 날짜'}</span>
           {interactive ? (
             <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)' }}>
@@ -93,7 +93,7 @@ export function CalendarPattern({ day, interactive = true }: CalendarPatternProp
         )}
       </div>
 
-      <div style={{ width: '100%', maxWidth: '420px', background: 'var(--color-bg-elevated)', border: '1px solid var(--color-bg-surface)', borderRadius: '8px', padding: '14px 18px' }}>
+      <div className="w-full max-w-[420px]" style={{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-bg-surface)', borderRadius: '8px', padding: '14px 18px' }}>
         <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)', marginBottom: '6px' }}>규칙 강조</div>
         <div style={{ fontSize: '14px', color: 'var(--color-text)', lineHeight: 1.7 }}>
           {selectedDay}일은 <strong>{selectedWeekday}요일</strong>이고, 같은 열에 있는 날짜는 모두 7일 차이입니다: {samePatternDays.join(', ')}

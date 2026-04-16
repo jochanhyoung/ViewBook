@@ -1,5 +1,5 @@
 'use client';
-import { use, useState, useEffect, useCallback, useRef } from 'react';
+import { use, useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
@@ -42,15 +42,16 @@ export default function VisualizePage({ params }: PageProps) {
   const [subStep, setSubStep] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
 
-  // Decode payload
-  let vizPayload;
-  try {
-    vizPayload = decodeVizPayload(decodeURIComponent(encodedPayload));
-  } catch {
-    return <VizErrorScreen router={router} />;
-  }
+  const vizPayload = useMemo(() => {
+    try {
+      return decodeVizPayload(decodeURIComponent(encodedPayload));
+    } catch {
+      return null;
+    }
+  }, [encodedPayload]);
 
-  const { steps, title } = vizPayload;
+  const steps = useMemo(() => vizPayload?.steps ?? [], [vizPayload]);
+  const title = vizPayload?.title;
   const total = steps.length;
 
   // 마운트 시점(브라우저)에 한 번만 읽어서 ref에 보관
@@ -83,8 +84,8 @@ export default function VisualizePage({ params }: PageProps) {
 
   const currentStep = steps[index];
   const currentSubStepCount =
-    currentStep.kind === 'equationTransform' ? currentStep.steps.length :
-    currentStep.kind === 'solutionSlides' ? currentStep.steps.length :
+    currentStep?.kind === 'equationTransform' ? currentStep.steps.length :
+    currentStep?.kind === 'solutionSlides' ? currentStep.steps.length :
     1;
 
   const goNext = useCallback(() => {
@@ -102,8 +103,8 @@ export default function VisualizePage({ params }: PageProps) {
     } else if (index > 0) {
       const prevStep = steps[index - 1];
       const prevSubStepCount =
-        prevStep.kind === 'equationTransform' ? prevStep.steps.length :
-        prevStep.kind === 'solutionSlides' ? prevStep.steps.length :
+        prevStep?.kind === 'equationTransform' ? prevStep.steps.length :
+        prevStep?.kind === 'solutionSlides' ? prevStep.steps.length :
         1;
       setIndex((i) => i - 1);
       setSubStep(prevSubStepCount - 1);
@@ -115,8 +116,8 @@ export default function VisualizePage({ params }: PageProps) {
   // Auto-play
   useEffect(() => {
     if (!isPlaying) return;
+    if (total === 0) return;
     if (index >= total - 1 && subStep >= currentSubStepCount - 1) {
-      setIsPlaying(false);
       return;
     }
     const timer = setTimeout(() => {
@@ -127,6 +128,7 @@ export default function VisualizePage({ params }: PageProps) {
 
   // Keyboard navigation
   useEffect(() => {
+    if (total === 0) return;
     function handleKey(e: KeyboardEvent) {
       if (e.key === 'Escape') goBack();
       if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); goNext(); }
@@ -135,12 +137,19 @@ export default function VisualizePage({ params }: PageProps) {
     }
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, [goNext, goPrev, goStart, goBack]);
+  }, [goNext, goPrev, goStart, goBack, total]);
+
+  if (!vizPayload) {
+    return <VizErrorScreen router={router} />;
+  }
 
   return (
-    <div style={{ height: '100vh', width: '100vw', background: 'var(--color-bg)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+    <div className="flex h-dvh min-h-0 w-screen flex-col overflow-hidden" style={{ background: 'var(--color-bg)' }}>
       {/* Top bar */}
-      <div style={{ height: '48px', borderBottom: '1px solid #1a1a1f', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 20px', flexShrink: 0 }}>
+      <div
+        className="flex min-h-[56px] flex-wrap items-center justify-between gap-x-3 gap-y-2 px-3 py-2 sm:px-4 md:min-h-[52px] md:flex-nowrap md:px-5"
+        style={{ borderBottom: '1px solid #1a1a1f', flexShrink: 0 }}
+      >
         <button
           onClick={goBack}
           style={{
@@ -169,36 +178,31 @@ export default function VisualizePage({ params }: PageProps) {
           ))}
         </div>
 
-        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#3a3a44' }}>
+        <span className="text-[10px] sm:text-[11px]" style={{ fontFamily: 'var(--font-mono)', color: '#3a3a44' }}>
           {index + 1} / {total}
         </span>
       </div>
 
       {/* Main visualization */}
-      <div style={{ flex: 1, minHeight: 0, overflow: 'hidden', padding: '20px', boxSizing: 'border-box' }}>
+      <div className="min-h-0 flex-1 overflow-hidden p-3 sm:p-4 lg:p-5" style={{ boxSizing: 'border-box' }}>
         <div
-          className={shouldShowExplanation(steps[index]) ? 'viz-layout--with-explanation' : undefined}
+          className={`flex h-full min-h-0 ${shouldShowExplanation(steps[index]) ? 'flex-col gap-3 md:flex-row md:gap-4 lg:gap-[18px]' : 'flex-col items-center gap-4'}`}
           style={{
-            height: '100%',
-            display: 'flex',
-            flexDirection: shouldShowExplanation(steps[index]) ? 'row' : 'column',
-            gap: shouldShowExplanation(steps[index]) ? '18px' : '16px',
-            minHeight: 0,
             alignItems: shouldShowExplanation(steps[index]) ? 'stretch' : 'center',
           }}
         >
           <div
-            className={shouldShowExplanation(steps[index]) ? 'viz-layout__graph' : undefined}
+            className={shouldShowExplanation(steps[index]) ? 'min-h-[280px] w-full md:basis-[56%] lg:basis-[55%]' : 'min-h-[280px] w-full'}
             style={{
-              flex: shouldShowExplanation(steps[index]) ? '0 0 calc(55% - 9.9px)' : 1,
-              width: shouldShowExplanation(steps[index]) ? 'calc(55% - 9.9px)' : '100%',
-              minHeight: '320px',
+              flex: shouldShowExplanation(steps[index]) ? undefined : 1,
               maxHeight: 'none',
               background: 'var(--color-bg)',
-              overflow: 'hidden',
+              overflowX: 'hidden',
+              overflowY: 'auto',
               display: 'flex',
-              alignItems: 'center',
+              alignItems: shouldShowExplanation(steps[index]) ? 'flex-start' : 'center',
               justifyContent: 'center',
+              borderRadius: shouldShowExplanation(steps[index]) ? '18px' : undefined,
             }}
           >
             <AnimatePresence mode="wait">
@@ -208,7 +212,7 @@ export default function VisualizePage({ params }: PageProps) {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.22, ease: 'easeOut' }}
-                style={{ height: '100%', width: '100%' }}
+                style={{ minHeight: '100%', width: '100%' }}
               >
                 <StepContent step={steps[index]} isPlaying={isPlaying} subStep={subStep} />
               </motion.div>
@@ -220,8 +224,13 @@ export default function VisualizePage({ params }: PageProps) {
       </div>
 
       {/* PlaybackControls */}
-      <div style={{ height: '64px', borderTop: '1px solid #1a1a1f', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', flexShrink: 0 }}>
-        <CtrlBtn onClick={goStart} disabled={index === 0 && subStep === 0 && !isPlaying} title="처음으로">⏮</CtrlBtn>
+      <div
+        className="flex min-h-[72px] flex-wrap items-center justify-center gap-2 px-3 py-3 sm:min-h-[64px] sm:px-4 sm:py-2"
+        style={{ borderTop: '1px solid #1a1a1f', flexShrink: 0 }}
+      >
+        <CtrlBtn onClick={goStart} disabled={index === 0 && subStep === 0 && !isPlaying} title="처음으로">
+          <IconRestart />
+        </CtrlBtn>
         <CtrlBtn onClick={goPrev} disabled={index === 0 && subStep === 0} title="이전">
           <IconPrev />
         </CtrlBtn>
@@ -234,7 +243,7 @@ export default function VisualizePage({ params }: PageProps) {
             fontSize: '16px', color: 'var(--color-accent-fg)',
           }}
         >
-          {isPlaying ? '⏸' : '▶'}
+          {isPlaying ? <IconPause /> : <IconPlay />}
         </button>
         <CtrlBtn onClick={goNext} disabled={index >= total - 1 && subStep >= currentSubStepCount - 1} title="다음">
           <IconNext />
@@ -278,6 +287,31 @@ function IconNext() {
     <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
       <path d="M2 2L6.5 6.5L2 11" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
       <path d="M6.5 2L11 6.5L6.5 11" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function IconRestart() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+      <path d="M3.2 4.8V1.8M3.2 1.8H6.2M3.2 1.8L5 3.6C6 2.7 7.3 2.2 8.7 2.3C11.4 2.5 13.5 4.8 13.5 7.5C13.5 10.4 11.1 12.8 8.2 12.8C5.9 12.8 3.9 11.4 3.1 9.4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function IconPlay() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <path d="M4 2.5L10.5 7L4 11.5V2.5Z" fill="currentColor" stroke="currentColor" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function IconPause() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <rect x="3" y="2.5" width="3" height="9" rx="0.8" fill="currentColor" />
+      <rect x="8" y="2.5" width="3" height="9" rx="0.8" fill="currentColor" />
     </svg>
   );
 }
@@ -332,23 +366,22 @@ function StepExplanation({ step, title }: { step: VisualizationStep; title?: str
 
   return (
     <section
-      className="viz-layout__explanation"
+      className="h-full w-full md:basis-[44%] lg:basis-[45%]"
       style={{
-        flex: '0 0 calc(45% - 8.1px)',
         minHeight: 0,
-        height: '100%',
         background: 'var(--color-bg-elevated)',
         border: '1px solid var(--color-bg-surface)',
         borderRadius: '18px',
-        padding: '20px 45px 20px 20px',
-        overflow: 'hidden',
+        padding: '20px',
+        overflowY: 'auto',
+        overflowX: 'hidden',
         boxSizing: 'border-box',
         display: 'flex',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: 'center',
       }}
     >
-      <div style={{ width: '100%', height: '100%', maxWidth: '320px', display: 'flex', flexDirection: 'column', gap: '18px', justifyContent: 'center', overflowY: 'auto' }}>
+      <div className="flex h-full w-full max-w-none flex-col justify-center gap-4 overflow-y-auto md:max-w-[320px]">
         <div>
           <div
             style={{
@@ -362,7 +395,7 @@ function StepExplanation({ step, title }: { step: VisualizationStep; title?: str
           >
             해설
           </div>
-          <h2 style={{ margin: 0, fontSize: '19px', lineHeight: 1.35, color: 'var(--color-text)' }}>{content.title}</h2>
+          <h2 className="text-base sm:text-lg lg:text-[19px]" style={{ margin: 0, lineHeight: 1.35, color: 'var(--color-text)' }}>{content.title}</h2>
         </div>
 
         {content.sections.map((section) => (
@@ -379,7 +412,7 @@ function StepExplanation({ step, title }: { step: VisualizationStep; title?: str
             >
               {section.heading}
             </h3>
-            <div className="ko-text" style={{ color: 'var(--color-text)', lineHeight: 1.8, fontSize: '15px' }}>
+            <div className="ko-text text-sm md:text-[15px]" style={{ color: 'var(--color-text)', lineHeight: 1.8 }}>
               <ReactMarkdown
                 remarkPlugins={[remarkMath]}
                 rehypePlugins={[rehypeKatex]}

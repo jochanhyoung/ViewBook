@@ -34,10 +34,10 @@ export const clockAnglePage: Page = {
       kind: 'example',
       id: 'ex-el-1-1',
       number: '예제 1.1.1',
-      problem: '2시 20분일 때 시침과 분침 사이의 작은 각을 구하시오.',
+      problem: '2시 20분일 때 시침과 분침 사이의 작은 각을 구해 보세요.',
       hint: '분침은 $20 \\times 6 = 120^\\circ$, 시침은 $2 \\times 30 + 20 \\times 0.5 = 70^\\circ$ 움직였다.',
       solution:
-        '**풀이.** 분침의 각도는 $120^\\circ$이고 시침의 각도는 $70^\\circ$이다. 따라서 두 바늘 사이 각은 $120 - 70 = 50^\\circ$이다. 작은 각은 **$50^\\circ$**이다.',
+        '**풀이.** 분침의 각도는 $120^\\circ$이고 시침의 각도는 $70^\\circ$예요. 따라서 두 바늘 사이의 각은 $120 - 70 = 50^\\circ$예요. 작은 각은 **$50^\\circ$**예요.',
       visualize: [{ kind: 'clockAngle', hour: 2, minute: 20, interactive: false }],
     },
   ],
@@ -50,36 +50,36 @@ export const clockAnglePage: Page = {
     {
       id: 'exr-el-1-1',
       number: '연습문제 1.1.1',
-      problem: '3시 30분일 때 시침과 분침 사이의 작은 각을 구하시오.',
+      problem: '3시 30분일 때 시침과 분침 사이의 작은 각을 구해 보세요.',
       hints: [
         '분침은 $180^\\circ$ 위치에 있다.',
         '시침은 $3 \\times 30 + 30 \\times 0.5 = 105^\\circ$ 위치에 있다.',
       ],
-      solution: '**풀이.** 두 각의 차이는 $180 - 105 = 75$이므로 작은 각은 **$75^\\circ$**이다.',
+      solution: '**풀이.** 두 각의 차이는 $180 - 105 = 75$이므로 작은 각은 **$75^\\circ$**예요.',
       visualize: [{ kind: 'clockAngle', hour: 3, minute: 30, interactive: false }],
     },
     {
       id: 'exr-el-1-1-2',
       number: '연습문제 1.1.2',
-      problem: '4시 10분일 때 시침과 분침 사이의 작은 각을 구하시오.',
+      problem: '4시 10분일 때 시침과 분침 사이의 작은 각을 구해 보세요.',
       hints: [
         '분침은 $10 \\times 6 = 60^\\circ$ 위치에 있다.',
         '시침은 $4 \\times 30 + 10 \\times 0.5 = 125^\\circ$ 위치에 있다.',
       ],
       solution:
-        '**풀이.** 시침은 $125^\\circ$, 분침은 $60^\\circ$ 위치에 있으므로 두 바늘 사이 각은 $125 - 60 = 65^\\circ$이다. 작은 각은 **$65^\\circ$**이다.',
+        '**풀이.** 시침은 $125^\\circ$, 분침은 $60^\\circ$ 위치에 있어요. 그래서 두 바늘 사이의 각은 $125 - 60 = 65^\\circ$예요. 작은 각은 **$65^\\circ$**예요.',
       visualize: [{ kind: 'clockAngle', hour: 4, minute: 10, interactive: false }],
     },
     {
       id: 'exr-el-1-1-3',
       number: '연습문제 1.1.3',
-      problem: '7시 40분일 때 시침과 분침 사이의 작은 각을 구하시오.',
+      problem: '7시 40분일 때 시침과 분침 사이의 작은 각을 구해 보세요.',
       hints: [
         '분침은 $40 \\times 6 = 240^\\circ$ 위치에 있다.',
         '시침은 $7 \\times 30 + 40 \\times 0.5 = 230^\\circ$ 위치에 있다.',
       ],
       solution:
-        '**풀이.** 시침은 $230^\\circ$, 분침은 $240^\\circ$ 위치에 있다. 두 바늘 사이 각은 $240 - 230 = 10^\\circ$이므로 작은 각은 **$10^\\circ$**이다.',
+        '**풀이.** 시침은 $230^\\circ$, 분침은 $240^\\circ$ 위치에 있어요. 두 바늘 사이의 각은 $240 - 230 = 10^\\circ$이므로 작은 각은 **$10^\\circ$**예요.',
       visualize: [{ kind: 'clockAngle', hour: 7, minute: 40, interactive: false }],
     },
   ],

@@ -48,8 +48,9 @@ function StaticView({ line1, line2 }: { line1: LineProps; line2: LineProps }) {
   const intersection = useMemo(() => calcIntersection(line1, line2), [line1, line2]);
 
   return (
-    <div style={{ minHeight: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '18px', padding: '20px', overflowY: 'auto' }}>
-      <svg width="380" height="250" viewBox="0 0 380 250" style={{ flexShrink: 0 }}>
+    <div className="flex min-h-full w-full flex-col items-center justify-center gap-4 overflow-y-auto p-4 sm:gap-5 sm:p-5">
+      <div className="aspect-[380/250] w-full max-w-[420px]">
+      <svg width="380" height="250" viewBox="0 0 380 250" className="h-full w-full" style={{ flexShrink: 0 }}>
         <line x1="20" y1={CY} x2="360" y2={CY} stroke="var(--color-border)" />
         <line x1={CX} y1="20" x2={CX} y2="230" stroke="var(--color-border)" />
         <polyline points={linePoints(line1.slope, line1.intercept)} fill="none" stroke="var(--color-accent)" strokeWidth="3" />
@@ -63,8 +64,9 @@ function StaticView({ line1, line2 }: { line1: LineProps; line2: LineProps }) {
           </>
         )}
       </svg>
+      </div>
 
-      <div style={{ width: '100%', maxWidth: '420px', background: 'var(--color-bg-elevated)', border: '1px solid var(--color-bg-surface)', borderRadius: '8px', padding: '14px 18px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+      <div className="grid w-full max-w-[420px] grid-cols-1 gap-2.5 sm:grid-cols-2" style={{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-bg-surface)', borderRadius: '8px', padding: '14px 18px' }}>
         <StatRow label="직선 1" value={`y=${line1.slope}x${line1.intercept >= 0 ? '+' : ''}${line1.intercept}`} />
         <StatRow label="직선 2" value={`y=${line2.slope}x${line2.intercept >= 0 ? '+' : ''}${line2.intercept}`} />
         <StatRow label="해" value={intersection ? `(${fmt(intersection.x)}, ${fmt(intersection.y)})` : '없음 또는 무수히 많음'} />
@@ -90,9 +92,10 @@ function InteractiveView({ line1: init1, line2: init2 }: { line1: LineProps; lin
     Math.abs(intersection!.y) <= 5;
 
   return (
-    <div style={{ minHeight: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '16px', padding: '20px', overflowY: 'auto' }}>
+    <div className="flex min-h-full w-full flex-col items-center justify-center gap-4 overflow-y-auto p-4 sm:gap-5 sm:p-5">
       {/* 그래프 */}
-      <svg width="380" height="250" viewBox="0 0 380 250" style={{ flexShrink: 0 }}>
+      <div className="aspect-[380/250] w-full max-w-[420px]">
+      <svg width="380" height="250" viewBox="0 0 380 250" className="h-full w-full" style={{ flexShrink: 0 }}>
         {/* 격자선 */}
         {[-4,-3,-2,-1,1,2,3,4].map((t) => (
           <g key={t}>
@@ -135,9 +138,10 @@ function InteractiveView({ line1: init1, line2: init2 }: { line1: LineProps; lin
         <text x="28" y="26" fontFamily="var(--font-mono)" fontSize="10" fill="var(--color-accent)">직선 1</text>
         <text x="28" y="40" fontFamily="var(--font-mono)" fontSize="10" fill="var(--color-accent-dim)">직선 2</text>
       </svg>
+      </div>
 
       {/* 컨트롤 */}
-      <div style={{ width: '100%', maxWidth: '420px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+      <div className="flex w-full max-w-[420px] flex-col gap-2.5">
         {/* 직선 1 */}
         <LineControls
           label="직선 1"
@@ -155,7 +159,7 @@ function InteractiveView({ line1: init1, line2: init2 }: { line1: LineProps; lin
       </div>
 
       {/* 교점 피드백 배너 */}
-      <div style={{ width: '100%', maxWidth: '420px' }}>
+      <div className="w-full max-w-[420px]">
         <AnimatePresence mode="wait">
           {inView ? (
             <motion.div

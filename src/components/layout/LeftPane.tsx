@@ -13,7 +13,7 @@ export function LeftPane({ page }: LeftPaneProps) {
       className="h-full overflow-y-auto"
       style={{ scrollbarGutter: 'stable' }}
     >
-      <div style={{ maxWidth: '620px', margin: '0 auto', padding: '80px 64px' }}>
+      <div className="mx-auto w-full max-w-[620px] px-4 py-8 sm:px-6 sm:py-10 md:px-8 md:py-14 lg:px-12 lg:py-20">
         {/* 페이지 메타 */}
         <div className="mb-8">
           <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--color-text-subtle)', marginBottom: '4px' }}>
@@ -68,7 +68,7 @@ export function LeftPane({ page }: LeftPaneProps) {
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               {page.keyTerms.map((term) => (
-                <div key={term.term} style={{ display: 'flex', gap: '16px' }}>
+                <div key={term.term} className="flex flex-col gap-2 sm:flex-row sm:gap-4">
                   <span style={{ fontFamily: 'var(--font-display)', fontSize: '14px', color: 'var(--color-text)', minWidth: '100px', flexShrink: 0 }}>
                     {term.term}
                   </span>

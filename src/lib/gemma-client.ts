@@ -5,12 +5,17 @@ import { lookupByText, lookupByPhash, cacheSolution } from './cache';
 import { computePhash } from './phash';
 import { blobToBase64 } from './image';
 import { seedSolutions } from '@/content/seed-solutions';
+import type { CourseId } from '@/content/index';
 
 function normalizeProblem(text: string): string {
   return text.toLowerCase().replace(/\s+/g, '').replace(/[^\w가-힣]/g, '');
 }
 
-export async function solveFromImage(blob: Blob, problemText?: string): Promise<Solution> {
+export async function solveFromImage(
+  blob: Blob,
+  problemText?: string,
+  courseId: CourseId = 'high'
+): Promise<Solution> {
   // 1. Seed 캐시 확인 (Gemma 호출 없이 즉시 응답)
   if (problemText) {
     const normalized = normalizeProblem(problemText);
@@ -25,7 +30,7 @@ export async function solveFromImage(blob: Blob, problemText?: string): Promise<
   let phash = '';
   try {
     phash = await computePhash(blob);
-    const phashHit = await lookupByPhash(phash);
+    const phashHit = await lookupByPhash(phash, courseId);
     if (phashHit) return phashHit;
   } catch {
     // pHash 실패 시 계속 진행
@@ -33,7 +38,7 @@ export async function solveFromImage(blob: Blob, problemText?: string): Promise<
 
   // 3. 텍스트 캐시 확인
   if (problemText) {
-    const textHit = await lookupByText(problemText);
+    const textHit = await lookupByText(problemText, courseId);
     if (textHit) return textHit;
   }
 
@@ -42,7 +47,7 @@ export async function solveFromImage(blob: Blob, problemText?: string): Promise<
   const res = await fetch('/api/gemma', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ imageBase64: base64 }),
+    body: JSON.stringify({ imageBase64: base64, courseId }),
   });
 
   if (!res.ok) {
@@ -55,7 +60,7 @@ export async function solveFromImage(blob: Blob, problemText?: string): Promise<
 
   // 5. 캐시 저장 (원본 이미지는 저장 안 함 — phash만)
   try {
-    await cacheSolution(solution.problemText, phash, solution);
+    await cacheSolution(solution.problemText, phash, solution, courseId);
   } catch {
     // 캐시 실패는 무시
   }

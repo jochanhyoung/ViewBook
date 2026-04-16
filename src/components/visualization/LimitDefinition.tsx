@@ -63,26 +63,15 @@ export function LimitDefinition({ fn, x0 }: LimitDefinitionProps) {
      * 수정: minHeight: '100%' + overflowY: 'auto' → 내용이 넘치면 스크롤 허용
      * flexDirection: 'column' 유지하여 SVG → 컨트롤 → stats 순서 보장
      */
-    <div
-      style={{
-        minHeight: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        overflowY: 'auto',
-        padding: '16px',
-        gap: '12px',
-      }}
-    >
+    <div className="flex min-h-full w-full flex-col items-center justify-center gap-3 overflow-y-auto p-4 sm:p-5">
       {/*
        * SVG 래퍼에 paddingBottom 추가
        * — h 브라켓 레이블(y = toSvgY(f0)+36)이 SVG 하단 밖으로 나가는 문제 해결
        * — overflow: 'visible' 이므로 SVG 자체는 클리핑 안 되지만
        *   래퍼의 패딩이 레이아웃 공간을 확보해 줘야 함
        */}
-      <div style={{ paddingBottom: '44px', flexShrink: 0 }}>
-        <svg width={W} height={H_SVG} style={{ overflow: 'visible' }}>
+      <div className="w-full max-w-[440px] flex-shrink-0 pb-11">
+        <svg width={W} height={H_SVG} viewBox={`0 0 ${W} ${H_SVG}`} className="h-auto w-full overflow-visible">
           {/* tangent (limit) */}
           <line
             x1={toSvgX(xMin)} y1={toSvgY(tangY1)}
@@ -152,9 +141,9 @@ export function LimitDefinition({ fn, x0 }: LimitDefinitionProps) {
       </div>
 
       {/* free input + preset shortcuts */}
-      <div style={{ width: '100%', maxWidth: '420px', display: 'flex', flexDirection: 'column', gap: '10px', flexShrink: 0 }}>
+      <div className="flex w-full max-w-[420px] flex-shrink-0 flex-col gap-2.5">
           {/* Preset buttons */}
-          <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
+          <div className="flex flex-wrap items-center gap-1.5 sm:flex-nowrap">
             <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)', letterSpacing: '0.1em', textTransform: 'uppercase', flexShrink: 0 }}>
               프리셋
             </span>
@@ -164,6 +153,7 @@ export function LimitDefinition({ fn, x0 }: LimitDefinitionProps) {
                 onClick={() => { setManualH(p); setTextInput(String(p)); setInputError(false); }}
                 style={{
                   flex: 1,
+                  minWidth: '54px',
                   background: manualH === p ? 'var(--color-accent-bg)' : 'none',
                   border: '1px solid',
                   borderColor: manualH === p ? 'var(--color-accent)' : 'var(--color-border)',
@@ -181,7 +171,7 @@ export function LimitDefinition({ fn, x0 }: LimitDefinitionProps) {
           </div>
 
           {/* Free input row */}
-          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <div className="flex flex-wrap items-center gap-2 sm:flex-nowrap">
             <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)', letterSpacing: '0.1em', textTransform: 'uppercase', flexShrink: 0 }}>
               h =
             </span>
@@ -240,20 +230,12 @@ export function LimitDefinition({ fn, x0 }: LimitDefinitionProps) {
       </div>
 
       {/* Stats */}
-      <div
-        style={{
-          background: 'var(--color-bg-elevated)',
-          border: '1px solid var(--color-bg-subtle)',
-          borderRadius: '8px',
-          padding: '14px 20px',
-          width: '100%',
-          maxWidth: '420px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '10px',
-          flexShrink: 0,
-        }}
-      >
+      <div className="flex w-full max-w-[420px] flex-shrink-0 flex-col gap-2.5" style={{
+        background: 'var(--color-bg-elevated)',
+        border: '1px solid var(--color-bg-subtle)',
+        borderRadius: '8px',
+        padding: '14px 20px',
+      }}>
         {/* Large slope display */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
           <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)', letterSpacing: '0.1em' }}>

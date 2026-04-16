@@ -3,8 +3,13 @@ import { useRef, useState } from 'react';
 import { useTextbookStore } from '@/store/textbook-store';
 import { processImage } from '@/lib/image';
 import { solveFromImage } from '@/lib/gemma-client';
+import type { CourseId } from '@/content/index';
 
-export function CameraModal() {
+interface CameraModalProps {
+  courseId: CourseId;
+}
+
+export function CameraModal({ courseId }: CameraModalProps) {
   const setCameraOpen = useTextbookStore((s) => s.setCameraOpen);
   const setAiStatus = useTextbookStore((s) => s.setAiStatus);
   const setLastSolution = useTextbookStore((s) => s.setLastSolution);
@@ -20,7 +25,7 @@ export function CameraModal() {
     setAiStatus('solving');
     try {
       const processed = await processImage(file);
-      const solution = await solveFromImage(processed);
+      const solution = await solveFromImage(processed, undefined, courseId);
       setLastSolution(solution);
       setStage(solution.steps);
       setAiStatus('idle');
