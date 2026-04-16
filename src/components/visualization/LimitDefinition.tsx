@@ -70,7 +70,7 @@ export function LimitDefinition({ fn, x0 }: LimitDefinitionProps) {
        * — overflow: 'visible' 이므로 SVG 자체는 클리핑 안 되지만
        *   래퍼의 패딩이 레이아웃 공간을 확보해 줘야 함
        */}
-      <div className="w-full max-w-[440px] flex-shrink-0 pb-11">
+      <div className="w-full max-w-[440px] flex-shrink-0 overflow-x-hidden pb-11">
         <svg width={W} height={H_SVG} viewBox={`0 0 ${W} ${H_SVG}`} className="h-auto w-full overflow-visible">
           {/* tangent (limit) */}
           <line
@@ -237,7 +237,7 @@ export function LimitDefinition({ fn, x0 }: LimitDefinitionProps) {
         padding: '14px 20px',
       }}>
         {/* Large slope display */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+        <div className="flex flex-col gap-1.5 sm:flex-row sm:items-baseline sm:justify-between">
           <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)', letterSpacing: '0.1em' }}>
             할선의 기울기
           </span>
@@ -252,7 +252,7 @@ export function LimitDefinition({ fn, x0 }: LimitDefinitionProps) {
         </div>
 
         {/* Convergence guide */}
-        <div style={{ borderTop: '1px solid var(--color-bg-subtle)', paddingTop: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+        <div className="flex flex-col gap-1.5 border-t pt-2.5 sm:flex-row sm:items-baseline sm:justify-between" style={{ borderColor: 'var(--color-bg-subtle)' }}>
           <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-ghost)' }}>
             h → 0 이면
           </span>

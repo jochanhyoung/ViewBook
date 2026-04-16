@@ -62,12 +62,16 @@ export function DerivativeGraph({ fn, domain }: DerivativeGraphProps) {
   }
 
   return (
-    <div style={{ minHeight: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '18px', gap: '8px', overflowY: 'auto' }}>
+    <div className="flex min-h-full w-full flex-col items-center justify-center gap-3 overflow-y-auto p-4 sm:p-[18px]">
+      <div className="flex w-full max-w-[420px] flex-col gap-3">
+        <div className="aspect-[380/130] w-full">
       <svg
         ref={svgRef}
         width={W}
         height={H}
+        viewBox={`0 0 ${W} ${H}`}
         onMouseMove={handleMouseMove}
+        className="h-full w-full"
         style={{ cursor: 'crosshair', overflow: 'visible' }}
       >
         {/* 라벨 — SVG 내부 좌표로 고정, 컨테이너 너비와 무관 */}
@@ -89,12 +93,16 @@ export function DerivativeGraph({ fn, domain }: DerivativeGraphProps) {
         {/* 접점 */}
         <circle cx={cx} cy={cy_f} r="4" fill="var(--color-accent)" />
       </svg>
+        </div>
 
+        <div className="aspect-[380/130] w-full">
       <svg
         width={W}
         height={H}
+        viewBox={`0 0 ${W} ${H}`}
         onMouseMove={handleMouseMove}
-        style={{ cursor: 'crosshair', overflow: 'visible', marginTop: '8px' }}
+        className="h-full w-full"
+        style={{ cursor: 'crosshair', overflow: 'visible' }}
       >
         {/* 라벨 — SVG 내부 좌표로 고정 */}
         <text x={4} y={14} fontFamily="JetBrains Mono, monospace" fontSize="10" letterSpacing="1" fill="var(--color-text-muted)">
@@ -107,9 +115,13 @@ export function DerivativeGraph({ fn, domain }: DerivativeGraphProps) {
         <line x1={cx} y1={0} x2={cx} y2={H} stroke="var(--color-text-ghost)" strokeWidth="1" strokeDasharray="2 2" />
         <circle cx={cx} cy={cy_d} r="4" fill="var(--color-accent-dim)" />
       </svg>
+        </div>
 
       {/* 수치 표시 */}
-      <div style={{ display: 'flex', gap: '24px', marginTop: '8px' }}>
+      <div
+        className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 rounded-md px-3 py-2"
+        style={{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-bg-surface)' }}
+      >
         <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-muted)' }}>
           x = {cursor.toFixed(3)}
         </span>
@@ -119,6 +131,7 @@ export function DerivativeGraph({ fn, domain }: DerivativeGraphProps) {
         <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-accent)' }}>
           f′(x) = {slope.toFixed(3)}
         </span>
+      </div>
       </div>
     </div>
   );

@@ -55,9 +55,11 @@ export function RiemannSum({ fn, a, b, n: initN, method: initMethod }: RiemannSu
   const step = Math.ceil(n / maxVisible);
 
   return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px', gap: '14px' }}>
+    <div className="flex min-h-full w-full flex-col items-center justify-center gap-3.5 overflow-y-auto p-4 sm:p-5">
+      <div className="flex w-full max-w-[420px] flex-col gap-3.5">
       {/* 그래프 */}
-      <svg width={W} height={H_SVG} style={{ overflow: 'visible' }}>
+      <div className="aspect-[380/220] w-full">
+      <svg width={W} height={H_SVG} viewBox={`0 0 ${W} ${H_SVG}`} className="h-full w-full" style={{ overflow: 'visible' }}>
         {rects.filter((_, i) => i % step === 0).map((r, i) => (
           <rect
             key={i}
@@ -72,20 +74,22 @@ export function RiemannSum({ fn, a, b, n: initN, method: initMethod }: RiemannSu
         <line x1={0} y1={toY(0)} x2={W} y2={toY(0)} stroke="var(--color-text-ghost)" strokeWidth="1" />
         <polyline points={curvePoints} fill="none" stroke="var(--color-text)" strokeWidth="2" />
       </svg>
+      </div>
 
       {/* 이산 n 버튼 */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', width: '100%', maxWidth: '380px' }}>
+      <div className="flex w-full flex-col gap-1.5">
         <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
           분할 수 n
         </span>
-        <div style={{ display: 'flex', gap: '5px' }}>
+        <div className="flex flex-wrap gap-1.5 sm:flex-nowrap">
           {N_STEPS.map((nVal, i) => (
             <button
-              key={nVal}
-              onClick={() => setNIdx(i)}
-              style={{
-                flex: 1,
-                background: nIdx === i ? 'var(--color-accent)' : 'none',
+                key={nVal}
+                onClick={() => setNIdx(i)}
+                style={{
+                  flex: 1,
+                  minWidth: '54px',
+                  background: nIdx === i ? 'var(--color-accent)' : 'none',
                 border: '1px solid',
                 borderColor: nIdx === i ? 'var(--color-accent)' : 'var(--color-border)',
                 borderRadius: '3px',
@@ -103,7 +107,7 @@ export function RiemannSum({ fn, a, b, n: initN, method: initMethod }: RiemannSu
       </div>
 
       {/* 방법 선택 */}
-      <div style={{ display: 'flex', gap: '8px' }}>
+      <div className="flex flex-wrap justify-center gap-2">
         {(['left', 'right', 'midpoint'] as const).map((m) => (
           <button
             key={m}
@@ -127,7 +131,7 @@ export function RiemannSum({ fn, a, b, n: initN, method: initMethod }: RiemannSu
       </div>
 
       {/* 합계 */}
-      <div style={{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)', borderRadius: '6px', padding: '10px 24px', display: 'flex', gap: '28px' }}>
+      <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 rounded-md px-4 py-3" style={{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)' }}>
         <div>
           <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)', margin: '0 0 2px' }}>R({n})</p>
           <p style={{ fontFamily: 'var(--font-mono)', fontSize: '15px', color: 'var(--color-accent)', margin: 0 }}>{riemannSum.toFixed(4)}</p>
@@ -136,6 +140,7 @@ export function RiemannSum({ fn, a, b, n: initN, method: initMethod }: RiemannSu
           <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)', margin: '0 0 2px' }}>Δx</p>
           <p style={{ fontFamily: 'var(--font-mono)', fontSize: '15px', color: 'var(--color-text-dim)', margin: 0 }}>{dx.toFixed(4)}</p>
         </div>
+      </div>
       </div>
     </div>
   );
