@@ -200,7 +200,7 @@ export default function VisualizePage({ params }: PageProps) {
               overflowX: 'hidden',
               overflowY: 'auto',
               display: 'flex',
-              alignItems: shouldShowExplanation(steps[index]) ? 'flex-start' : 'center',
+              alignItems: 'center',
               justifyContent: 'center',
               borderRadius: shouldShowExplanation(steps[index]) ? '18px' : undefined,
             }}
@@ -212,7 +212,7 @@ export default function VisualizePage({ params }: PageProps) {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.22, ease: 'easeOut' }}
-                style={{ minHeight: '100%', width: '100%' }}
+                style={{ minHeight: '100%', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
               >
                 <StepContent step={steps[index]} isPlaying={isPlaying} subStep={subStep} />
               </motion.div>
@@ -377,7 +377,7 @@ function StepExplanation({ step, title }: { step: VisualizationStep; title?: str
         overflowX: 'hidden',
         boxSizing: 'border-box',
         display: 'flex',
-        alignItems: 'flex-start',
+        alignItems: 'center',
         justifyContent: 'center',
       }}
     >
