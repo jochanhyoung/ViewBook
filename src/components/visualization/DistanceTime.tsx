@@ -37,8 +37,9 @@ export function DistanceTime({ speed, sampleTime = 6, interactive = true }: Dist
   const labelY = Math.max(sampleY - 34, 22);
 
   return (
-    <div style={{ minHeight: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '18px', padding: '20px', overflowY: 'auto' }}>
-      <svg width="380" height="250" viewBox="0 0 380 250" style={{ flexShrink: 0 }}>
+    <div className="flex min-h-full w-full flex-col items-center justify-center gap-4 overflow-y-auto p-4 sm:gap-5 sm:p-5">
+      <div className="aspect-[380/250] w-full max-w-[420px]">
+      <svg width="380" height="250" viewBox="0 0 380 250" className="h-full w-full" style={{ flexShrink: 0 }}>
         <line x1="30" y1="220" x2="350" y2="220" stroke="var(--color-border)" />
         <line x1="30" y1="220" x2="30" y2="24" stroke="var(--color-border)" />
         <polyline points={points} fill="none" stroke="var(--color-accent)" strokeWidth="3" />
@@ -55,10 +56,11 @@ export function DistanceTime({ speed, sampleTime = 6, interactive = true }: Dist
         <text x="352" y="224" fontFamily="var(--font-mono)" fontSize="10" fill="var(--color-text-muted)">시간</text>
         <text x="10" y="18" fontFamily="var(--font-mono)" fontSize="10" fill="var(--color-text-muted)">거리</text>
       </svg>
+      </div>
 
       {interactive ? (
-        <div style={{ width: '100%', maxWidth: '420px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+        <div className="flex w-full max-w-[420px] flex-col gap-3">
+          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
             <NumberControl
               label="속도 입력"
               value={speedInput}
@@ -80,7 +82,7 @@ export function DistanceTime({ speed, sampleTime = 6, interactive = true }: Dist
               onValidNumber={setCurrentTime}
             />
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-muted)' }}>
+          <div className="flex flex-col gap-1.5 text-[11px] sm:flex-row sm:items-center sm:justify-between" style={{ fontFamily: 'var(--font-mono)', color: 'var(--color-text-muted)' }}>
             <span>속도 슬라이더</span>
             <span>{currentSpeed} km/h</span>
           </div>
@@ -99,13 +101,13 @@ export function DistanceTime({ speed, sampleTime = 6, interactive = true }: Dist
           />
         </div>
       ) : (
-        <div style={{ width: '100%', maxWidth: '420px', background: 'var(--color-bg-elevated)', border: '1px solid var(--color-bg-surface)', borderRadius: '8px', padding: '12px 16px', display: 'flex', justifyContent: 'space-between', gap: '12px', fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-muted)' }}>
+        <div className="flex w-full max-w-[420px] flex-col gap-1.5 sm:flex-row sm:justify-between" style={{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-bg-surface)', borderRadius: '8px', padding: '12px 16px', fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-muted)' }}>
           <span>문제 조건 고정</span>
           <span>{displaySpeed}km/h × {markedTime}시간</span>
         </div>
       )}
 
-      <div style={{ width: '100%', maxWidth: '420px', background: 'var(--color-bg-elevated)', border: '1px solid var(--color-bg-surface)', borderRadius: '8px', padding: '14px 18px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+      <div className="grid w-full max-w-[420px] grid-cols-1 gap-2.5 sm:grid-cols-2" style={{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-bg-surface)', borderRadius: '8px', padding: '14px 18px' }}>
         <Stat label="그래프 기울기" value={`${displaySpeed} km/h`} />
         <Stat label={`${markedTime}시간 이동 거리`} value={`${sampleDistance} km`} />
         <Stat label="10시간 이동 거리" value={`${distanceAtTen} km`} />

@@ -1,5 +1,5 @@
 'use client';
-import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
+import { useState, useCallback, useRef, useMemo } from 'react';
 import { InlineMath } from 'react-katex';
 import { safeParseFn, safeEval } from '@/lib/safe-math';
 import { useTheme } from '@/components/ThemeProvider';
@@ -128,19 +128,19 @@ export function FunctionPlayground({ initialFn, domain }: FunctionPlaygroundProp
   const [autoDomain, setAutoDomain] = useState<{ xMin: number, xMax: number, yMin: number, yMax: number } | null>(null);
   const [roots, setRoots] = useState<number[]>([]);
   const [criticalPoints, setCriticalPoints] = useState<CriticalPoint[]>([]);
-  const [history, setHistory] = useState<string[]>([]);
+  const [history, setHistory] = useState<string[]>(() => {
+    if (typeof window === 'undefined') return [];
+    try {
+      const raw = localStorage.getItem(HISTORY_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch {
+      return [];
+    }
+  });
   const [queryX, setQueryX] = useState('');
   const [hoveredRoot, setHoveredRoot] = useState<number | null>(null);
   const [hoveredCritical, setHoveredCritical] = useState<CriticalPoint | null>(null);
   const svgRef = useRef<SVGSVGElement>(null);
-
-  // 마운트 시 localStorage에서 히스토리 로드
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(HISTORY_KEY);
-      if (raw) setHistory(JSON.parse(raw));
-    } catch { /* 무시 */ }
-  }, []);
 
   const addToHistory = useCallback((expr: string) => {
     try {
@@ -476,9 +476,9 @@ export function FunctionPlayground({ initialFn, domain }: FunctionPlaygroundProp
   const svgCursor = error ? 'default' : (hoveredCritical || hoveredRoot) ? 'pointer' : 'crosshair';
 
   return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px', gap: '14px' }}>
+    <div className="flex h-full flex-col items-center justify-center gap-3.5 p-4 sm:p-5">
       {/* 입력창 */}
-      <div style={{ display: 'flex', gap: '8px', width: '100%', maxWidth: '420px' }}>
+      <div className="flex w-full max-w-[420px] flex-col gap-2 sm:flex-row">
         <div style={{ flex: 1, position: 'relative' }}>
           <span style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--color-text-muted)' }}>f(x) =</span>
           <input
@@ -505,6 +505,7 @@ export function FunctionPlayground({ initialFn, domain }: FunctionPlaygroundProp
         </div>
         <button
           onClick={handleApply}
+          className="h-10 w-full sm:h-auto sm:w-auto"
           style={{
             background: 'var(--color-accent)',
             border: 'none',
@@ -575,6 +576,7 @@ export function FunctionPlayground({ initialFn, domain }: FunctionPlaygroundProp
       )}
 
       {/* 그래프 */}
+      <div className="w-full max-w-[420px]">
       <svg
         ref={svgRef}
         width={W}
@@ -582,6 +584,7 @@ export function FunctionPlayground({ initialFn, domain }: FunctionPlaygroundProp
         onClick={handleSvgClick}
         onMouseMove={handleSvgMouseMove}
         onMouseLeave={() => { setHoveredRoot(null); setHoveredCritical(null); }}
+        className="h-auto w-full"
         style={{ overflow: 'visible', cursor: svgCursor, maxWidth: '100%' }}
         viewBox={`0 0 ${W} ${H_SVG}`}
       >
@@ -760,9 +763,10 @@ export function FunctionPlayground({ initialFn, domain }: FunctionPlaygroundProp
           </>
         )}
       </svg>
+      </div>
 
       {/* 도구 */}
-      <div style={{ display: 'flex', gap: '10px', alignItems: 'center', width: '100%', maxWidth: '420px', flexWrap: 'wrap' }}>
+      <div className="flex w-full max-w-[420px] flex-wrap items-start gap-2.5">
         <button
           onClick={() => setShowDerivative((v) => !v)}
           style={{
@@ -819,7 +823,7 @@ export function FunctionPlayground({ initialFn, domain }: FunctionPlaygroundProp
         )}
 
         {/* x값 조회 */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginLeft: 'auto' }}>
+        <div className="flex w-full items-center gap-1.5 sm:ml-auto sm:w-auto">
           <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-muted)' }}>x =</span>
           <input
             type="number"
@@ -845,15 +849,11 @@ export function FunctionPlayground({ initialFn, domain }: FunctionPlaygroundProp
 
       {/* x값 조회 결과 */}
       {queryResult && (
-        <div style={{
-          display: 'flex',
-          gap: '24px',
+        <div className="flex w-full max-w-[420px] flex-col gap-2 sm:flex-row sm:gap-6" style={{
           padding: '8px 16px',
           background: 'var(--color-bg-surface)',
           border: '1px solid var(--color-border)',
           borderRadius: '8px',
-          width: '100%',
-          maxWidth: '420px',
           fontFamily: 'var(--font-mono)',
           fontSize: '12px',
         }}>
@@ -955,9 +955,9 @@ function LatexPreview({ raw }: { raw: string }) {
     }
   }, [raw]);
 
-  try {
-    return <InlineMath math={latex} />;
-  } catch {
+  if (!latex.trim()) {
     return <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--color-text-muted)' }}>{raw}</span>;
   }
+
+  return <InlineMath math={latex} />;
 }

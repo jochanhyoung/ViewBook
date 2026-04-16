@@ -22,14 +22,15 @@ export function ExerciseBlock({ exercise }: ExerciseBlockProps) {
   const toggleHint = (i: number) =>
     setOpenHints((prev) => {
       const next = new Set(prev);
-      next.has(i) ? next.delete(i) : next.add(i);
+      if (next.has(i)) next.delete(i);
+      else next.add(i);
       return next;
     });
 
   return (
     <div style={{ paddingBottom: '24px', borderBottom: '1px solid var(--color-bg-surface)' }}>
       {/* 번호 + 시각화 버튼 */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+      <div className="mb-2.5 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', letterSpacing: '0.15em', color: 'var(--color-text-muted)', margin: 0, textTransform: 'uppercase' }}>
           {exercise.number}
         </p>
@@ -55,7 +56,8 @@ export function ExerciseBlock({ exercise }: ExerciseBlockProps) {
           <div key={i}>
             <button
               onClick={() => toggleHint(i)}
-              style={{ background: 'none', border: '1px solid var(--color-border)', borderRadius: '4px', cursor: 'pointer', fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-subtle)', padding: '6px 12px', display: 'flex', alignItems: 'center', gap: '6px' }}
+              className="w-full sm:w-auto"
+              style={{ background: 'none', border: '1px solid var(--color-border)', borderRadius: '4px', cursor: 'pointer', fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-subtle)', padding: '6px 12px', display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'center' }}
             >
               <span style={{ transform: openHints.has(i) ? 'rotate(90deg)' : '', display: 'inline-block', transition: 'transform 200ms' }}>▸</span>
               힌트 {i + 1} 보기
@@ -77,7 +79,8 @@ export function ExerciseBlock({ exercise }: ExerciseBlockProps) {
         <div>
           <button
             onClick={() => setSolutionOpen((o) => !o)}
-            style={{ background: 'none', border: '1px solid var(--color-border)', borderRadius: '4px', cursor: 'pointer', fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-subtle)', padding: '6px 12px', display: 'flex', alignItems: 'center', gap: '6px' }}
+            className="w-full sm:w-auto"
+            style={{ background: 'none', border: '1px solid var(--color-border)', borderRadius: '4px', cursor: 'pointer', fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-subtle)', padding: '6px 12px', display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'center' }}
           >
             <span style={{ transform: solutionOpen ? 'rotate(90deg)' : '', display: 'inline-block', transition: 'transform 200ms' }}>▸</span>
             풀이 보기

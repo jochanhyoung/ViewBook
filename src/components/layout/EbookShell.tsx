@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useCallback } from 'react';
 import { useTextbookStore } from '@/store/textbook-store';
-import { pages } from '@/content/index';
+import { getCourseBySlug, pages } from '@/content/index';
 import { LeftPane } from './LeftPane';
 import { RightStage } from './RightStage';
 import { PageChrome } from './PageChrome';
@@ -18,6 +18,7 @@ export function EbookShell() {
 
   const currentIndex = pages.findIndex((p) => p.slug === currentSlug);
   const currentPage = pages[currentIndex] ?? pages[0];
+  const currentCourse = getCourseBySlug(currentPage.slug) ?? 'high';
 
   const goNext = useCallback(() => {
     if (currentIndex < pages.length - 1) {
@@ -150,7 +151,7 @@ export function EbookShell() {
       <CameraFab />
 
       {/* 카메라 모달 */}
-      {cameraOpen && <CameraModal />}
+      {cameraOpen && <CameraModal courseId={currentCourse} />}
     </div>
   );
 }

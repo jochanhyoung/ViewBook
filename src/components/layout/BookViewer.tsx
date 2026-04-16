@@ -79,22 +79,23 @@ function BookViewerInner({ page }: BookViewerProps) {
   const courseMenuRef = useRef<HTMLDivElement>(null);
   const chapterMenuRef = useRef<HTMLDivElement>(null);
 
-  // 애니메이션 방향 추적
   const [direction, setDirection] = useState(0);
-  const prevSheetRef = useRef(sheetIdx);
-  useEffect(() => {
-    if (sheetIdx !== prevSheetRef.current) {
-      setDirection(sheetIdx > prevSheetRef.current ? 1 : -1);
-      prevSheetRef.current = sheetIdx;
-    }
-  }, [sheetIdx]);
+
+  const moveToSheet = useCallback(
+    (next: number) => {
+      if (next === sheetIdx) return;
+      setDirection(next > sheetIdx ? 1 : -1);
+      setSheet(next);
+    },
+    [sheetIdx, setSheet]
+  );
 
   const navigate = useCallback(
     (delta: number) => {
       const next = Math.max(0, Math.min(sheetIdx + delta, sheets.length - 1));
-      if (next !== sheetIdx) setSheet(next);
+      moveToSheet(next);
     },
-    [sheetIdx, sheets.length, setSheet]
+    [sheetIdx, sheets.length, moveToSheet]
   );
 
   const cameraOpen = useTextbookStore((s) => s.cameraOpen);
@@ -120,12 +121,12 @@ function BookViewerInner({ page }: BookViewerProps) {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
       if (e.key === 'ArrowRight' || e.key === ']') navigate(1);
       if (e.key === 'ArrowLeft' || e.key === '[') navigate(-1);
-      if (e.key === 'Home') { e.preventDefault(); setSheet(0); }
-      if (e.key === 'End') { e.preventDefault(); setSheet(sheets.length - 1); }
+      if (e.key === 'Home') { e.preventDefault(); moveToSheet(0); }
+      if (e.key === 'End') { e.preventDefault(); moveToSheet(sheets.length - 1); }
     }
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, [navigate, setSheet, sheets.length]);
+  }, [navigate, moveToSheet, sheets.length]);
 
   useEffect(() => {
     function handlePointerDown(event: MouseEvent) {
@@ -142,13 +143,13 @@ function BookViewerInner({ page }: BookViewerProps) {
   }, []);
 
   const headerButtonStyle: CSSProperties = {
-    width: '84px',
-    height: '24px',
+    minWidth: '84px',
+    height: '28px',
     border: '1px solid var(--color-bg-surface)',
     background: 'var(--color-bg)',
     color: 'var(--color-text-subtle)',
     fontFamily: 'var(--font-mono)',
-    fontSize: '10px',
+    fontSize: '11px',
     lineHeight: 1,
     cursor: 'pointer',
     padding: 0,
@@ -183,7 +184,7 @@ function BookViewerInner({ page }: BookViewerProps) {
   );
 
   return (
-    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', background: 'var(--color-bg)' }}>
+    <div className="h-dvh min-h-0 overflow-hidden" style={{ display: 'flex', flexDirection: 'column', background: 'var(--color-bg)' }}>
       {/* 스크린리더 공지 */}
       <div aria-live="polite" style={{ position: 'absolute', width: '1px', height: '1px', overflow: 'hidden', clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap' }}>
         {`${page.title} — ${sheetIdx + 1}페이지 / 전체 ${sheets.length}페이지`}
@@ -195,9 +196,12 @@ function BookViewerInner({ page }: BookViewerProps) {
       </div>
 
       {/* Header bar */}
-      <div style={{ height: '44px', borderBottom: '1px solid var(--color-bg-surface)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 20px', flexShrink: 0 }}>
+      <div
+        className="flex min-h-[56px] flex-wrap items-center justify-between gap-x-3 gap-y-2 px-3 py-2 sm:px-4 md:min-h-[52px] md:flex-nowrap md:px-5"
+        style={{ borderBottom: '1px solid var(--color-bg-surface)', flexShrink: 0 }}
+      >
         {/* Page nav */}
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div className="flex min-w-0 flex-1 items-center">
           <div ref={courseMenuRef} style={{ position: 'relative', flexShrink: 0 }}>
             <button
               type="button"
@@ -243,7 +247,7 @@ function BookViewerInner({ page }: BookViewerProps) {
             )}
           </div>
 
-          <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginLeft: '14px' }}>
+          <div className="ml-3 flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1 md:ml-3.5">
             {pageIdx > 0 && (
               <a href={`/read/${currentCoursePages[pageIdx - 1].slug}?sheet=0`} style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-muted)', textDecoration: 'none' }}>
                 ← {currentCoursePages[pageIdx - 1].number}
@@ -275,7 +279,7 @@ function BookViewerInner({ page }: BookViewerProps) {
                     position: 'absolute',
                     top: 'calc(100% + 8px)',
                     left: 0,
-                    minWidth: '220px',
+                    minWidth: 'min(220px, calc(100vw - 32px))',
                     display: 'flex',
                     flexDirection: 'column',
                     border: '1px solid var(--color-bg-surface)',
@@ -326,7 +330,7 @@ function BookViewerInner({ page }: BookViewerProps) {
             {sheets.map((_, i) => (
               <button
                 key={i}
-                onClick={() => setSheet(i)}
+                onClick={() => moveToSheet(i)}
                 style={{
                   width: i === sheetIdx ? '16px' : '4px',
                   height: '4px',
@@ -341,7 +345,7 @@ function BookViewerInner({ page }: BookViewerProps) {
       </div>
 
       {/* Sheet content */}
-      <div ref={contentRef} tabIndex={-1} style={{ flex: 1, overflow: 'hidden', position: 'relative', outline: 'none' }}>
+      <div ref={contentRef} tabIndex={-1} className="relative min-h-0 flex-1 overflow-hidden outline-none">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={`${page.slug}-${sheetIdx}`}
@@ -359,7 +363,10 @@ function BookViewerInner({ page }: BookViewerProps) {
       </div>
 
       {/* Bottom nav */}
-      <div style={{ height: '52px', borderTop: '1px solid var(--color-bg-surface)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 20px', flexShrink: 0 }}>
+      <div
+        className="flex min-h-[56px] items-center justify-between gap-3 px-3 sm:px-4 md:min-h-[52px] md:px-5"
+        style={{ borderTop: '1px solid var(--color-bg-surface)', flexShrink: 0 }}
+      >
         <button
           onClick={() => navigate(-1)}
           disabled={sheetIdx === 0}
@@ -383,7 +390,7 @@ function BookViewerInner({ page }: BookViewerProps) {
 
       {/* AI FAB */}
       <CameraFab />
-      {cameraOpen && <CameraModal />}
+      {cameraOpen && <CameraModal courseId={currentCourse} />}
     </div>
   );
 }
@@ -410,8 +417,8 @@ function SheetContent({ sheet }: { sheet: Sheet }) {
 
 function SheetWrap({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{ height: '100%', overflowY: 'auto', scrollbarGutter: 'stable' }}>
-      <div style={{ maxWidth: '660px', margin: '0 auto', padding: '48px 40px 64px' }}>
+    <div className="h-full overflow-y-auto" style={{ scrollbarGutter: 'stable' }}>
+      <div className="mx-auto w-full max-w-[660px] px-4 py-8 sm:px-6 sm:py-10 md:px-8 md:py-12 lg:px-10 lg:py-16">
         {children}
       </div>
     </div>
@@ -483,7 +490,7 @@ function TermsSheet({ keyTerms }: { keyTerms: KeyTerm[] }) {
       </p>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
         {keyTerms.map((term) => (
-          <div key={term.term} style={{ display: 'flex', gap: '20px' }}>
+          <div key={term.term} className="flex flex-col gap-2 sm:flex-row sm:gap-5">
             <span style={{ fontFamily: 'var(--font-display)', fontSize: '14px', color: 'var(--color-text)', minWidth: '110px', flexShrink: 0 }}>
               {term.term}
             </span>

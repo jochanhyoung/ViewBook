@@ -34,7 +34,7 @@ interface TextbookState {
 }
 
 export const useTextbookStore = create<TextbookState>((set) => ({
-  currentPageSlug: 'derivative-definition',
+  currentPageSlug: 'clock-angle',
   setPage: (slug) => set({ currentPageSlug: slug }),
 
   stageSteps: null,

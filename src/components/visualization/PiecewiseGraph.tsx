@@ -106,19 +106,10 @@ export function PiecewiseGraph({ pieces, x0 }: PiecewiseGraphProps) {
   const isDifferentiable = Math.abs(rightLimit - leftLimit) < 0.01;
 
   return (
-    <div style={{
-      minHeight: '100%',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'flex-start',
-      padding: '20px',
-      gap: '14px',
-      overflowY: 'auto',
-    }}>
+    <div className="flex min-h-full w-full flex-col items-center justify-start gap-3.5 overflow-y-auto p-4 sm:p-5">
 
       {/* 좌/우미분 토글 */}
-      <div style={{ display: 'flex', gap: '6px' }}>
+      <div className="flex w-full max-w-[380px] gap-1.5 overflow-x-auto pb-1 sm:justify-center">
         {([
           ['right', '우미분 (h → 0⁺)'] as const,
           ['left',  '좌미분 (h → 0⁻)'] as const,
@@ -130,6 +121,7 @@ export function PiecewiseGraph({ pieces, x0 }: PiecewiseGraphProps) {
             <button
               key={s}
               onClick={() => setSide(s)}
+              className="shrink-0 whitespace-nowrap"
               style={{
                 padding: '6px 16px',
                 border: `1px solid ${isActive ? btnAccent : 'var(--color-border)'}`,
@@ -149,8 +141,8 @@ export function PiecewiseGraph({ pieces, x0 }: PiecewiseGraphProps) {
       </div>
 
       {/* SVG 그래프 */}
-      <div style={{ flexShrink: 0 }}>
-        <svg width={W} height={H_SVG} style={{ overflow: 'visible', display: 'block' }}>
+      <div className="w-full max-w-[420px] flex-shrink-0">
+        <svg width={W} height={H_SVG} viewBox={`0 0 ${W} ${H_SVG}`} className="block h-auto w-full overflow-visible">
           {/* x축, y축 */}
           <line x1={toX(xMin)} y1={oy} x2={toX(xMax)} y2={oy} stroke="var(--color-border)" strokeWidth="1" />
           <line x1={ox} y1={0}  x2={ox} y2={H_SVG}     stroke="var(--color-border)" strokeWidth="1" />
@@ -210,8 +202,8 @@ export function PiecewiseGraph({ pieces, x0 }: PiecewiseGraphProps) {
       </div>
 
       {/* |h| 프리셋 + 슬라이더 */}
-      <div style={{ flexShrink: 0, width: '100%', maxWidth: '380px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-        <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
+      <div className="flex w-full max-w-[380px] flex-shrink-0 flex-col gap-2">
+        <div className="flex flex-wrap items-center gap-1.5 sm:flex-nowrap">
           <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)', flexShrink: 0 }}>|h| =</span>
           {H_PRESETS.map((p) => {
             const active = Math.abs(h - p) < 0.0001;
@@ -221,6 +213,7 @@ export function PiecewiseGraph({ pieces, x0 }: PiecewiseGraphProps) {
                 onClick={() => setH(p)}
                 style={{
                   flex: 1,
+                  minWidth: '54px',
                   background: active ? accentBg : 'none',
                   border: `1px solid ${active ? accentColor : 'var(--color-border)'}`,
                   borderRadius: '3px',
@@ -248,19 +241,13 @@ export function PiecewiseGraph({ pieces, x0 }: PiecewiseGraphProps) {
       </div>
 
       {/* 수렴값 패널 */}
-      <div style={{
-        flexShrink: 0,
+      <div className="flex w-full max-w-[380px] flex-shrink-0 flex-col gap-2.5" style={{
         background: 'var(--color-bg-elevated)',
         border: '1px solid var(--color-bg-subtle)',
         borderRadius: '8px',
         padding: '14px 20px',
-        width: '100%',
-        maxWidth: '380px',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '10px',
       }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
               {side === 'right' ? '우미분 극한' : '좌미분 극한'}
@@ -272,7 +259,7 @@ export function PiecewiseGraph({ pieces, x0 }: PiecewiseGraphProps) {
               ({isFinite(fah) ? fah.toFixed(4) : 'N/A'} − {fa.toFixed(4)}) / {hSigned > 0 ? h.toPrecision(3) : `(−${h.toPrecision(3)})`}
             </div>
           </div>
-          <div style={{ textAlign: 'right' }}>
+          <div className="sm:text-right" style={{ textAlign: 'left' }}>
             <div style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
               수렴값
             </div>

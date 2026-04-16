@@ -224,6 +224,15 @@ body {
     color 200ms ease;
 }
 
+button,
+a,
+input,
+select,
+textarea,
+[role="button"] {
+  touch-action: manipulation;
+}
+
 /* KaTeX — 현재 텍스트 색상 상속 */
 .katex {
   color: inherit;

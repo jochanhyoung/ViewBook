@@ -23,19 +23,19 @@ export function SaltConcentration({ water, salt, interactive = true }: SaltConce
     rgba(52, 168, 83, ${0.65 + saltRatio * 0.25}) 100%)`;
 
   return (
-    <div style={{ minHeight: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '18px', padding: '20px', overflowY: 'auto' }}>
-      <div style={{ display: 'flex', alignItems: 'flex-end', gap: '28px' }}>
-        <div style={{ width: '110px', height: '180px', border: '1px solid var(--color-border)', borderRadius: '0 0 12px 12px', position: 'relative', background: 'var(--color-bg-elevated)', overflow: 'hidden' }}>
+    <div className="flex min-h-full w-full flex-col items-center justify-center gap-4 overflow-y-auto p-4 sm:gap-5 sm:p-5">
+      <div className="flex w-full max-w-[420px] flex-col items-center gap-5 sm:flex-row sm:items-end sm:justify-center sm:gap-7">
+        <div className="h-[180px] w-[110px] shrink-0" style={{ border: '1px solid var(--color-border)', borderRadius: '0 0 12px 12px', position: 'relative', background: 'var(--color-bg-elevated)', overflow: 'hidden' }}>
           <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: `${fillHeight}%`, background: liquidGradient, transition: 'height 180ms ease, background 180ms ease' }} />
           <div style={{ position: 'absolute', inset: '12px 0 auto 0', textAlign: 'center', fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-subtle)' }}>
             농도
           </div>
-          <div style={{ position: 'absolute', inset: 'auto 0 14px 0', textAlign: 'center', fontFamily: 'var(--font-mono)', fontSize: '18px', color: 'var(--color-accent-fg)' }}>
+          <div style={{ position: 'absolute', inset: 'auto 0 14px 0', textAlign: 'center', fontFamily: 'var(--font-mono)', fontSize: '18px', color: '#111111' }}>
             {concentration.toFixed(1)}%
           </div>
         </div>
 
-        <div style={{ width: '220px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <div className="w-full max-w-[260px] sm:w-[220px]" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {interactive ? (
             <>
               <SliderRow label="물의 양" value={waterAmount} unit="mL" min={50} max={400} onChange={setWaterAmount} />
@@ -50,7 +50,7 @@ export function SaltConcentration({ water, salt, interactive = true }: SaltConce
         </div>
       </div>
 
-      <div style={{ width: '100%', maxWidth: '420px', background: 'var(--color-bg-elevated)', border: '1px solid var(--color-bg-surface)', borderRadius: '8px', padding: '14px 18px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+      <div className="grid w-full max-w-[420px] grid-cols-1 gap-2.5 sm:grid-cols-2" style={{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-bg-surface)', borderRadius: '8px', padding: '14px 18px' }}>
         <Stat label="물" value={`${waterAmount} mL`} />
         <Stat label="소금" value={`${saltAmount} g`} />
         <Stat label="전체 용액" value={`${total} 단위`} />
@@ -89,7 +89,7 @@ function FixedRow({ label, value }: { label: string; value: string }) {
 function SliderRow({ label, value, unit, min, max, onChange }: { label: string; value: number; unit: string; min: number; max: number; onChange: (next: number) => void }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-muted)' }}>
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between" style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-muted)' }}>
         <span>{label}</span>
         <ValueInput label="" value={value} min={min} max={max} onChange={onChange} unit={unit} />
       </div>

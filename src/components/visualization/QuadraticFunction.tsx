@@ -21,16 +21,18 @@ export function QuadraticFunction({ a, interactive = true }: QuadraticFunctionPr
   }, [coefficient]);
 
   return (
-    <div style={{ minHeight: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '18px', padding: '20px', overflowY: 'auto' }}>
-      <svg width="380" height="250" viewBox="0 0 380 250" style={{ flexShrink: 0 }}>
+    <div className="flex min-h-full w-full flex-col items-center justify-center gap-4 overflow-y-auto p-4 sm:gap-5 sm:p-5">
+      <div className="aspect-[380/250] w-full max-w-[420px]">
+      <svg width="380" height="250" viewBox="0 0 380 250" className="h-full w-full" style={{ flexShrink: 0 }}>
         <line x1="20" y1="190" x2="360" y2="190" stroke="var(--color-border)" />
         <line x1="190" y1="20" x2="190" y2="230" stroke="var(--color-border)" />
         <polyline points={points} fill="none" stroke="var(--color-accent)" strokeWidth="3" />
         <circle cx="190" cy="190" r="5" fill="var(--color-accent-dim)" />
       </svg>
+      </div>
 
-      <div style={{ width: '100%', maxWidth: '420px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-muted)' }}>
+      <div className="flex w-full max-w-[420px] flex-col gap-2">
+        <div className="flex flex-col gap-2 text-[11px] sm:flex-row sm:items-center sm:justify-between" style={{ fontFamily: 'var(--font-mono)', color: 'var(--color-text-muted)' }}>
           <span>{interactive ? 'a 값 슬라이더' : '문제 계수'}</span>
           {interactive ? (
             <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)' }}>
@@ -56,7 +58,7 @@ export function QuadraticFunction({ a, interactive = true }: QuadraticFunctionPr
         )}
       </div>
 
-      <div style={{ width: '100%', maxWidth: '420px', background: 'var(--color-bg-elevated)', border: '1px solid var(--color-bg-surface)', borderRadius: '8px', padding: '14px 18px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+      <div className="grid w-full max-w-[420px] grid-cols-1 gap-2.5 sm:grid-cols-2" style={{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-bg-surface)', borderRadius: '8px', padding: '14px 18px' }}>
         <Stat label="식" value={`y = ${coefficient.toFixed(1)}x^2`} />
         <Stat label="방향" value={coefficient >= 0 ? '위로 열림' : '아래로 열림'} />
         <Stat label="꼭짓점" value="(0, 0)" />

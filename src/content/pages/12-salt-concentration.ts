@@ -34,10 +34,10 @@ export const saltConcentrationPage: Page = {
       kind: 'example',
       id: 'ex-el-1-2',
       number: '예제 1.2.1',
-      problem: '물 180mL에 소금 20g을 넣었을 때 소금물의 농도를 구하시오.',
+      problem: '물 180mL에 소금 20g을 넣었을 때 소금물의 농도를 구해 보세요.',
       hint: '전체 양은 $180 + 20 = 200$이다.',
       solution:
-        '**풀이.** 농도는 $\\dfrac{20}{200} \\times 100 = 10$ 이므로, 소금물의 농도는 **10%**이다.',
+        '**풀이.** 농도는 $\\dfrac{20}{200} \\times 100 = 10$이므로, 소금물의 농도는 **10%**예요.',
       visualize: [{ kind: 'saltConcentration', water: 180, salt: 20, interactive: false }],
     },
   ],
@@ -50,37 +50,37 @@ export const saltConcentrationPage: Page = {
     {
       id: 'exr-el-1-2',
       number: '연습문제 1.2.1',
-      problem: '물 240mL에 소금 60g을 넣었다. 이 소금물의 농도를 구하시오.',
+      problem: '물 240mL에 소금 60g을 넣었어요. 이 소금물의 농도를 구해 보세요.',
       hints: [
         '전체 양은 $240 + 60 = 300$이다.',
         '농도는 $\\dfrac{60}{300} \\times 100$으로 계산한다.',
       ],
-      solution: '**풀이.** $\\dfrac{60}{300} \\times 100 = 20$이므로 농도는 **20%**이다.',
+      solution: '**풀이.** $\\dfrac{60}{300} \\times 100 = 20$이므로 농도는 **20%**예요.',
       visualize: [{ kind: 'saltConcentration', water: 240, salt: 60, interactive: false }],
     },
     {
       id: 'exr-el-1-2-2',
       number: '연습문제 1.2.2',
-      problem: '물 150mL에 소금 30g을 넣었다. 이 소금물의 농도를 구하시오.',
+      problem: '물 150mL에 소금 50g을 넣었어요. 이 소금물의 농도를 구해 보세요.',
       hints: [
-        '전체 양은 $150 + 30 = 180$이다.',
-        '농도는 $\\dfrac{30}{180} \\times 100$이다.',
+        '전체 양은 $150 + 50 = 200$이다.',
+        '농도는 $\\dfrac{50}{200} \\times 100$이다.',
       ],
       solution:
-        '**풀이.** $\\dfrac{30}{180} \\times 100 = 16.6\\overline{6}$이므로 농도는 약 **16.7%**이다.',
-      visualize: [{ kind: 'saltConcentration', water: 150, salt: 30, interactive: false }],
+        '**풀이.** $\\dfrac{50}{200} \\times 100 = 25$이므로 농도는 **25%**예요.',
+      visualize: [{ kind: 'saltConcentration', water: 150, salt: 50, interactive: false }],
     },
     {
       id: 'exr-el-1-2-3',
       number: '연습문제 1.2.3',
-      problem: '물 300mL에 소금 45g을 넣었다. 이 소금물의 농도를 구하시오.',
+      problem: '물 400mL에 소금 100g을 넣었어요. 이 소금물의 농도를 구해 보세요.',
       hints: [
-        '전체 양은 $300 + 45 = 345$이다.',
-        '농도는 $\\dfrac{45}{345} \\times 100$으로 계산한다.',
+        '전체 양은 $400 + 100 = 500$이다.',
+        '농도는 $\\dfrac{100}{500} \\times 100$으로 계산한다.',
       ],
       solution:
-        '**풀이.** $\\dfrac{45}{345} \\times 100 \\approx 13.04$이므로 농도는 약 **13.0%**이다.',
-      visualize: [{ kind: 'saltConcentration', water: 300, salt: 45, interactive: false }],
+        '**풀이.** $\\dfrac{100}{500} \\times 100 = 20$이므로 농도는 **20%**예요.',
+      visualize: [{ kind: 'saltConcentration', water: 400, salt: 100, interactive: false }],
     },
   ],
 };

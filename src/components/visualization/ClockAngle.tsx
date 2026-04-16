@@ -36,8 +36,9 @@ export function ClockAngle({ hour, minute, interactive = true }: ClockAngleProps
   }
 
   return (
-    <div style={{ minHeight: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '18px', padding: '20px', overflowY: 'auto' }}>
-      <svg width="280" height="280" viewBox="0 0 280 280" style={{ flexShrink: 0 }}>
+    <div className="flex min-h-full w-full flex-col items-center justify-center gap-4 overflow-y-auto p-4 sm:gap-5 sm:p-5">
+      <div className="aspect-square w-full max-w-[280px] sm:max-w-[320px]">
+      <svg width="280" height="280" viewBox="0 0 280 280" className="h-full w-full" style={{ flexShrink: 0 }}>
         <circle cx="140" cy="140" r="104" fill="var(--color-bg-elevated)" stroke="var(--color-border)" />
         {Array.from({ length: 12 }, (_, index) => {
           const angle = index * 30;
@@ -62,12 +63,13 @@ export function ClockAngle({ hour, minute, interactive = true }: ClockAngleProps
         <line x1="140" y1="140" x2={minuteHand.x} y2={minuteHand.y} stroke="var(--color-accent)" strokeWidth="3" strokeLinecap="round" />
         <circle cx="140" cy="140" r="5" fill="var(--color-accent)" />
       </svg>
+      </div>
 
-      <div style={{ width: '100%', maxWidth: '420px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-muted)' }}>
+      <div className="flex w-full max-w-[420px] flex-col gap-2.5">
+        <div className="flex flex-col gap-2 text-[11px] sm:flex-row sm:items-center sm:justify-between" style={{ fontFamily: 'var(--font-mono)', color: 'var(--color-text-muted)' }}>
           <span>{interactive ? '시간 슬라이더' : '문제 시각'}</span>
           {interactive ? (
-            <div style={{ display: 'flex', gap: '8px' }}>
+            <div className="flex flex-wrap gap-2 sm:justify-end">
               <NumericInput label="시" value={currentHour} min={1} max={12} onChange={(value) => updateTime(value, minutes)} />
               <NumericInput label="분" value={minutes} min={0} max={59} onChange={(value) => updateTime(currentHour, value)} />
             </div>
@@ -90,7 +92,7 @@ export function ClockAngle({ hour, minute, interactive = true }: ClockAngleProps
         )}
       </div>
 
-      <div style={{ width: '100%', maxWidth: '420px', background: 'var(--color-bg-elevated)', border: '1px solid var(--color-bg-surface)', borderRadius: '8px', padding: '14px 18px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+      <div className="grid w-full max-w-[420px] grid-cols-1 gap-2.5 sm:grid-cols-2" style={{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-bg-surface)', borderRadius: '8px', padding: '14px 18px' }}>
         <Stat label="시침 각도" value={`${hourAngle.toFixed(1)}°`} />
         <Stat label="분침 각도" value={`${minuteAngle.toFixed(1)}°`} />
         <Stat label="작은 각" value={`${smallAngle.toFixed(1)}°`} />
@@ -102,7 +104,7 @@ export function ClockAngle({ hour, minute, interactive = true }: ClockAngleProps
 
 function NumericInput({ label, value, min, max, onChange }: { label: string; value: number; min: number; max: number; onChange: (value: number) => void }) {
   return (
-    <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)' }}>
+    <label className="flex items-center gap-1.5" style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-text-muted)' }}>
       <span>{label}</span>
       <input
         type="number"
@@ -110,7 +112,8 @@ function NumericInput({ label, value, min, max, onChange }: { label: string; val
         max={max}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        style={{ width: '56px', background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)', color: 'var(--color-text)', fontFamily: 'var(--font-mono)', fontSize: '11px', padding: '4px 6px' }}
+        className="w-14 sm:w-16"
+        style={{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)', color: 'var(--color-text)', fontFamily: 'var(--font-mono)', fontSize: '11px', padding: '4px 6px' }}
       />
     </label>
   );
