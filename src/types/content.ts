@@ -24,7 +24,8 @@ export type Block =
       kind: 'interactiveInline';
       component: 'limitSlider' | 'tangentDrag' | 'functionPlayground';
       props: Record<string, unknown>;
-    };
+    }
+  | { kind: 'video'; src: string; title?: string };
 
 export interface Exercise {
   id: string;

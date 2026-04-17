@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
     # .env.local이 없으면 'docker compose up' 이 실패하므로,
     # 팀원은 반드시 .env.example을 복사해 .env.local을 만들 것
     env_file:

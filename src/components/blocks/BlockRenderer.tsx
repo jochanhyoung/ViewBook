@@ -10,6 +10,7 @@ import { KeyPointBlock } from './KeyPointBlock';
 import { ExampleBlock } from './ExampleBlock';
 import { FigureBlock } from './FigureBlock';
 import { NoteBlock } from './NoteBlock';
+import { VideoBlock } from './VideoBlock';
 import { FunctionPlayground } from '@/components/visualization/FunctionPlayground';
 
 interface BlockRendererProps {
@@ -48,6 +49,8 @@ function BlockItem({ block }: { block: Block }) {
       return <FigureBlock {...block} />;
     case 'note':
       return <NoteBlock {...block} />;
+    case 'video':
+      return <VideoBlock src={block.src} title={block.title} />;
     case 'interactiveInline':
       if (block.component === 'functionPlayground') {
         const { initialFn = 'x^2', domain = [-3, 3] } = block.props as { initialFn?: string; domain?: [number, number] };

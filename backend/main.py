@@ -10,7 +10,13 @@ from schemas import VisualizationStep
 from ollama_client import analyze_image
 from prompt_builder import build_prompt
 
-app = FastAPI(title="B2G Digital Textbook AI API")
+_is_prod = os.getenv("ENV", "development") == "production"
+app = FastAPI(
+    title="B2G Digital Textbook AI API",
+    docs_url=None if _is_prod else "/docs",
+    redoc_url=None if _is_prod else "/redoc",
+    openapi_url=None if _is_prod else "/openapi.json",
+)
 
 app.add_middleware(
     CORSMiddleware,

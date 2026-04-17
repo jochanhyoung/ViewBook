@@ -26,6 +26,11 @@ export const distanceTimePage: Page = {
         '가로축을 시간, 세로축을 거리로 놓은 그래프이다. 직선의 기울기가 클수록 같은 시간에 더 많이 이동한 것이므로 속력이 더 크다.',
     },
     {
+      kind: 'video',
+      src: '/videos/KakaoTalk_20260417_135326092.mp4',
+      title: '거리-시간 그래프 정리 영상',
+    },
+    {
       kind: 'figure',
       visualization: { kind: 'distanceTime', speed: 40, sampleTime: 6, interactive: true },
       caption: '속도 슬라이더를 올리면 선의 기울기가 더 커지고, 표시 점은 같은 시간에서 이동한 거리를 보여 준다.',

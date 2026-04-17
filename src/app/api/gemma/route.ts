@@ -33,6 +33,17 @@ function hashIp(ip: string): string {
   return crypto.createHash('sha256').update(ip).digest('hex').slice(0, 8);
 }
 
+// 신뢰 프록시 깊이만큼 오른쪽에서 세어 실제 클라이언트 IP를 추출한다.
+// TRUSTED_PROXY_DEPTH=1(기본): 마지막 프록시 1개 신뢰 → 그 앞 IP가 클라이언트
+function extractRealIp(req: NextRequest): string {
+  const depth = Math.max(1, parseInt(process.env.TRUSTED_PROXY_DEPTH ?? '1', 10));
+  const forwarded = req.headers.get('x-forwarded-for')
+    ?.split(',')
+    .map((s) => s.trim())
+    .filter(Boolean) ?? [];
+  return forwarded.at(-depth) ?? req.headers.get('x-real-ip') ?? '0.0.0.0';
+}
+
 async function callGemmaApi(imageBase64: string, courseId: CourseId): Promise<string> {
   const apiKey = process.env.GEMMA_API_KEY;
   const model = process.env.GEMMA_MODEL ?? 'gemma-3-12b-it';
@@ -77,7 +88,7 @@ async function callGemmaApi(imageBase64: string, courseId: CourseId): Promise<st
 
 export async function POST(req: NextRequest) {
   // 1. Rate limit
-  const ip = req.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? 'unknown';
+  const ip = extractRealIp(req);
   const ipHash = hashIp(ip);
 
   const rateLimitOk = await rateLimit(ipHash, {
@@ -117,7 +128,8 @@ export async function POST(req: NextRequest) {
       if (text) break;
     } catch (e) {
       if (attempt === 1) {
-        return NextResponse.json({ error: String(e) }, { status: 502 });
+        console.error(JSON.stringify({ ts: Date.now(), ip_hash: ipHash, error: String(e) }));
+        return NextResponse.json({ error: 'upstream_error' }, { status: 502 });
       }
     }
   }
@@ -131,16 +143,15 @@ export async function POST(req: NextRequest) {
   }
 
   if (!parsed.success) {
-    return NextResponse.json(
-      { error: 'schema_invalid', issues: parsed.error.issues },
-      { status: 422 }
-    );
+    console.error(JSON.stringify({ ts: Date.now(), ip_hash: ipHash, error: 'schema_invalid', issues: parsed.error.issues }));
+    return NextResponse.json({ error: 'schema_invalid' }, { status: 422 });
   }
 
   // 5. mathjs 더블체크
   const verified = verifySolution(parsed.data);
   if (!verified.ok) {
-    return NextResponse.json({ error: 'math_mismatch', detail: verified.reason }, { status: 422 });
+    console.error(JSON.stringify({ ts: Date.now(), ip_hash: ipHash, error: 'math_mismatch', detail: verified.reason }));
+    return NextResponse.json({ error: 'math_mismatch' }, { status: 422 });
   }
 
   // 6. 감사 로그 (PII 없이)

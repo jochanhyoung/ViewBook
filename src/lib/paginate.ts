@@ -16,6 +16,7 @@ const BLOCK_WEIGHT: Record<Block['kind'], number> = {
   figure: 4,
   note: 2,
   interactiveInline: 3,
+  video: 12,  // 단독 시트 강제 배치 (example 5 + video 12 > SHEET_MAX 11)
 };
 
 const SHEET_MAX_WEIGHT = 11;
