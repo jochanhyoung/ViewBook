@@ -1,5 +1,43 @@
 'use client';
 import { BlockMath } from 'react-katex';
+import { LatexTextRenderer } from '@/components/inline/LatexTextRenderer';
+
+function balanceDollar(text: string): string {
+  const count = (text.match(/\$/g) ?? []).length;
+  return count % 2 !== 0 ? text + '$' : text;
+}
+
+function normalizeLatex(tex: string): string {
+  const fixed = tex
+    .trim()
+    // 순수 수식만 $...$로 감싸진 경우 벗겨냄 (한국어 없는 경우)
+    .replace(/^\$(.*)\$$/, (_, inner) => (/[가-힣]/.test(inner) ? `$${inner}$` : inner))
+    .trim()
+    .replace(/¥rac/g, '\\frac')
+    .replace(/¥/g, '\\')
+    .replace(/(?<!\\)(?<![a-z])ext\{/g, '\\text{')
+    .replace(/(?<!\\)frac\{/g, '\\frac{')
+    .replace(/(?<!\\)sqrt\{/g, '\\sqrt{')
+    .replace(/\\?extlim/g, '\\lim')
+    .replace(/\\operatorname\{lim\}/g, '\\lim')
+    .replace(/\\mathop\{lim\}/g, '\\lim')
+    // ^ 또는 _ 뒤에 붙은 공백/탭 제거 (KaTeX 파싱 실패 방지)
+    .replace(/([_^])\s+/g, '$1');
+  return fixed;
+}
+
+function SafeMath({ tex }: { tex: string }) {
+  console.log('[SafeMath raw]', JSON.stringify(tex));
+  const normalized = normalizeLatex(tex);
+  console.log('[SafeMath normalized]', JSON.stringify(normalized));
+  const hasKorean = /[가-힣]/.test(normalized);
+  if (hasKorean) return (
+    <p style={{ fontSize: '1rem', lineHeight: 1.7, textAlign: 'center' }}>
+      <LatexTextRenderer text={balanceDollar(normalized)} />
+    </p>
+  );
+  return <BlockMath math={normalized} />;
+}
 
 interface SolutionSlidesProps {
   steps: { label: string; tex: string; hint?: string; final?: boolean }[];
@@ -27,32 +65,8 @@ export function SolutionSlides({ steps, subStep = 0 }: SolutionSlidesProps) {
       {/* Progress dots */}
       <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
         {steps.map((s, i) => (
-          <div
-            key={i}
-            style={{
-              width: i === idx ? '18px' : '6px',
-              height: '6px',
-              borderRadius: '3px',
-              background: i < idx
-                ? 'var(--color-text-ghost)'
-                : i === idx
-                  ? 'var(--color-accent)'
-                  : 'var(--color-border)',
-              transition: 'all 250ms ease',
-            }}
-          />
+          <div key={i} style={{ width: i === idx ? '18px' : '6px', height: '6px', borderRadius: '3px', background: i < idx ? 'var(--color-text-ghost)' : i === idx ? 'var(--color-accent)' : 'var(--color-border)', transition: 'all 250ms ease' }} />
         ))}
-      </div>
-
-      {/* lim indicator */}
-      <div style={{
-        fontFamily: 'var(--font-mono)',
-        fontSize: '10px',
-        letterSpacing: '0.2em',
-        color: 'var(--color-text-ghost)',
-        textTransform: 'uppercase',
-      }}>
-        lim&#x2009;h&#x2009;→&#x2009;0
       </div>
 
       {/* Slide card */}
@@ -86,7 +100,7 @@ export function SolutionSlides({ steps, subStep = 0 }: SolutionSlidesProps) {
           color: isFinal ? 'var(--color-accent)' : 'var(--color-text)',
           overflowX: 'auto',
         }}>
-          <BlockMath math={step.tex} />
+          <SafeMath tex={step.tex} />
         </div>
 
         {/* Hint */}
@@ -98,14 +112,7 @@ export function SolutionSlides({ steps, subStep = 0 }: SolutionSlidesProps) {
             borderLeft: '2px solid var(--color-border)',
             borderRadius: '0 4px 4px 0',
           }}>
-            <span style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: '11px',
-              color: 'var(--color-text-muted)',
-              lineHeight: 1.65,
-            }}>
-              {step.hint}
-            </span>
+            <LatexTextRenderer text={step.hint} style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-muted)', lineHeight: 1.65 }} />
           </div>
         )}
       </div>

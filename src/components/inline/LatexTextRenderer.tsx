@@ -18,7 +18,7 @@ export function LatexTextRenderer({ text, className, style }: LatexTextRendererP
     // $...$ 패턴이 없으면 분리 작업 자체를 건너뜀 (성능 최적화)
     if (!text || !text.includes('$')) return null;
     // 캡처 그룹을 쓰면 split이 구분자($...$)를 배열에 포함시킨다
-    return text.split(/(\$[^$\n]+\$)/g);
+    return text.split(/(\$[^$]+\$)/g);
   }, [text]);
 
   if (!segments) {

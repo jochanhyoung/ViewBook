@@ -29,6 +29,7 @@ JSON 스키마:
 }`;
 }
 
+
 function hashIp(ip: string): string {
   return crypto.createHash('sha256').update(ip).digest('hex').slice(0, 8);
 }
@@ -49,14 +50,6 @@ async function callGemmaApi(imageBase64: string, courseId: CourseId): Promise<st
   const model = process.env.GEMMA_MODEL ?? 'gemma-3-12b-it';
 
   if (!apiKey) throw new Error('not_configured');
-
-  // 프로덕션에서 Ollama 직접 모드 차단
-  if (process.env.NODE_ENV === 'production') {
-    const backend = process.env.GEMMA_BACKEND;
-    if (backend === 'ollama') {
-      throw new Error('proxy_required');
-    }
-  }
 
   const res = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
@@ -82,8 +75,8 @@ async function callGemmaApi(imageBase64: string, courseId: CourseId): Promise<st
     throw new Error(`gemma_api_error:${res.status}`);
   }
 
-  const raw = await res.json();
-  return raw?.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
+  const data = await res.json();
+  return JSON.stringify(data);
 }
 
 export async function POST(req: NextRequest) {
@@ -116,6 +109,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'payload_too_large' }, { status: 413 });
   }
 
+  if (!/^[A-Za-z0-9+/]+=*$/.test(body.imageBase64)) {
+    return NextResponse.json({ error: 'invalid_base64' }, { status: 400 });
+  }
+
   const courseId: CourseId = body.courseId === 'elementary' || body.courseId === 'middle' || body.courseId === 'high'
     ? body.courseId
     : 'high';
@@ -135,9 +132,16 @@ export async function POST(req: NextRequest) {
   }
 
   // 4. Zod 검증
+  const cleanedText = text
+    .replace(/\\\\extlim/g, '\\\\lim')
+    .replace(/\\extlim/g, '\\lim')
+    .replace(/extlim/g, '\\lim')
+    .replace(/\\\\operatorname\{lim\}/g, '\\\\lim')
+    .replace(/\\\\mathop\{lim\}/g, '\\\\lim');
+
   let parsed;
   try {
-    parsed = SolutionSchema.safeParse(JSON.parse(text));
+    parsed = SolutionSchema.safeParse(JSON.parse(cleanedText));
   } catch {
     return NextResponse.json({ error: 'json_parse_error' }, { status: 422 });
   }

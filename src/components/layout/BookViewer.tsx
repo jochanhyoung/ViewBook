@@ -15,6 +15,7 @@ import { useTextbookStore } from '@/store/textbook-store';
 import { coursePages, getCourseBySlug } from '@/content/index';
 import type { CourseId } from '@/content/index';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { SolutionPlayer } from '@/components/solution/SolutionPlayer';
 
 interface BookViewerProps {
   page: Page;
@@ -102,6 +103,13 @@ function BookViewerInner({ page }: BookViewerProps) {
   const currentCourse = getCourseBySlug(page.slug) ?? 'high';
   const currentCoursePages = coursePages[currentCourse];
   const pageIdx = currentCoursePages.findIndex((p) => p.slug === page.slug);
+  const stageSteps = useTextbookStore((s) => s.stageSteps);
+  const lastSolution = useTextbookStore((s) => s.lastSolution);
+  const stageIndex = useTextbookStore((s) => s.stageIndex);
+  const advanceStage = useTextbookStore((s) => s.advanceStage);
+  const retreatStage = useTextbookStore((s) => s.retreatStage);
+  const [solutionOpen, setSolutionOpen] = useState(false);
+  useEffect(() => { if (stageSteps && stageSteps.length > 0) setSolutionOpen(true); }, [stageSteps]);
 
   const variants = {
     enter: (dir: number) => ({ x: dir > 0 ? '100%' : '-100%', opacity: 0 }),
@@ -370,7 +378,7 @@ function BookViewerInner({ page }: BookViewerProps) {
         <button
           onClick={() => navigate(-1)}
           disabled={sheetIdx === 0}
-          style={{ background: 'none', border: 'none', cursor: sheetIdx === 0 ? 'default' : 'pointer', fontFamily: 'var(--font-mono)', fontSize: '12px', color: sheetIdx === 0 ? 'var(--color-border)' : 'var(--color-text-subtle)', padding: '4px 8px' }}
+          style={{ background: 'none', border: 'none', cursor: sheetIdx === 0 ? 'default' : 'pointer', fontFamily: 'var(--font-mono)', fontSize: '12px', color: sheetIdx === 0 ? 'var(--color-border)' : 'var(--color-accent)', padding: '4px 8px', transition: 'color 200ms ease' }}
         >
           ← 이전
         </button>
@@ -382,7 +390,7 @@ function BookViewerInner({ page }: BookViewerProps) {
         <button
           onClick={() => navigate(1)}
           disabled={sheetIdx >= sheets.length - 1}
-          style={{ background: 'none', border: 'none', cursor: sheetIdx >= sheets.length - 1 ? 'default' : 'pointer', fontFamily: 'var(--font-mono)', fontSize: '12px', color: sheetIdx >= sheets.length - 1 ? 'var(--color-border)' : 'var(--color-text-subtle)', padding: '4px 8px' }}
+          style={{ background: 'none', border: 'none', cursor: sheetIdx >= sheets.length - 1 ? 'default' : 'pointer', fontFamily: 'var(--font-mono)', fontSize: '12px', color: sheetIdx >= sheets.length - 1 ? 'var(--color-border)' : 'var(--color-accent)', padding: '4px 8px', transition: 'color 200ms ease' }}
         >
           다음 →
         </button>
@@ -391,6 +399,31 @@ function BookViewerInner({ page }: BookViewerProps) {
       {/* AI FAB */}
       <CameraFab />
       {cameraOpen && <CameraModal courseId={currentCourse} />}
+
+      {/* AI 풀이 패널 */}
+      {stageSteps && stageSteps.length > 0 && solutionOpen && (
+        <div style={{
+          position: 'fixed', bottom: 0, left: 0, right: 0,
+          height: '60vh', background: 'var(--color-bg-elevated)',
+          borderTop: '1px solid var(--color-border)',
+          zIndex: 50, display: 'flex', flexDirection: 'column',
+        }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 16px', borderBottom: '1px solid var(--color-bg-surface)', flexShrink: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-accent)', letterSpacing: '0.2em', textTransform: 'uppercase' }}>AI 풀이</span>
+              {lastSolution?.finalAnswer && (
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--color-text)', background: 'var(--color-bg-surface)', padding: '2px 10px', borderRadius: '4px', border: '1px solid var(--color-accent)' }}>
+                  답: <LatexTextRenderer text={lastSolution.finalAnswer} />
+                </span>
+              )}
+            </div>
+            <button onClick={() => setSolutionOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-text-muted)', fontSize: '16px' }}>✕</button>
+          </div>
+          <div style={{ flex: 1, overflow: 'hidden' }}>
+            <SolutionPlayer steps={stageSteps} index={stageIndex} total={stageSteps.length} onPrev={retreatStage} onNext={advanceStage} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

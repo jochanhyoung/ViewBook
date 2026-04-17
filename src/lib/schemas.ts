@@ -56,14 +56,14 @@ export const VisualizationStepSchema = z.discriminatedUnion('kind', [
     steps: z.array(z.object({
       label: z.string().max(50),
       latex: z.string().max(200),
-      description: z.string().max(200).optional(),
-      highlight: z.boolean().optional()
+      description: z.string().max(200).nullish(),
+      highlight: z.boolean().nullish()
     })).min(1).max(10),
   }),
   z.object({
     kind: z.literal('text'),
-    latex: z.string().max(500).optional(),
-    markdown: z.string().max(1000).optional(),
+    latex: z.string().max(500).nullish(),
+    markdown: z.string().max(1000).nullish(),
   }),
   z.object({
     kind: z.literal('playground'),
@@ -75,8 +75,8 @@ export const VisualizationStepSchema = z.discriminatedUnion('kind', [
     steps: z.array(z.object({
       label: z.string().max(80),
       tex: z.string().max(400),
-      hint: z.string().max(200).optional(),
-      final: z.boolean().optional(),
+      hint: z.string().max(200).nullish(),
+      final: z.boolean().nullish(),
     })).min(1).max(12),
   }),
   z.object({
@@ -99,7 +99,7 @@ export const SolutionSchema = z.object({
     .string()
     .max(200)
     .refine(
-      (s) => !/[<>]|javascript:|data:/i.test(s),
+      (s) => !/[<>]|javascript:|data:/i.test(s) && !/[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]/.test(s),
       { message: 'finalAnswer contains disallowed content' }
     ),
 });

@@ -20,6 +20,8 @@ import { DistanceTime } from '@/components/visualization/DistanceTime';
 import { LinearFunction } from '@/components/visualization/LinearFunction';
 import { QuadraticFunction } from '@/components/visualization/QuadraticFunction';
 import { SystemOfEquations } from '@/components/visualization/SystemOfEquations';
+import { SecantSlope } from '@/components/visualization/SecantSlope';
+import { FunctionPlayground } from '@/components/visualization/FunctionPlayground';
 
 interface SolutionPlayerProps {
   steps: VisualizationStep[];
@@ -34,10 +36,11 @@ export function SolutionPlayer({ steps, index, total, onPrev, onNext, compact = 
   const step = steps[Math.min(index, steps.length - 1)];
   const [subStep, setSubStep] = useState(0);
 
-  // 메인 스텝이 바뀌면 서브스텝 리셋
   useEffect(() => { setSubStep(0); }, [index]);
 
-  const subStepCount = step?.kind === 'equationTransform' ? step.steps.length : 1;
+  const subStepCount =
+    step?.kind === 'equationTransform' ? step.steps.length :
+    step?.kind === 'solutionSlides' ? step.steps.length : 1;
   const isFirstSubStep = subStep === 0;
   const isLastSubStep = subStep >= subStepCount - 1;
 
@@ -57,6 +60,9 @@ export function SolutionPlayer({ steps, index, total, onPrev, onNext, compact = 
     }
   };
 
+  const isFirst = index === 0 && isFirstSubStep;
+  const isLast = index >= total - 1 && isLastSubStep;
+
   useEffect(() => {
     if (compact) return;
     function handleKey(e: KeyboardEvent) {
@@ -69,16 +75,12 @@ export function SolutionPlayer({ steps, index, total, onPrev, onNext, compact = 
 
   if (!step) return null;
 
-  const isNextDisabled = isLastSubStep && index >= total - 1;
-  const isPrevDisabled = isFirstSubStep && index === 0;
-
   return (
     <div style={{ height: compact ? 'auto' : '100%', display: 'flex', flexDirection: 'column' }}>
-      {/* 스텝 콘텐츠 */}
       <div style={{ flex: compact ? 'none' : 1, overflow: compact ? 'visible' : 'hidden', position: 'relative' }}>
         <AnimatePresence mode="wait">
           <motion.div
-            key={index}
+            key={`${index}-${subStep}`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -90,78 +92,17 @@ export function SolutionPlayer({ steps, index, total, onPrev, onNext, compact = 
         </AnimatePresence>
       </div>
 
-      {/* 컨트롤 */}
       {!compact && (
-        <div
-          style={{
-            borderTop: '1px solid var(--color-bg-surface)',
-            padding: '12px 20px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexShrink: 0,
-          }}
-        >
-          <button
-            onClick={handlePrev}
-            disabled={isPrevDisabled}
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: isPrevDisabled ? 'default' : 'pointer',
-              color: isPrevDisabled ? 'var(--color-border)' : 'var(--color-text-subtle)',
-              fontFamily: 'var(--font-mono)',
-              fontSize: '12px',
-              padding: '4px 8px',
-            }}
-          >
+        <div style={{ borderTop: '1px solid var(--color-bg-surface)', padding: '12px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
+          <button onClick={handlePrev} disabled={isFirst} style={{ background: 'none', border: 'none', cursor: isFirst ? 'default' : 'pointer', color: isFirst ? 'var(--color-border)' : 'var(--color-text-subtle)', fontFamily: 'var(--font-mono)', fontSize: '12px', padding: '4px 8px' }}>
             ← 이전
           </button>
-
-          {/* 진행 점 — equationTransform이면 서브스텝 기준으로 표시 */}
           <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-            {step.kind === 'equationTransform' ? (
-              step.steps.map((_, i) => (
-                <div
-                  key={i}
-                  style={{
-                    width: i === subStep ? '16px' : '5px',
-                    height: '4px',
-                    background: i === subStep ? 'var(--color-accent)' : 'var(--color-border)',
-                    borderRadius: '2px',
-                    transition: 'all 250ms ease',
-                  }}
-                />
-              ))
-            ) : (
-              steps.map((_, i) => (
-                <div
-                  key={i}
-                  style={{
-                    width: i === index ? '16px' : '5px',
-                    height: '4px',
-                    background: i === index ? 'var(--color-accent)' : 'var(--color-border)',
-                    borderRadius: '2px',
-                    transition: 'all 250ms ease',
-                  }}
-                />
-              ))
-            )}
+            {(step.kind === 'equationTransform' || step.kind === 'solutionSlides' ? step.steps : steps).map((_, i) => (
+              <div key={i} style={{ width: i === (step.kind === 'equationTransform' || step.kind === 'solutionSlides' ? subStep : index) ? '16px' : '5px', height: '4px', background: i === (step.kind === 'equationTransform' || step.kind === 'solutionSlides' ? subStep : index) ? 'var(--color-accent)' : 'var(--color-border)', borderRadius: '2px', transition: 'all 250ms ease' }} />
+            ))}
           </div>
-
-          <button
-            onClick={handleNext}
-            disabled={isNextDisabled}
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: isNextDisabled ? 'default' : 'pointer',
-              color: isNextDisabled ? 'var(--color-border)' : 'var(--color-text-subtle)',
-              fontFamily: 'var(--font-mono)',
-              fontSize: '12px',
-              padding: '4px 8px',
-            }}
-          >
+          <button onClick={handleNext} disabled={isLast} style={{ background: 'none', border: 'none', cursor: isLast ? 'default' : 'pointer', color: isLast ? 'var(--color-border)' : 'var(--color-text-subtle)', fontFamily: 'var(--font-mono)', fontSize: '12px', padding: '4px 8px' }}>
             다음 →
           </button>
         </div>
@@ -208,6 +149,10 @@ function StepContent({ step, subStep }: { step: VisualizationStep; subStep: numb
       return <SolutionSlides steps={step.steps} subStep={subStep} />;
     case 'text':
       return <StepText latex={step.latex} markdown={step.markdown} />;
+    case 'secantSlope':
+      return <SecantSlope fn={step.fn} a={step.a} />;
+    case 'playground':
+      return <FunctionPlayground initialFn={step.initialFn} domain={step.domain} />;
     default:
       return null;
   }
