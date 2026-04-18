@@ -279,9 +279,12 @@ export function PiecewiseGraph({ pieces, x0 }: PiecewiseGraphProps) {
           textAlign: 'center',
           letterSpacing: '0.04em',
         }}>
-          {isDifferentiable
-            ? `우미분 = 좌미분 = ${rightLimit.toFixed(4)} → x=${x0} 에서 미분가능`
-            : `우미분(${rightLimit.toFixed(4)}) ≠ 좌미분(${leftLimit.toFixed(4)}) → x=${x0} 에서 미분불가능`}
+          {(() => {
+            const fmt = (n: number) => String(Number(n.toFixed(4)));
+            return isDifferentiable
+              ? `h→0⁺ 극한 = h→0⁻ 극한 = ${fmt(rightLimit)}  →  f'(${x0}) = ${fmt(rightLimit)} 존재`
+              : `h→0⁺ 극한 ${fmt(rightLimit)}  ≠  h→0⁻ 극한 ${fmt(leftLimit)}  →  f'(${x0}) 존재하지 않음`;
+          })()}
         </div>
       </div>
     </div>

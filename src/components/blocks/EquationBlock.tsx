@@ -1,5 +1,6 @@
 'use client';
 import { BlockMath } from 'react-katex';
+import { LatexTextRenderer } from '@/components/inline/LatexTextRenderer';
 
 interface EquationBlockProps {
   latex: string;
@@ -40,7 +41,7 @@ export function EquationBlock({ latex, caption }: EquationBlockProps) {
           }}
           className="ko-text"
         >
-          {caption}
+          <LatexTextRenderer text={caption} />
         </p>
       )}
     </div>

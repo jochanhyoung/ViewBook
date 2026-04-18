@@ -108,7 +108,6 @@ export const derivativeDefinitionPage: Page = {
         '**풀이.** 먼저 평균변화율을 계산한다. $f(1+h) - f(1) = (1+h)^2 - 1 = 1 + 2h + h^2 - 1 = 2h + h^2$ 이므로, 평균변화율은\n\n$$\\dfrac{f(1+h) - f(1)}{h} = \\dfrac{2h + h^2}{h} = 2 + h.$$\n\n이제 $h \\to 0$의 극한을 취하면 $f\'(1) = \\lim_{h \\to 0} (2 + h) = 2.$ 따라서 $x = 1$에서의 미분계수는 $\\mathbf{2}$이고, 이는 곡선 $y = x^2$의 점 $(1, 1)$에서 그은 접선의 기울기가 $2$임을 뜻한다.',
       visualize: [
         { kind: 'text', markdown: '평균변화율을 두 점을 잇는 할선의 기울기로 본다.' },
-        { kind: 'limitDefinition', fn: 'x^2', x0: 1 },
         { kind: 'tangentLine', fn: 'x^2', x0: 1, domain: [-0.5, 2.5] },
         {
           kind: 'equationTransform',
