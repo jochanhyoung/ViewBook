@@ -63,7 +63,7 @@ export const VisualizationStepSchema = z.discriminatedUnion('kind', [
   z.object({
     kind: z.literal('text'),
     latex: z.string().max(500).nullish(),
-    markdown: z.string().max(1000).nullish(),
+    markdown: z.string().min(1).max(1000),
   }),
   z.object({
     kind: z.literal('playground'),

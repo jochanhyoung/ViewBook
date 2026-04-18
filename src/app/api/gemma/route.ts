@@ -30,6 +30,71 @@ JSON 스키마:
 }
 
 
+function sanitizeLatex(text: string): string {
+  if (typeof text !== 'string') return text;
+  let r = text;
+
+  // JSON \t/\f escape 오염 케이스 (탭+imes, form-feed+rac 등)
+  r = r.replace(/\times/g, '×').replace(/\theta/g, 'θ');
+  r = r.replace(/\text\s*\{([^{}]*)\}/g, '$1');
+  r = r.replace(/\frac\s*\{([^{}]*)\}\s*\{([^{}]*)\}/g, '($1)/($2)');
+
+  // \text{...} 반복 제거 (중첩 처리)
+  for (let i = 0; i < 5; i++) {
+    const prev = r;
+    r = r.replace(/\\text\s*\{([^{}]*)\}/g, '$1');
+    if (prev === r) break;
+  }
+
+  // \frac{a}{b} 반복 변환 (중첩 처리)
+  for (let i = 0; i < 5; i++) {
+    const prev = r;
+    r = r.replace(/\\frac\s*\{([^{}]*)\}\s*\{([^{}]*)\}/g, '($1)/($2)');
+    if (prev === r) break;
+  }
+
+  // 나머지 백슬래시 명령어 → 유니코드/텍스트
+  r = r
+    .replace(/\\sqrt\s*\{([^{}]*)\}/g, '√$1')
+    .replace(/\\times/g, '×').replace(/\\cdot/g, '·').replace(/\\div/g, '÷')
+    .replace(/\\pm/g, '±').replace(/\\mp/g, '∓')
+    .replace(/\\leq/g, '≤').replace(/\\geq/g, '≥').replace(/\\neq/g, '≠')
+    .replace(/\\approx/g, '≈').replace(/\\infty/g, '∞')
+    .replace(/\\alpha/g, 'α').replace(/\\beta/g, 'β').replace(/\\gamma/g, 'γ')
+    .replace(/\\theta/g, 'θ').replace(/\\pi/g, 'π')
+    .replace(/\\left/g, '').replace(/\\right/g, '');
+
+  // 단독 잔재 명령어 (백슬래시 없이 남은 경우)
+  r = r
+    .replace(/\bimes\b/g, '×').replace(/\bcdot\b/g, '·')
+    .replace(/\bfrac\b(?!\w)/g, '').replace(/\btext\b(?!\w)/g, '')
+    .replace(/\bleft\b/g, '').replace(/\bright\b/g, '');
+
+  // 남은 모든 \cmd 제거 (최후 수단)
+  r = r.replace(/\\[a-zA-Z]+\s*/g, '');
+
+  // 첨자 정리: 거리_A → 거리A
+  r = r
+    .replace(/([가-힣a-zA-Z\]])_\{([^}]+)\}/g, '$1$2')
+    .replace(/([가-힣a-zA-Z\]])_([A-Za-z0-9])/g, '$1$2');
+
+  // 빈 중괄호, 중복 $ 제거, 중복 공백 정리
+  return r.replace(/\{\s*\}/g, '').replace(/\$\s*\$/g, '').replace(/[ \t]+/g, ' ').trim();
+}
+
+function deepSanitize(obj: unknown): unknown {
+  if (typeof obj === 'string') return sanitizeLatex(obj);
+  if (Array.isArray(obj)) return obj.map(deepSanitize);
+  if (obj && typeof obj === 'object') {
+    const result: Record<string, unknown> = {};
+    for (const key of Object.keys(obj as object)) {
+      result[key] = deepSanitize((obj as Record<string, unknown>)[key]);
+    }
+    return result;
+  }
+  return obj;
+}
+
 function hashIp(ip: string): string {
   return crypto.createHash('sha256').update(ip).digest('hex').slice(0, 8);
 }
@@ -128,27 +193,30 @@ export async function POST(req: NextRequest) {
   if (BACKEND === 'ollama') {
     const pureBase64 = body.imageBase64.replace(/^data:image\/\w+;base64,/, '');
 
-    const ollamaPrompt = `당신은 수학 문제 풀이 AI입니다. 이미지의 수학 문제를 분석하고 아래 JSON 형식으로만 응답하세요. 다른 텍스트는 절대 포함하지 마세요.
+    const ollamaPrompt = `당신은 수학 문제 풀이 AI입니다. 이미지의 수학 문제를 분석하고 아래 JSON 형식으로만 응답하세요.
 
-JSON 형식:
+**LaTeX 명령어 절대 금지:**
+❌ \\text{km/h}  →  ✅ km/h
+❌ \\frac{1}{2}  →  ✅ 1/2
+❌ \\sqrt{2}     →  ✅ √2
+❌ \\times       →  ✅ ×
+❌ 거리_A        →  ✅ 거리A
+
+**JSON 형식 (반드시 이 구조 사용):**
 {
-  "problemText": "이미지에서 읽은 문제 원문",
+  "problemText": "문제 원문",
   "topic": "other",
   "steps": [
-    {"kind": "text", "markdown": "**1단계: 문제 이해**\\n주어진 조건과 구하려는 것을 정리합니다."},
-    {"kind": "text", "markdown": "**2단계: 풀이 과정**\\n구체적인 계산 과정을 단계별로 설명합니다."},
-    {"kind": "text", "markdown": "**3단계: 답 확인**\\n계산 결과를 검증합니다."}
+    {"kind": "text", "markdown": "**1단계: 문제 이해**\\n- A 자동차: 40 km/h\\n- B 자동차: 70 km/h\\n- 시간: 3시간"},
+    {"kind": "text", "markdown": "**2단계: 풀이**\\n거리A = 40 × 3 = 120 km\\n거리B = 70 × 3 = 210 km"},
+    {"kind": "text", "markdown": "**3단계: 결론**\\nA는 120 km, B는 210 km 이동"}
   ],
-  "finalAnswer": "최종 답 (숫자 또는 식)"
+  "finalAnswer": "A: 120 km, B: 210 km"
 }
 
-규칙:
-1. topic은 반드시 다음 중 하나만 사용: powerRule, polynomialDerivative, tangentLine, definiteIntegral, other
-2. steps는 최소 2개 이상 작성하세요
-3. 각 step은 반드시 {"kind": "text", "markdown": "..."} 형식이어야 합니다
-4. kind는 반드시 "text"만 사용하세요 (title, content 필드는 없습니다)
-5. 수식은 LaTeX 형식으로 markdown 안에 작성하세요 (예: x^2 + 2x + 1)
-6. 수학 문제가 없으면 steps에 {"kind":"text","markdown":"수학 문제를 찾을 수 없습니다."} 하나만 넣으세요`;
+**topic** — 반드시 다음 중 하나만: powerRule, polynomialDerivative, tangentLine, definiteIntegral, other
+**steps** — 최소 2개, 각 항목은 반드시 {"kind": "text", "markdown": "내용"} 형식. markdown 값은 비워두지 마세요.
+**수학 문제 없으면:** steps에 {"kind":"text","markdown":"수학 문제를 찾을 수 없습니다."} 하나`;
 
     try {
       const ollamaRes = await fetch(`${OLLAMA_URL}/api/generate`, {
@@ -160,7 +228,7 @@ JSON 형식:
           images: [pureBase64],
           stream: false,
           format: 'json',
-          options: { temperature: 0.3, num_predict: 2000 },
+          options: { temperature: 0.2, top_p: 0.9, num_predict: 2000, repeat_penalty: 1.1 },
         }),
         signal: AbortSignal.timeout(60000),
       });
@@ -187,7 +255,26 @@ JSON 형식:
         }
       }
 
-      const ollamaParsed = SolutionSchema.safeParse(parsedJson);
+      // 모든 문자열 필드에서 LaTeX 명령어 제거
+      const sanitized = deepSanitize(parsedJson);
+      console.log('[gemma/route] 정제 전후 비교:', {
+        before: JSON.stringify(parsedJson).slice(0, 300),
+        after: JSON.stringify(sanitized).slice(0, 300),
+      });
+
+      // text step에 markdown이 없으면 다른 필드에서 매핑
+      if (sanitized && typeof sanitized === 'object' && Array.isArray((sanitized as Record<string, unknown>).steps)) {
+        (sanitized as Record<string, unknown>).steps = ((sanitized as Record<string, unknown>).steps as unknown[]).map((step) => {
+          if (!step || typeof step !== 'object') return step;
+          const s = step as Record<string, unknown>;
+          if (s.kind === 'text' && !s.markdown) {
+            s.markdown = s.content ?? s.text ?? s.title ?? '(내용 없음)';
+          }
+          return s;
+        });
+      }
+
+      const ollamaParsed = SolutionSchema.safeParse(sanitized);
       if (!ollamaParsed.success) {
         console.error('[gemma/route] Zod 검증 실패 - 원본 데이터:', JSON.stringify(parsedJson, null, 2));
         console.error('[gemma/route] Zod issues:', JSON.stringify(ollamaParsed.error.issues, null, 2));

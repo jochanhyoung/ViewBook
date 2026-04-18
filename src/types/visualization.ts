@@ -33,7 +33,7 @@ export type VisualizationStep =
     }
   | { kind: 'definiteIntegral'; fn: string; a: number; b: number }
   | { kind: 'equationTransform'; steps: { label: string; latex: string; description?: string | null; highlight?: boolean | null }[] }
-  | { kind: 'text'; latex?: string | null; markdown?: string | null }
+  | { kind: 'text'; latex?: string | null; markdown: string }
   | { kind: 'playground'; initialFn: string; domain: [number, number] }
   | { kind: 'solutionSlides'; steps: { label: string; tex: string; hint?: string | null; final?: boolean | null }[] }
   | { kind: 'coordinatePlane'; points?: { x: number; y: number; label?: string }[]; interactive?: boolean; showSigns?: boolean };

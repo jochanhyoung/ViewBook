@@ -5,14 +5,17 @@ import type { Solution } from './schemas';
 import { hammingDistance } from './phash';
 import type { CourseId } from '@/content/index';
 
+const CACHE_MAX_ENTRIES = 100;
+
 interface CachedSolution {
-  id: string;       // normalize(problemText) 해시
-  phash: string;    // 64bit hex
+  id: string;
+  phash: string;
   courseId: CourseId;
   problemText: string;
   solution: Solution;
   createdAt: number;
   hitCount: number;
+  lastAccessedAt?: number;
 }
 
 class TextbookDB extends Dexie {
@@ -21,6 +24,8 @@ class TextbookDB extends Dexie {
     super('textbook-cache');
     this.version(1).stores({ solutions: 'id, phash, createdAt' });
     this.version(2).stores({ solutions: 'id, courseId, phash, createdAt' });
+    this.version(3).stores({ solutions: 'id, courseId, phash, createdAt' });
+    this.version(4).stores({ solutions: 'id, courseId, phash, createdAt, lastAccessedAt' });
   }
 }
 
@@ -51,8 +56,7 @@ export async function lookupByText(problemText: string, courseId: CourseId): Pro
   const db = getDB();
   const entry = await db.solutions.get(id);
   if (entry) {
-    entry.hitCount++;
-    await db.solutions.put(entry);
+    await db.solutions.update(id, { hitCount: (entry.hitCount ?? 0) + 1, lastAccessedAt: Date.now() });
     return entry.solution;
   }
   return null;
@@ -63,8 +67,7 @@ export async function lookupByPhash(phash: string, courseId: CourseId): Promise<
   const all = await db.solutions.toArray();
   for (const entry of all) {
     if (entry.courseId === courseId && entry.phash && hammingDistance(phash, entry.phash) <= 6) {
-      entry.hitCount++;
-      await db.solutions.put(entry);
+      await db.solutions.update(entry.id, { hitCount: (entry.hitCount ?? 0) + 1, lastAccessedAt: Date.now() });
       return entry.solution;
     }
   }
@@ -87,8 +90,17 @@ export async function cacheSolution(
     problemText,
     solution,
     createdAt: Date.now(),
+    lastAccessedAt: Date.now(),
     hitCount: 0,
   });
+
+  const count = await db.solutions.count();
+  if (count > CACHE_MAX_ENTRIES) {
+    const excess = count - CACHE_MAX_ENTRIES;
+    const oldKeys = await db.solutions.orderBy('createdAt').limit(excess).primaryKeys();
+    await db.solutions.bulkDelete(oldKeys);
+    console.log(`[cache] LRU 정리: ${excess}개 삭제 (총 ${CACHE_MAX_ENTRIES}개 유지)`);
+  }
 }
 
 export async function listCache(): Promise<CachedSolution[]> {
@@ -101,4 +113,5 @@ export async function deleteCache(id: string): Promise<void> {
 
 export async function clearAllCache(): Promise<void> {
   await getDB().solutions.clear();
+  console.log('[cache] 전체 캐시 삭제 완료');
 }
