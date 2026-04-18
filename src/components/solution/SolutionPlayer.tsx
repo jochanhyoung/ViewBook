@@ -20,7 +20,6 @@ import { DistanceTime } from '@/components/visualization/DistanceTime';
 import { LinearFunction } from '@/components/visualization/LinearFunction';
 import { QuadraticFunction } from '@/components/visualization/QuadraticFunction';
 import { SystemOfEquations } from '@/components/visualization/SystemOfEquations';
-import { SecantSlope } from '@/components/visualization/SecantSlope';
 import { FunctionPlayground } from '@/components/visualization/FunctionPlayground';
 
 interface SolutionPlayerProps {
@@ -142,15 +141,13 @@ function StepContent({ step, subStep }: { step: VisualizationStep; subStep: numb
     case 'definiteIntegral':
       return <DefiniteIntegral fn={step.fn} a={step.a} b={step.b} />;
     case 'equationTransform':
-      return <EquationTransform steps={step.steps} subStepIndex={subStep} />;
+      return <EquationTransform steps={step.steps.map(s => ({ ...s, description: s.description ?? undefined, highlight: s.highlight ?? undefined }))} subStepIndex={subStep} />;
     case 'piecewiseGraph':
       return <PiecewiseGraph pieces={step.pieces} x0={step.x0} />;
     case 'solutionSlides':
-      return <SolutionSlides steps={step.steps} subStep={subStep} />;
+      return <SolutionSlides steps={step.steps.map(s => ({ ...s, hint: s.hint ?? undefined, final: s.final ?? undefined }))} subStep={subStep} />;
     case 'text':
-      return <StepText latex={step.latex} markdown={step.markdown} />;
-    case 'secantSlope':
-      return <SecantSlope fn={step.fn} a={step.a} />;
+      return <StepText latex={step.latex ?? undefined} markdown={step.markdown ?? undefined} />;
     case 'playground':
       return <FunctionPlayground initialFn={step.initialFn} domain={step.domain} />;
     default:

@@ -347,13 +347,13 @@ function StepContent({ step, isPlaying, subStep }: { step: VisualizationStep; is
     case 'definiteIntegral':
       return <DefiniteIntegral fn={step.fn} a={step.a} b={step.b} />;
     case 'equationTransform':
-      return <EquationTransform steps={step.steps} subStepIndex={subStep} />;
+      return <EquationTransform steps={step.steps.map(s => ({ ...s, description: s.description ?? undefined, highlight: s.highlight ?? undefined }))} subStepIndex={subStep} />;
     case 'text':
-      return <StepText latex={step.latex} markdown={step.markdown} />;
+      return <StepText latex={step.latex ?? undefined} markdown={step.markdown ?? undefined} />;
     case 'playground':
       return <FunctionPlayground initialFn={step.initialFn} domain={step.domain} />;
     case 'solutionSlides':
-      return <SolutionSlides steps={step.steps} subStep={subStep} isPlaying={isPlaying} />;
+      return <SolutionSlides steps={step.steps.map(s => ({ ...s, hint: s.hint ?? undefined, final: s.final ?? undefined }))} subStep={subStep} isPlaying={isPlaying} />;
     case 'coordinatePlane':
       return <CoordinatePlane points={step.points} interactive={step.interactive} showSigns={step.showSigns} />;
     default:
