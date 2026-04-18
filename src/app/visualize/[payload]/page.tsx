@@ -192,7 +192,7 @@ export default function VisualizePage({ params }: PageProps) {
           }}
         >
           <div
-            className={shouldShowExplanation(steps[index]) ? 'min-h-[280px] w-full items-start justify-start md:items-center md:justify-center md:basis-[56%] lg:basis-[55%]' : 'min-h-[280px] w-full items-start justify-start md:items-center md:justify-center'}
+            className={shouldShowExplanation(steps[index]) ? 'min-h-[280px] w-full items-start justify-center md:items-center md:basis-[56%] lg:basis-[55%]' : 'min-h-[280px] w-full items-start justify-center md:items-center'}
             style={{
               flex: shouldShowExplanation(steps[index]) ? undefined : 1,
               maxHeight: 'none',
@@ -210,7 +210,7 @@ export default function VisualizePage({ params }: PageProps) {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.22, ease: 'easeOut' }}
-                className="items-start justify-start md:items-center md:justify-center"
+                className="items-start justify-center md:items-center"
                 style={{ minHeight: '100%', width: '100%', display: 'flex' }}
               >
                 <StepContent step={steps[index]} isPlaying={isPlaying} subStep={subStep} />
