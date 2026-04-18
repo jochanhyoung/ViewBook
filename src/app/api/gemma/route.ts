@@ -48,8 +48,9 @@ function extractRealIp(req: NextRequest): string {
 async function callGemmaApi(imageBase64: string, courseId: CourseId): Promise<string> {
   const apiKey = process.env.GEMMA_API_KEY;
   const model = process.env.GEMMA_MODEL ?? 'gemma-3-12b-it';
+  const backend = process.env.GEMMA_BACKEND ?? 'proxy';
 
-  if (!apiKey) throw new Error('not_configured');
+  if (backend === 'proxy' && !apiKey) throw new Error('not_configured');
 
   const res = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
@@ -117,7 +118,95 @@ export async function POST(req: NextRequest) {
     ? body.courseId
     : 'high';
 
-  // 3. Gemma 호출 (1회 재시도)
+  // 3. 백엔드 분기
+  const BACKEND = process.env.GEMMA_BACKEND ?? 'proxy';
+  const OLLAMA_URL = process.env.OLLAMA_BASE_URL ?? process.env.NEXT_PUBLIC_OLLAMA_URL ?? 'http://localhost:11434';
+  const MODEL = process.env.GEMMA_MODEL ?? 'gemma4:latest';
+
+  console.log('[gemma/route] backend:', BACKEND, 'url:', OLLAMA_URL, 'model:', MODEL);
+
+  if (BACKEND === 'ollama') {
+    const pureBase64 = body.imageBase64.replace(/^data:image\/\w+;base64,/, '');
+
+    const ollamaPrompt = `당신은 수학 문제 풀이 AI입니다. 이미지의 수학 문제를 분석하고 아래 JSON 형식으로만 응답하세요. 다른 텍스트는 절대 포함하지 마세요.
+
+JSON 형식:
+{
+  "problemText": "이미지에서 읽은 문제 원문",
+  "topic": "other",
+  "steps": [
+    {"kind": "text", "markdown": "**1단계: 문제 이해**\\n주어진 조건과 구하려는 것을 정리합니다."},
+    {"kind": "text", "markdown": "**2단계: 풀이 과정**\\n구체적인 계산 과정을 단계별로 설명합니다."},
+    {"kind": "text", "markdown": "**3단계: 답 확인**\\n계산 결과를 검증합니다."}
+  ],
+  "finalAnswer": "최종 답 (숫자 또는 식)"
+}
+
+규칙:
+1. topic은 반드시 다음 중 하나만 사용: powerRule, polynomialDerivative, tangentLine, definiteIntegral, other
+2. steps는 최소 2개 이상 작성하세요
+3. 각 step은 반드시 {"kind": "text", "markdown": "..."} 형식이어야 합니다
+4. kind는 반드시 "text"만 사용하세요 (title, content 필드는 없습니다)
+5. 수식은 LaTeX 형식으로 markdown 안에 작성하세요 (예: x^2 + 2x + 1)
+6. 수학 문제가 없으면 steps에 {"kind":"text","markdown":"수학 문제를 찾을 수 없습니다."} 하나만 넣으세요`;
+
+    try {
+      const ollamaRes = await fetch(`${OLLAMA_URL}/api/generate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: MODEL,
+          prompt: ollamaPrompt,
+          images: [pureBase64],
+          stream: false,
+          format: 'json',
+          options: { temperature: 0.3, num_predict: 2000 },
+        }),
+        signal: AbortSignal.timeout(60000),
+      });
+
+      if (!ollamaRes.ok) {
+        const errText = await ollamaRes.text();
+        console.error('[gemma/route] Ollama HTTP error:', ollamaRes.status, errText);
+        return NextResponse.json({ error: 'upstream_error' }, { status: 502 });
+      }
+
+      const ollamaData = await ollamaRes.json();
+      const rawText: string = ollamaData.response ?? '';
+
+      let parsedJson: unknown;
+      try {
+        parsedJson = JSON.parse(rawText);
+      } catch {
+        const match = rawText.match(/\{[\s\S]*\}/);
+        if (match) {
+          parsedJson = JSON.parse(match[0]);
+        } else {
+          console.error('[gemma/route] JSON 추출 실패 - rawText:', rawText.slice(0, 500));
+          return NextResponse.json({ error: 'upstream_error' }, { status: 502 });
+        }
+      }
+
+      const ollamaParsed = SolutionSchema.safeParse(parsedJson);
+      if (!ollamaParsed.success) {
+        console.error('[gemma/route] Zod 검증 실패 - 원본 데이터:', JSON.stringify(parsedJson, null, 2));
+        console.error('[gemma/route] Zod issues:', JSON.stringify(ollamaParsed.error.issues, null, 2));
+        return NextResponse.json({ error: 'schema_invalid' }, { status: 422 });
+      }
+      console.log(JSON.stringify({ ts: Date.now(), ip_hash: ipHash, topic: ollamaParsed.data.topic }));
+      return NextResponse.json(ollamaParsed.data);
+    } catch (e) {
+      console.error('[gemma/route] Ollama 호출 실패:', {
+        url: OLLAMA_URL,
+        model: MODEL,
+        error: e instanceof Error ? e.message : String(e),
+        stack: e instanceof Error ? e.stack : undefined,
+      });
+      return NextResponse.json({ error: 'upstream_error' }, { status: 502 });
+    }
+  }
+
+  // Google API proxy 호출 (1회 재시도)
   let text = '';
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
