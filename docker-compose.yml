@@ -8,8 +8,7 @@ services:
     # .env.local이 없으면 'docker compose up' 이 실패하므로,
     # 팀원은 반드시 .env.example을 복사해 .env.local을 만들 것
     env_file:
-      - path: .env.local
-        required: true          # 누락 시 명시적 에러 출력
+      - .env.local
     volumes:
       # 이미지 내부에 COPY하지 않고 런타임 마운트만 허용 (보안)
       - .env.local:/app/.env.local:ro

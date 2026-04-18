@@ -2,6 +2,7 @@
 // src/lib/cache.ts
 import Dexie, { type Table } from 'dexie';
 import type { Solution } from './schemas';
+import { SolutionSchema } from './schemas';
 import { hammingDistance } from './phash';
 import type { CourseId } from '@/content/index';
 
@@ -80,6 +81,11 @@ export async function cacheSolution(
   solution: Solution,
   courseId: CourseId
 ): Promise<void> {
+  const check = SolutionSchema.safeParse(solution);
+  if (!check.success) {
+    console.warn('[cache] 스키마 검증 실패한 응답은 저장하지 않음', check.error.issues);
+    return;
+  }
   const key = `${courseId}:${normalizeProblem(problemText)}`;
   const id = await hashString(key);
   const db = getDB();
