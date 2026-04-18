@@ -84,10 +84,11 @@ export function SolutionSlides({ steps, subStep = 0 }: SolutionSlidesProps) {
         <div style={{
           fontFamily: 'var(--font-mono)',
           fontSize: '10px',
+          fontWeight: 700,
           letterSpacing: '0.15em',
           textTransform: 'uppercase',
           color: isFinal ? 'var(--color-accent)' : 'var(--color-text-muted)',
-          marginBottom: '20px',
+          marginBottom: '28px',
           transition: 'color 300ms ease',
         }}>
           {step.label}
