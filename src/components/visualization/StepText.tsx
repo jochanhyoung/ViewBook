@@ -61,7 +61,7 @@ export function StepText({ latex, markdown }: StepTextProps) {
             rehypePlugins={[rehypeKatex] as never[]}
             components={{
               p: ({ children }) => <p style={{ margin: '0 0 8px' }}>{children}</p>,
-              strong: ({ children }) => <strong style={{ color: 'var(--color-text)' }}>{children}</strong>,
+              strong: ({ children }) => <><strong style={{ color: 'var(--color-text)', display: 'block', marginBottom: '10px', fontSize: '16p
             }}
           >
             {fixMarkdown(markdown)}
