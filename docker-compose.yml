@@ -1,6 +1,8 @@
 services:
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "80:3000"
     environment:
@@ -13,6 +15,13 @@ services:
       - GEMMA_MODEL=gemma4:latest
       - RATE_LIMIT_PER_MIN=10
       - DAILY_CALL_LIMIT=2000
+      - STATS_DATA_DIR=/app/data
+      - TEACHER_PASSWORD=teacher2025
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    volumes:
+      - stats-data:/app/data
     restart: unless-stopped
+
+volumes:
+  stats-data:
