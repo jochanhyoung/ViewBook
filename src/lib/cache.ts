@@ -27,6 +27,7 @@ class TextbookDB extends Dexie {
     this.version(2).stores({ solutions: 'id, courseId, phash, createdAt' });
     this.version(3).stores({ solutions: 'id, courseId, phash, createdAt' });
     this.version(4).stores({ solutions: 'id, courseId, phash, createdAt, lastAccessedAt' });
+    this.version(5).stores({ solutions: 'id, courseId, phash, createdAt, lastAccessedAt' });
   }
 }
 

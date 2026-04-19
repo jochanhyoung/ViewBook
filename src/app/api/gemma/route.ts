@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { SolutionSchema } from '@/lib/schemas';
+import { z } from 'zod';
 import { rateLimit, dailyLimit } from '@/lib/rate-limit';
 import { verifySolution } from '@/lib/verify-math';
 import crypto from 'crypto';
@@ -276,111 +277,192 @@ export async function POST(req: NextRequest) {
   if (BACKEND === 'ollama') {
     const pureBase64 = body.imageBase64.replace(/^data:image\/\w+;base64,/, '');
 
-    const ollamaPrompt = `You are a Korean math tutor for Korean elementary/middle/high school students.
+    // ============================================
+    // STAGE 1: 이미지 → 문제 텍스트 추출 (OCR 전용)
+    // ============================================
+    const ocrPrompt = `You are an OCR specialist. Look at the math problem in this image.
 
-<TASK>
-Analyze the math problem in the image and generate a step-by-step solution in Korean.
-Respond ONLY with a valid JSON object. No markdown code blocks, no extra text.
-</TASK>
+Your ONLY task: transcribe the problem text **exactly as written** in Korean.
 
-<OUTPUT_SCHEMA>
-{
-  "problemText": "이미지에서 읽은 문제 원문 (한국어)",
-  "topic": "other",
-  "steps": [
-    { "kind": "text", "markdown": "**1단계: 문제 이해**\\n조건 정리..." },
-    { "kind": "text", "markdown": "**2단계: 풀이**\\n계산 과정..." },
-    { "kind": "text", "markdown": "**3단계: 결론**\\n최종 답..." }
-  ],
-  "finalAnswer": "최종 답 (숫자 + 단위)"
-}
-</OUTPUT_SCHEMA>
+Rules:
+- Do NOT solve the problem
+- Do NOT add explanations
+- Write numbers, operators, units exactly as shown
+- Preserve Korean text verbatim
+- Respond with ONLY the problem text, nothing else
 
-<STRICT_RULES>
-1. steps 배열은 반드시 2~5개의 단계 포함
-2. 각 step의 kind는 반드시 "text", markdown 필드는 반드시 비어있지 않은 문자열
-3. topic은 반드시 다음 중 하나: powerRule, polynomialDerivative, tangentLine, definiteIntegral, other
-4. LaTeX 명령어 절대 금지: \\text, \\frac, \\sqrt, \\times, \\cdot
-5. 첨자 _ 금지: "거리A" 사용 (NOT "거리_A")
-6. 수식은 일반 텍스트로: "40 × 3 = 120 km" (× 기호 직접 사용)
-7. 단위는 공백 하나 띄어서: "120 km", "3시간"
-8. 응답 전체를 단일 JSON 객체로만 반환
-</STRICT_RULES>
+Format: Plain text, no JSON, no markdown.
 
-<EXAMPLE>
-{
-  "problemText": "A 자동차가 시속 40 km로 3시간 달렸습니다. 이동 거리는?",
-  "topic": "other",
-  "steps": [
-    { "kind": "text", "markdown": "**1단계: 공식 확인**\\n거리 = 속력 × 시간" },
-    { "kind": "text", "markdown": "**2단계: 값 대입**\\n거리 = 40 × 3 = 120 km" }
-  ],
-  "finalAnswer": "120 km"
-}
-</EXAMPLE>
+Example output:
+"A 자동차가 시속 40 km로 3시간 동안 달렸습니다. 이동 거리는 몇 km입니까?"
 
-이미지에 수학 문제가 없으면 problemText에 "수학 문제를 찾을 수 없습니다" 라고 쓰고 steps에 이유 1개만 포함하세요.`;
+Now transcribe:`;
 
-    // ── fetch ──────────────────────────────────────────────────────
-    let ollamaRes: Response;
+    let problemText = '';
     try {
-      ollamaRes = await fetch(`${OLLAMA_URL}/api/generate`, {
+      const ocrRes = await fetch(`${OLLAMA_URL}/api/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: MODEL,
-          prompt: ollamaPrompt,
+          prompt: ocrPrompt,
           images: [pureBase64],
           stream: false,
+          options: {
+            temperature: 0.0,
+            num_predict: 500,
+            top_p: 0.1,
+          },
+        }),
+        signal: AbortSignal.timeout(60000),
+      });
+
+      if (!ocrRes.ok) throw new Error('OCR failed');
+      const ocrJson = await ocrRes.json();
+      problemText = String(ocrJson.response ?? '').trim();
+
+      // 코드블록/따옴표 제거
+      problemText = problemText
+        .replace(/^```[\s\S]*?\n/, '')
+        .replace(/```$/, '')
+        .replace(/^["']|["']$/g, '')
+        .trim();
+
+      console.log('[gemma/route] Stage 1 OCR:', problemText);
+    } catch (e) {
+      console.error('[gemma/route] OCR 실패:', e);
+      return NextResponse.json({ error: 'ocr_failed' }, { status: 502 });
+    }
+
+    if (!problemText || problemText.length < 5) {
+      return NextResponse.json(
+        {
+          error: 'problem_not_recognized',
+          message: '이미지에서 문제를 인식하지 못했습니다. 더 선명한 사진으로 다시 시도해주세요.',
+        },
+        { status: 422 }
+      );
+    }
+
+    // ============================================
+    // STAGE 2: 텍스트 문제 → 풀이 생성 (텍스트만)
+    // ============================================
+    const solvePrompt = `You are a Korean elementary/middle/high school math tutor.
+
+<PROBLEM>
+${problemText}
+</PROBLEM>
+
+<TASK>
+Solve the problem above step by step in Korean. Be EXTREMELY careful with arithmetic.
+
+**CRITICAL RULES:**
+1. First, identify the problem type (거리-속력-시간, 일차방정식, 분수, etc.)
+2. For EVERY calculation, show the work:
+   - ❌ "40 × 3 = 120"
+   - ✅ "40 × 3 = 40 + 40 + 40 = 120"
+3. After each calculation, verify by a different method:
+   - "검산: 120 ÷ 3 = 40 ✓"
+4. If the problem has units (km, h, 원), always include them
+5. Double-check the final answer matches what the problem asks for
+</TASK>
+
+<OUTPUT_FORMAT>
+Respond with ONLY a valid JSON object. No markdown blocks, no extra text.
+
+{
+  "problemText": "${problemText}",
+  "topic": "주제명 (거리-속력-시간, 일차방정식 등)",
+  "steps": [
+    { "kind": "text", "markdown": "**1단계: 문제 분석**\\n주어진 조건: ...\\n구하는 것: ..." },
+    { "kind": "text", "markdown": "**2단계: 계산**\\n수식과 단계별 계산..." },
+    { "kind": "text", "markdown": "**3단계: 검산**\\n역산으로 확인: ..." }
+  ],
+  "finalAnswer": "최종 답 (숫자 + 단위)"
+}
+</OUTPUT_FORMAT>
+
+<STRICT_FORMATTING>
+- LaTeX 금지: \\\\text, \\\\frac, \\\\sqrt, \\\\times, \\\\cdot
+- 첨자 _ 금지: "거리A" O, "거리_A" X
+- 단위는 그대로: "40 km/h", "3시간"
+- 곱셈은 × 사용
+</STRICT_FORMATTING>`;
+
+    let rawResponse = '';
+    try {
+      const solveRes = await fetch(`${OLLAMA_URL}/api/generate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: MODEL,
+          prompt: solvePrompt,
+          stream: false,
           format: 'json',
-          options: { temperature: 0.1, top_p: 0.9, seed: 42, num_predict: 3000, repeat_penalty: 1.1 },
+          options: {
+            temperature: 0.1,
+            top_p: 0.9,
+            seed: 42,
+            num_predict: 4000,
+            repeat_penalty: 1.05,
+            num_ctx: 8192,
+          },
         }),
         signal: AbortSignal.timeout(120000),
       });
-    } catch (e) {
-      console.error('[gemma/route] Ollama fetch 실패:', e instanceof Error ? e.message : String(e));
-      return NextResponse.json({ error: 'ollama_unreachable' }, { status: 502 });
-    }
 
-    if (!ollamaRes.ok) {
-      const errText = await ollamaRes.text().catch(() => '');
-      console.error('[gemma/route] Ollama HTTP 에러:', ollamaRes.status, errText.slice(0, 300));
-      return NextResponse.json({ error: 'upstream_error' }, { status: 502 });
-    }
-
-    // ── 응답 파싱 ─────────────────────────────────────────────────
-    let rawText: string;
-    try {
-      const ollamaData = await ollamaRes.json();
-      rawText = ollamaData.response ?? '';
-      if (!rawText) {
-        console.error('[gemma/route] Ollama 빈 응답:', JSON.stringify(ollamaData).slice(0, 200));
-        return NextResponse.json({ error: 'empty_response' }, { status: 502 });
+      if (!solveRes.ok) {
+        const errText = await solveRes.text().catch(() => '');
+        console.error('[gemma/route] Stage 2 실패:', solveRes.status, errText.slice(0, 200));
+        return NextResponse.json({ error: 'upstream_error' }, { status: 502 });
       }
+
+      const solveJson = await solveRes.json();
+      rawResponse = String(solveJson.response ?? '').trim();
+      console.log('[gemma/route] Stage 2 RAW:', rawResponse.slice(0, 500));
     } catch (e) {
-      console.error('[gemma/route] Ollama 응답 파싱 실패:', e instanceof Error ? e.message : String(e));
+      console.error('[gemma/route] Stage 2 fetch 실패:', e);
       return NextResponse.json({ error: 'upstream_error' }, { status: 502 });
     }
 
-    // ── JSON 추출 → 정제 → 검증 ───────────────────────────────────
-    let parsedJson: unknown;
+    let parsedJson: any;
     try {
-      parsedJson = extractAndParseJson(rawText);
+      parsedJson = extractAndParseJson(rawResponse);
     } catch (e) {
-      console.error('[gemma/route] JSON 추출 실패:', rawText.slice(0, 500));
+      console.error('[gemma/route] JSON 파싱 실패');
       return NextResponse.json({ error: 'invalid_json_response' }, { status: 422 });
     }
 
-    const normalized = normalizeAndSanitize(deepSanitize(parsedJson)) as Record<string, unknown>;
-    console.log('[gemma/route] normalized:', JSON.stringify(normalized).slice(0, 400));
+    parsedJson.problemText = problemText;
 
-    const ollamaParsed = SolutionSchema.safeParse(normalized);
-    if (!ollamaParsed.success) {
-      console.error('[gemma/route] Zod 실패, fallback 반환:', JSON.stringify(ollamaParsed.error.issues, null, 2));
-      return NextResponse.json(buildFallbackSolution(normalized, rawText));
+    const normalized = normalizeAndSanitize(deepSanitize(parsedJson)) as Record<string, unknown>;
+
+    // ============================================
+    // STAGE 3: mathjs로 서버 측 검산
+    // ============================================
+    try {
+      const verification = verifySolution(normalized as any);
+      if (!verification.ok) {
+        console.warn('[gemma/route] 수학 검증 실패:', verification.reason);
+        (normalized.steps as any[]).push({
+          kind: 'text',
+          markdown: `⚠️ **주의**: 이 풀이는 자동 검증을 통과하지 못했습니다. 답을 직접 확인해주세요.\n\n검증 메시지: ${verification.reason ?? '알 수 없음'}`,
+        });
+      }
+    } catch (e) {
+      console.warn('[gemma/route] verify-math 처리 중 오류:', e);
     }
-    console.log(JSON.stringify({ ts: Date.now(), ip_hash: ipHash, topic: ollamaParsed.data.topic }));
-    return NextResponse.json(ollamaParsed.data);
+
+    try {
+      const validated = SolutionSchema.parse(normalized);
+      console.log(JSON.stringify({ ts: Date.now(), ip_hash: ipHash, topic: validated.topic }));
+      return NextResponse.json(validated);
+    } catch (e) {
+      if (e instanceof z.ZodError) {
+        console.error('[gemma/route] Zod 실패:', JSON.stringify(e.issues, null, 2));
+      }
+      return NextResponse.json(buildFallbackSolution(normalized, rawResponse), { status: 200 });
+    }
   }
 
   // Google API proxy 호출 (1회 재시도)
